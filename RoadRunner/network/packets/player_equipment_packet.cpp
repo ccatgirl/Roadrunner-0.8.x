@@ -1,6 +1,6 @@
 #include <network/packets/player_equipment_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::PlayerEquipmentPacket::packet_id = 159;
+const uint8_t RoadRunner::network::packets::PlayerEquipmentPacket::packet_id = 0xa0;
 
 bool RoadRunner::network::packets::PlayerEquipmentPacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<int32_t>(this->entity_id)) {
@@ -12,6 +12,9 @@ bool RoadRunner::network::packets::PlayerEquipmentPacket::deserialize_body(RakNe
     if (!stream->Read<uint16_t>(this->meta)) {
         return false;
     }
+    if (!stream->Read<int8_t>(this->slot)) {
+        return false;
+    }
     return true;
 }
 
@@ -19,4 +22,5 @@ void RoadRunner::network::packets::PlayerEquipmentPacket::serialize_body(RakNet:
     stream->Write<int32_t>(this->entity_id);
     stream->Write<uint16_t>(this->block);
     stream->Write<uint16_t>(this->meta);
+    stream->Write<int8_t>(this->slot);
 }

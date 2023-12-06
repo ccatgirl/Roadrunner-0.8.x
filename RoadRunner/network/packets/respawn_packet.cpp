@@ -1,6 +1,6 @@
 #include <network/packets/respawn_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::RespawnPacket::packet_id = 171;
+const uint8_t RoadRunner::network::packets::RespawnPacket::packet_id = 0xad;
 
 bool RoadRunner::network::packets::RespawnPacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<int32_t>(this->entity_id)) {

@@ -17,6 +17,7 @@ namespace RoadRunner {
 
                 uint8_t window_id;
                 std::vector<ItemType> items;
+                std::vector<int32_t> hotbar_slots;
 
                 bool deserialize_body(RakNet::BitStream *stream);
 

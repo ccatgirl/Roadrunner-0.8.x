@@ -1,6 +1,6 @@
 #include <network/packets/tile_event_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::TileEventPacket::packet_id = 155;
+const uint8_t RoadRunner::network::packets::TileEventPacket::packet_id = 0x9c;
 
 bool RoadRunner::network::packets::TileEventPacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<int32_t>(this->x)) {

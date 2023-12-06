@@ -14,7 +14,9 @@ namespace RoadRunner {
                 uint8_t window_id;
                 uint8_t type;
                 uint8_t slot;
-                RakNet::RakString title;
+                int32_t x;
+                int32_t y;
+                int32_t z;
 
                 bool deserialize_body(RakNet::BitStream *stream);
 

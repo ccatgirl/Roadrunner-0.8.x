@@ -1,6 +1,6 @@
 #include <network/packets/container_close_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::ContainerClosePacket::packet_id = 175;
+const uint8_t RoadRunner::network::packets::ContainerClosePacket::packet_id = 0xb1;
 
 bool RoadRunner::network::packets::ContainerClosePacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<uint8_t>(this->window_id)) {

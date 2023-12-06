@@ -1,6 +1,6 @@
 #include <network/packets/level_event_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::LevelEventPacket::packet_id = 154;
+const uint8_t RoadRunner::network::packets::LevelEventPacket::packet_id = 0x9b;
 
 bool RoadRunner::network::packets::LevelEventPacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<int16_t>(this->event_id)) {

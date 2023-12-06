@@ -1,6 +1,6 @@
 #include <network/packets/player_action_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::PlayerActionPacket::packet_id = 163;
+const uint8_t RoadRunner::network::packets::PlayerActionPacket::packet_id = 0xa4;
 
 bool RoadRunner::network::packets::PlayerActionPacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<int32_t>(this->action)) {

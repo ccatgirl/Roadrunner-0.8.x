@@ -1,6 +1,6 @@
 #include <network/packets/start_game_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::StartGamePacket::packet_id = 135;
+const uint8_t RoadRunner::network::packets::StartGamePacket::packet_id = 0x87;
 
 bool RoadRunner::network::packets::StartGamePacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<int32_t>(this->seed)) {

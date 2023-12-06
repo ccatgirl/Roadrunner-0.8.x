@@ -1,6 +1,6 @@
 #include <network/packets/set_health_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::SetHealthPacket::packet_id = 168;
+const uint8_t RoadRunner::network::packets::SetHealthPacket::packet_id = 0xaa;
 
 bool RoadRunner::network::packets::SetHealthPacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<uint8_t>(this->health)) {

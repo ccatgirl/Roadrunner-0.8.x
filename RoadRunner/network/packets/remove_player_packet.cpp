@@ -1,6 +1,6 @@
 #include <network/packets/remove_player_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::RemovePlayerPacket::packet_id = 138;
+const uint8_t RoadRunner::network::packets::RemovePlayerPacket::packet_id = 0x8a;
 
 bool RoadRunner::network::packets::RemovePlayerPacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<int32_t>(this->entity_id)) {

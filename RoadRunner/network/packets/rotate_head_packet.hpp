@@ -7,14 +7,12 @@
 namespace RoadRunner {
     namespace network {
         namespace packets {
-            class SignUpdatePacket {
+            class RotateHeadPacket {
             public:
                 static const uint8_t packet_id;
 
-                int16_t x;
-                uint8_t y;
-                int16_t z;
-                RakNet::RakString lines;
+                int32_t entity_id;
+                int8_t yaw;
 
                 bool deserialize_body(RakNet::BitStream *stream);
 

@@ -1,6 +1,6 @@
 #include <network/packets/request_chunk_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::RequestChunkPacket::packet_id = 157;
+const uint8_t RoadRunner::network::packets::RequestChunkPacket::packet_id = 0x9e;
 
 bool RoadRunner::network::packets::RequestChunkPacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<int32_t>(this->x)) {

@@ -7,12 +7,14 @@
 namespace RoadRunner {
     namespace network {
         namespace packets {
-            class SetTimePacket {
+            class PlayerInputPacket {
             public:
                 static const uint8_t packet_id;
 
-                int32_t time;
-                bool started;
+                float motion_x;
+                float motion_y;
+                bool jumping;
+                bool sneaking;
 
                 bool deserialize_body(RakNet::BitStream *stream);
 

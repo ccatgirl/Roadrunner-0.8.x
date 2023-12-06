@@ -1,6 +1,6 @@
 #include <network/packets/place_block_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::PlaceBlockPacket::packet_id = 149;
+const uint8_t RoadRunner::network::packets::PlaceBlockPacket::packet_id = 0x96;
 
 bool RoadRunner::network::packets::PlaceBlockPacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<int32_t>(this->entity_id)) {

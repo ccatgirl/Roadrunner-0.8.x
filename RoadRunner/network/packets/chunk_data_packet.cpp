@@ -2,7 +2,7 @@
 
 using RoadRunner::world::Chunk;
 
-const uint8_t RoadRunner::network::packets::ChunkDataPacket::packet_id = 158;
+const uint8_t RoadRunner::network::packets::ChunkDataPacket::packet_id = 0x9f;
 
 bool RoadRunner::network::packets::ChunkDataPacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<int32_t>(this->x)) {

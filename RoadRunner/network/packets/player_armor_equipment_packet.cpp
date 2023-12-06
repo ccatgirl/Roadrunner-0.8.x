@@ -1,6 +1,6 @@
 #include <network/packets/player_armor_equipment_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::PlayerArmorEquipmentPacket::packet_id = 160;
+const uint8_t RoadRunner::network::packets::PlayerArmorEquipmentPacket::packet_id = 0xa1;
 
 bool RoadRunner::network::packets::PlayerArmorEquipmentPacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<int32_t>(this->entity_id)) {

@@ -17,6 +17,7 @@ namespace RoadRunner {
                 float z;
                 float pitch;
                 float yaw;
+                float head_yaw;
 
                 bool deserialize_body(RakNet::BitStream *stream);
 

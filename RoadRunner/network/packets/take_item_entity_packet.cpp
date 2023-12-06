@@ -1,6 +1,6 @@
 #include <network/packets/take_item_entity_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::TakeItemEntityPacket::packet_id = 143;
+const uint8_t RoadRunner::network::packets::TakeItemEntityPacket::packet_id = 0x8f;
 
 bool RoadRunner::network::packets::TakeItemEntityPacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<int32_t>(this->target)) {

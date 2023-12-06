@@ -1,6 +1,6 @@
 #include <network/packets/move_player_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::MovePlayerPacket::packet_id = 148;
+const uint8_t RoadRunner::network::packets::MovePlayerPacket::packet_id = 0x95;
 
 bool RoadRunner::network::packets::MovePlayerPacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<int32_t>(this->entity_id)) {
@@ -21,6 +21,9 @@ bool RoadRunner::network::packets::MovePlayerPacket::deserialize_body(RakNet::Bi
     if (!stream->Read<float>(this->yaw)) {
         return false;
     }
+    if (!stream->Read<float>(this->head_yaw)) {
+        return false;
+    }
     return true;
 }
 
@@ -31,4 +34,5 @@ void RoadRunner::network::packets::MovePlayerPacket::serialize_body(RakNet::BitS
     stream->Write<float>(this->z);
     stream->Write<float>(this->pitch);
     stream->Write<float>(this->yaw);
+    stream->Write<float>(this->head_yaw);
 }

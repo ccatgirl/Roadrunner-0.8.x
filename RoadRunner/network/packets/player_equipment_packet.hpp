@@ -14,6 +14,7 @@ namespace RoadRunner {
                 int32_t entity_id;
                 uint16_t block;
                 uint16_t meta;
+                int8_t slot;
 
                 bool deserialize_body(RakNet::BitStream *stream);
 

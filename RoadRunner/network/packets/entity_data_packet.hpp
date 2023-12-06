@@ -7,12 +7,13 @@
 namespace RoadRunner {
     namespace network {
         namespace packets {
-            class SetTimePacket {
+            class EntityDataPacket {
             public:
                 static const uint8_t packet_id;
 
-                int32_t time;
-                bool started;
+                int16_t x;
+                uint8_t y;
+                int16_t z;
 
                 bool deserialize_body(RakNet::BitStream *stream);
 

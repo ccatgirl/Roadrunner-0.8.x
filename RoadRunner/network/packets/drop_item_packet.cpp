@@ -1,6 +1,6 @@
 #include <network/packets/drop_item_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::DropItemPacket::packet_id = 173;
+const uint8_t RoadRunner::network::packets::DropItemPacket::packet_id = 0xaf;
 
 bool RoadRunner::network::packets::DropItemPacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<int32_t>(this->entity_id)) {

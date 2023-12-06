@@ -1,6 +1,6 @@
 #include <network/packets/animate_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::AnimatePacket::packet_id = 170;
+const uint8_t RoadRunner::network::packets::AnimatePacket::packet_id = 0xac;
 
 bool RoadRunner::network::packets::AnimatePacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<uint8_t>(this->action)) {

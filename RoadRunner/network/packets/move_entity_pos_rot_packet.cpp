@@ -1,6 +1,6 @@
 #include <network/packets/move_entity_pos_rot_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::MoveEntityPacket_PosRot::packet_id = 147;
+const uint8_t RoadRunner::network::packets::MoveEntityPacket_PosRot::packet_id = 0x93;
 
 bool RoadRunner::network::packets::MoveEntityPacket_PosRot::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<int32_t>(this->entity_id)) {

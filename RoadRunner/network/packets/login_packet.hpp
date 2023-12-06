@@ -14,6 +14,8 @@ namespace RoadRunner {
                 RakNet::RakString username;
                 int32_t protocol_1;
                 int32_t protocol_2;
+                int32_t client_id;
+                RakNet::RakString realms_data;
 
                 bool deserialize_body(RakNet::BitStream *stream);
 

@@ -21,6 +21,9 @@ namespace RoadRunner {
                 float fx;
                 float fy;
                 float fz;
+                float pos_x;
+                float pos_y;
+                float pos_z;
 
                 bool deserialize_body(RakNet::BitStream *stream);
 

@@ -1,6 +1,6 @@
 #include <network/packets/update_block_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::UpdateBlockPacket::packet_id = 151;
+const uint8_t RoadRunner::network::packets::UpdateBlockPacket::packet_id = 0x98;
 
 bool RoadRunner::network::packets::UpdateBlockPacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<int32_t>(this->x)) {

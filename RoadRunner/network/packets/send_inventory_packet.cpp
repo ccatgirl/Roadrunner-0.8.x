@@ -1,6 +1,6 @@
 #include <network/packets/send_inventory_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::SendInventoryPacket::packet_id = 172;
+const uint8_t RoadRunner::network::packets::SendInventoryPacket::packet_id = 0xae;
 
 bool RoadRunner::network::packets::SendInventoryPacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<int32_t>(this->entity_id)) {

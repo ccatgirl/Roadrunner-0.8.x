@@ -11,6 +11,7 @@ namespace RoadRunner {
             public:
                 static const uint8_t packet_id;
 
+                RakNet::RakString username;
                 RakNet::RakString message;
 
                 bool deserialize_body(RakNet::BitStream *stream);

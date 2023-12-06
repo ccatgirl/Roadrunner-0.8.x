@@ -1,6 +1,6 @@
 #include <network/packets/set_entity_motion_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::SetEntityMotionPacket::packet_id = 167;
+const uint8_t RoadRunner::network::packets::SetEntityMotionPacket::packet_id = 0xa8;
 
 bool RoadRunner::network::packets::SetEntityMotionPacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<int32_t>(this->entity_id)) {

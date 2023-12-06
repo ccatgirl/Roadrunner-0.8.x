@@ -1,6 +1,6 @@
 #include <network/packets/container_set_data_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::ContainerSetDataPacket::packet_id = 177;
+const uint8_t RoadRunner::network::packets::ContainerSetDataPacket::packet_id = 0xb3;
 
 bool RoadRunner::network::packets::ContainerSetDataPacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<uint8_t>(this->window_id)) {

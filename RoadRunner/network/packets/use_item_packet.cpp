@@ -1,6 +1,6 @@
 #include <network/packets/use_item_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::UseItemPacket::packet_id = 162;
+const uint8_t RoadRunner::network::packets::UseItemPacket::packet_id = 0xa3;
 
 bool RoadRunner::network::packets::UseItemPacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<int32_t>(this->x)) {
@@ -33,6 +33,15 @@ bool RoadRunner::network::packets::UseItemPacket::deserialize_body(RakNet::BitSt
     if (!stream->Read<float>(this->fz)) {
         return false;
     }
+    if (!stream->Read<float>(this->pos_x)) {
+        return false;
+    }
+    if (!stream->Read<float>(this->pos_y)) {
+        return false;
+    }
+    if (!stream->Read<float>(this->pos_z)) {
+        return false;
+    }
     return true;
 }
 
@@ -47,4 +56,7 @@ void RoadRunner::network::packets::UseItemPacket::serialize_body(RakNet::BitStre
     stream->Write<float>(this->fx);
     stream->Write<float>(this->fy);
     stream->Write<float>(this->fz);
+    stream->Write<float>(this->pos_x);
+    stream->Write<float>(this->pos_y);
+    stream->Write<float>(this->pos_z);
 }

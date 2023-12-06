@@ -1,6 +1,6 @@
 #include <network/packets/set_spawn_position_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::SetSpawnPositionPacket::packet_id = 169;
+const uint8_t RoadRunner::network::packets::SetSpawnPositionPacket::packet_id = 0xab;
 
 bool RoadRunner::network::packets::SetSpawnPositionPacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<int32_t>(this->x)) {

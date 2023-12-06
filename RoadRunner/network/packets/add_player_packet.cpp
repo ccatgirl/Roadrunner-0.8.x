@@ -1,6 +1,6 @@
 #include <network/packets/add_player_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::AddPlayerPacket::packet_id = 137;
+const uint8_t RoadRunner::network::packets::AddPlayerPacket::packet_id = 0x89;
 
 bool RoadRunner::network::packets::AddPlayerPacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<uint64_t>(this->client_guid)) {

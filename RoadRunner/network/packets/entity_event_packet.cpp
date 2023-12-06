@@ -1,6 +1,6 @@
 #include <network/packets/entity_event_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::EntityEventPacket::packet_id = 156;
+const uint8_t RoadRunner::network::packets::EntityEventPacket::packet_id = 0x9d;
 
 bool RoadRunner::network::packets::EntityEventPacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<int32_t>(this->entity_id)) {

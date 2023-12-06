@@ -1,6 +1,6 @@
 #include <network/packets/hurt_armor_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::HurtArmorPacket::packet_id = 165;
+const uint8_t RoadRunner::network::packets::HurtArmorPacket::packet_id = 0xa6;
 
 bool RoadRunner::network::packets::HurtArmorPacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<int8_t>(this->health)) {

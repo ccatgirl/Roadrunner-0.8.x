@@ -1,6 +1,6 @@
 #include <network/packets/remove_block_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::RemoveBlockPacket::packet_id = 150;
+const uint8_t RoadRunner::network::packets::RemoveBlockPacket::packet_id = 0x97;
 
 bool RoadRunner::network::packets::RemoveBlockPacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<int32_t>(this->entity_id)) {

@@ -1,6 +1,6 @@
 #include <network/packets/ready_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::ReadyPacket::packet_id = 132;
+const uint8_t RoadRunner::network::packets::ReadyPacket::packet_id = 0x84;
 
 bool RoadRunner::network::packets::ReadyPacket::deserialize_body(RakNet::BitStream *stream) {
 	return stream->Read<uint8_t>(this->status);

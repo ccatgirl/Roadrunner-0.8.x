@@ -1,6 +1,6 @@
 #include <network/packets/container_set_slot_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::ContainerSetSlotPacket::packet_id = 176;
+const uint8_t RoadRunner::network::packets::ContainerSetSlotPacket::packet_id = 0xb2;
 
 bool RoadRunner::network::packets::ContainerSetSlotPacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<uint8_t>(this->window_id)) {

@@ -1,6 +1,6 @@
 #include <network/packets/explode_packet.hpp>
 
-const uint8_t RoadRunner::network::packets::ExplodePacket::packet_id = 153;
+const uint8_t RoadRunner::network::packets::ExplodePacket::packet_id = 0x0a;
 
 bool RoadRunner::network::packets::ExplodePacket::deserialize_body(RakNet::BitStream *stream) {
     if (!stream->Read<float>(this->x)) {
