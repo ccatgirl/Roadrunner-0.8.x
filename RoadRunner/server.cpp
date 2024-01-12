@@ -1,7 +1,7 @@
 #include <BitStream.h>
 #include <MessageIdentifiers.h>
 #include <PacketPriority.h>
-
+#include <sys/time.h>
 #include <network/packets/chat_packet.hpp>
 #include <server.hpp>
 
@@ -20,7 +20,11 @@ void Server::post_to_chat(std::string message) {
         ++it;
     }
 }
-
+double getTimeMS(){
+	struct timeval tv;
+	gettimeofday(&tv, 0);
+	return tv.tv_sec * 1000 + tv.tv_usec / 1000;
+}
 Server::Server(uint16_t port, uint32_t max_clients) {
     this->entity_id = 1;
     this->peer = RakNet::RakPeerInterface::GetInstance();
@@ -34,16 +38,23 @@ Server::Server(uint16_t port, uint32_t max_clients) {
     printf("Starting the server.\n");
 
     peer->SetMaximumIncomingConnections(max_clients);
-
+	double nextUpdate = 0.0;
     EntityIDGenerator idGen;
     while (this->is_running) {
         RakNet::RakString data = "MCCPP;MINECON;Test";
         RakNet::BitStream stream;
         data.Serialize(&stream);
         peer->SetOfflinePingResponse((const char *)stream.GetData(), stream.GetNumberOfBytesUsed());
-
+	double timeMS = getTimeMS();
+	if(nextUpdate > timeMS){
+		float skip = (nextUpdate-timeMS)*1000;
+		//printf("skipping %f\n", skip/1000);
+		usleep((int)skip);
+	}
+	nextUpdate = timeMS+50;
         packet = peer->Receive();
         if (!packet) continue;
+	
         if (packet->bitSize != 0) {
             RakNet::BitStream receive_stream(packet->data, BITS_TO_BYTES(packet->bitSize), false);
 
