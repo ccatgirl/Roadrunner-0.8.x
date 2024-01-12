@@ -86,7 +86,15 @@ void RoadRunner::Player::handle_packet(uint8_t packet_id, RakNet::BitStream *str
 
         // Continue the login sequence
         LoginStatusPacket login_status;
-        login_status.status = (int32_t)LoginStatusEnum::success;
+        if (login.protocol_1 != PROTOCOL) {
+            if (login.protocol_1 < PROTOCOL) {
+                login_status.status = (int32_t)LoginStatusEnum::outdated_client;
+            } else if (login.protocol_1 > PROTOCOL) {
+                login_status.status = (int32_t)LoginStatusEnum::outdated_server;
+            }
+        } else {
+            login_status.status = (int32_t)LoginStatusEnum::success;
+        }
         this->send_packet(login_status);
 
         StartGamePacket start_game;

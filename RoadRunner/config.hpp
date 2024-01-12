@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 // Meta
 #define MAX_CLIENTS 10
 #define SERVER_PORT 19132
@@ -19,3 +21,6 @@ constexpr bool IS_CREATIVE = true;
 constexpr float MAX_DIST = 5.0;
 // If the player is blocked from going past the world border
 #define WORLD_BORDER true
+
+// I will think later where to put this
+constexpr int32_t PROTOCOL = 14;
