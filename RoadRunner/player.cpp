@@ -150,7 +150,7 @@ void RoadRunner::Player::handle_packet(uint8_t packet_id, RakNet::BitStream *str
         std::string formatted = "<" + this->username + "> " + msg.message.C_String();
         printf("[CHAT]: %s\n", formatted.c_str());
         // Send
-        msg.message = formatted.c_str();
+        msg.message = msg.message.C_String();
         this->broadcast_packet(msg);
     } else if (packet_id == AnimatePacket::packet_id) {
         AnimatePacket animate;
