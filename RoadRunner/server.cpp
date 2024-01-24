@@ -4,7 +4,7 @@
 #include <sys/time.h>
 #include <network/packets/chat_packet.hpp>
 #include <server.hpp>
-
+#include "world/perlin.hpp"
 using RoadRunner::Server;
 using RoadRunner::network::packets::ChatPacket;
 
@@ -29,7 +29,51 @@ Server::Server(uint16_t port, uint32_t max_clients) {
     this->entity_id = 1;
     this->peer = RakNet::RakPeerInterface::GetInstance();
     this->is_running = true;
-
+	this->world = new RoadRunner::world::World(0); //TODO seed and othet stuff
+	
+	//TODO better gen, move out of here
+	
+	for(int index = 0; index < 256; ++index){
+		RoadRunner::world::Perlin perlin;
+		int chunkX = this->world->chunks[index]->x; //TODO nullptr checks?
+		int chunkZ = this->world->chunks[index]->z;
+		RoadRunner::world::Chunk* chunk = this->world->chunks[index];
+		printf("Generating %d-%d\n", chunkX, chunkZ);
+		for (int32_t x = 0; x < 16; ++x) {
+            for (int32_t z = 0; z < 16; ++z) {
+				int32_t y = (int32_t)perlin.perlin(((chunkZ << 4) + z), ((chunkX << 4) + x), 10.0 * (float)world->seed, 1, 1, 1, 0.2, 2) + 62;
+				
+				int32_t start_point = y;
+                while (y >= 0) {
+                    if (y < 1 && y >= 0) {
+                        chunk->set_block_id(x, y, z, 7);
+                    } else if (y < start_point && y > start_point - 4) {
+                        if (y > 60) {
+                            chunk->set_block_id(x, y, z, 3);
+                        } else {
+                            chunk->set_block_id(x, y, z, 13);
+                        }
+                    } else if (y == start_point) {
+                        if (y > 61) {
+                        	chunk->set_block_id(x, y, z, 2);
+                        } else {
+							chunk->set_block_id(x, y, z, 13);
+                        }
+                    } else {
+                        chunk->set_block_id(x, y, z, 1);
+                    }
+                    --y;
+                }
+                for (int32_t i = 0; i < 63; ++i) {
+                    if (chunk->get_block_id(x, i, z) == 0) {
+                        chunk->set_block_id(x, i, z, 9);
+                    }
+                }
+				
+			}
+		}
+	}
+	
     RakNet::Packet *packet;
 
     RakNet::SocketDescriptor sd(port, 0);
@@ -98,4 +142,5 @@ Server::Server(uint16_t port, uint32_t max_clients) {
     }
 
     RakNet::RakPeerInterface::DestroyInstance(peer);
+	delete this->world;
 }
