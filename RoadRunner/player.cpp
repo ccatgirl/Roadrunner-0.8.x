@@ -1,5 +1,7 @@
 #include <config.hpp>
 #include <network/packets/send_inventory_packet.hpp>
+#include <network/packets/use_item_packet.hpp>
+#include <network/packets/remove_block_packet.hpp>
 #include <network/packets/add_player_packet.hpp>
 #include <network/packets/animate_packet.hpp>
 #include <network/packets/chat_packet.hpp>
@@ -19,6 +21,8 @@
 #include <world/perlin.hpp>
 
 using RoadRunner::network::packets::SendInventoryPacket;
+using RoadRunner::network::packets::UseItemPacket;
+using RoadRunner::network::packets::RemoveBlockPacket;
 using RoadRunner::network::packets::AddPlayerPacket;
 using RoadRunner::network::packets::AnimatePacket;
 using RoadRunner::network::packets::ChatPacket;
@@ -76,7 +80,8 @@ void RoadRunner::Player::broadcast_except_packet(T &packet) {
 }
 
 void RoadRunner::Player::handle_packet(uint8_t packet_id, RakNet::BitStream *stream) {
-    if (packet_id == LoginPacket::packet_id) {
+	printf("pid %d\n", packet_id);
+    if (packet_id == LoginPacket::packet_id) { //TODO switch
         LoginPacket login;
         login.deserialize_body(stream);
         this->username = login.username.C_String();
@@ -106,7 +111,51 @@ void RoadRunner::Player::handle_packet(uint8_t packet_id, RakNet::BitStream *str
         start_game.y = SPAWN_Y;
         start_game.z = SPAWN_Z;
         this->send_packet(start_game);
-    } else if (packet_id == ReadyPacket::packet_id) {
+    }else if(packet_id == UseItemPacket::packet_id){
+		UseItemPacket useitem_pk;
+		useitem_pk.deserialize_body(stream);
+		
+		if(useitem_pk.face >= 0 && useitem_pk.face <= 5){
+			//TODO handle block placement better	
+			//TODO per-entity world?
+			if(useitem_pk.block < 256){
+				int x = useitem_pk.x;
+				int y = useitem_pk.y;
+				int z = useitem_pk.z;
+				switch(useitem_pk.face){ //TODO better way
+					case 0:
+						--y;
+						break;
+					case 1:
+						++y;
+						break;
+					case 2:
+						--z;
+						break;
+					case 3:
+						++z;
+						break;
+					case 4:
+						--x;
+						break;
+					case 5:
+						++x;
+						break;
+				}
+				this->server->world->set_block(x, y, z, useitem_pk.block, useitem_pk.meta, 0); //TODO some flag to broadcast block placement(maybe 0b1?)
+			}
+		}
+	} else if(packet_id == RemoveBlockPacket::packet_id){
+		RemoveBlockPacket remove_block_pk;
+		remove_block_pk.deserialize_body(stream);
+		
+		int x = remove_block_pk.x;
+		int y = remove_block_pk.y;
+		int z = remove_block_pk.z;
+		
+		this->server->world->set_block(x, y, z, 0, 0, 0); //TODO some flag to broadcast block placement(maybe 0b1?)
+		
+	} else if (packet_id == ReadyPacket::packet_id) {
         ReadyPacket ready_packet;
         ready_packet.deserialize_body(stream);
         if (ready_packet.status != (uint8_t)ReadyStatusEnum::ready_client_generation) return;
@@ -227,43 +276,9 @@ void RoadRunner::Player::handle_packet(uint8_t packet_id, RakNet::BitStream *str
         ChunkDataPacket chunk_data;
         chunk_data.x = request_chunk.x;
         chunk_data.z = request_chunk.z;
-        chunk_data.chunk = new RoadRunner::world::Chunk(chunk_data.x, chunk_data.z);
-        Perlin perlin;
-        int32_t seed = 0;
+	auto chunk = this->server->world->chunks[(chunk_data.x << 4) | chunk_data.z]; //TODO World::getChunk, nullptr checks?
+        chunk_data.chunk = chunk;
         
-        for (int32_t x = 0; x < 16; ++x) {
-            for (int32_t z = 0; z < 16; ++z) {
-                int32_t y = (int32_t)perlin.perlin(((chunk_data.x << 4) + x), ((chunk_data.z << 4) + z), 10.0 * (float)seed, 1, 1, 1, 0.2, 2) + 62;
-
-
-                int32_t start_point = y;
-                while (y >= 0) {
-                    if (y < 1 && y >= 0) {
-                        chunk_data.chunk->set_block_id(x, y, z, 7);
-                    } else if (y < start_point && y > start_point - 4) {
-                        if (y > 60) {
-                            chunk_data.chunk->set_block_id(x, y, z, 3);
-                        } else {
-                            chunk_data.chunk->set_block_id(x, y, z, 13);
-                        }
-                    } else if (y == start_point) {
-                        if (y > 61) {
-                            chunk_data.chunk->set_block_id(x, y, z, 2);
-                        } else {
-                            chunk_data.chunk->set_block_id(x, y, z, 13);
-                        }
-                    } else {
-                        chunk_data.chunk->set_block_id(x, y, z, 1);
-                    }
-                    --y;
-                }
-                for (int32_t i = 0; i < 63; ++i) {
-                    if (chunk_data.chunk->get_block_id(x, i, z) == 0) {
-                        chunk_data.chunk->set_block_id(x, i, z, 9);
-                    }
-                }
-            }
-        }
         this->send_packet(chunk_data);
     }
 }
