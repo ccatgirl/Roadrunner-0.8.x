@@ -1,6 +1,7 @@
 #include <config.hpp>
 #include <network/packets/send_inventory_packet.hpp>
 #include <network/packets/use_item_packet.hpp>
+#include <network/packets/remove_block_packet.hpp>
 #include <network/packets/add_player_packet.hpp>
 #include <network/packets/animate_packet.hpp>
 #include <network/packets/chat_packet.hpp>
@@ -21,6 +22,7 @@
 
 using RoadRunner::network::packets::SendInventoryPacket;
 using RoadRunner::network::packets::UseItemPacket;
+using RoadRunner::network::packets::RemoveBlockPacket;
 using RoadRunner::network::packets::AddPlayerPacket;
 using RoadRunner::network::packets::AnimatePacket;
 using RoadRunner::network::packets::ChatPacket;
@@ -143,6 +145,16 @@ void RoadRunner::Player::handle_packet(uint8_t packet_id, RakNet::BitStream *str
 				this->server->world->set_block(x, y, z, useitem_pk.block, useitem_pk.meta, 0); //TODO some flag to broadcast block placement(maybe 0b1?)
 			}
 		}
+	} else if(packet_id == RemoveBlockPacket::packet_id){
+		RemoveBlockPacket remove_block_pk;
+		remove_block_pk.deserialize_body(stream);
+		
+		int x = remove_block_pk.x;
+		int y = remove_block_pk.y;
+		int z = remove_block_pk.z;
+		
+		this->server->world->set_block(x, y, z, 0, 0, 0); //TODO some flag to broadcast block placement(maybe 0b1?)
+		
 	} else if (packet_id == ReadyPacket::packet_id) {
         ReadyPacket ready_packet;
         ready_packet.deserialize_body(stream);
