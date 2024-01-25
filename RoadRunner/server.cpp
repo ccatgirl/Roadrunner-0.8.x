@@ -1,13 +1,17 @@
 #include <BitStream.h>
 #include <MessageIdentifiers.h>
 #include <PacketPriority.h>
+#include <RakNetTypes.h>
 #include <network/packets/chat_packet.hpp>
 #include <network/packets/update_block_packet.hpp>
 #include <server.hpp>
 #include "world/perlin.hpp"
+#include "block/block.hpp"
 #include <chrono>
 #include <thread>
 
+
+using RoadRunner::block::Block;
 using RoadRunner::Server;
 using RoadRunner::network::packets::ChatPacket;using RoadRunner::network::packets::UpdateBlockPacket;
 
@@ -55,19 +59,20 @@ Server* Server::INSTANCE;
 Server::Server(uint16_t port, uint32_t max_clients) {
     Server::INSTANCE = this;
 
+    Block::initBlocks();
+
     this->entity_id = 1;
     this->peer = RakNet::RakPeerInterface::GetInstance();
     this->is_running = true;
 	this->world = new RoadRunner::world::World(0); //TODO seed and othet stuff
 	
 	//TODO better gen, move out of here
-	
+    printf("Generating the world\n");
 	for(int index = 0; index < 256; ++index){
 		RoadRunner::world::Perlin perlin;
 		int chunkX = this->world->chunks[index]->x; //TODO nullptr checks?
 		int chunkZ = this->world->chunks[index]->z;
 		RoadRunner::world::Chunk* chunk = this->world->chunks[index];
-		printf("Generating %d-%d\n", chunkX, chunkZ);
 		for (int32_t x = 0; x < 16; ++x) {
             for (int32_t z = 0; z < 16; ++z) {
 				int32_t y = (int32_t)perlin.perlin(((chunkZ << 4) + z), ((chunkX << 4) + x), 10.0 * (float)world->seed, 1, 1, 1, 0.2, 2) + 62;
@@ -103,16 +108,30 @@ Server::Server(uint16_t port, uint32_t max_clients) {
 		}
 	}
 	
+    EntityIDGenerator idGen;
+
     RakNet::Packet *packet;
 
+    printf("Starting the server on port %d...\n", port);
+    
     RakNet::SocketDescriptor sd(port, 0);
-    peer->Startup(max_clients, &sd, 1);
-
-    printf("Starting the server.\n");
+    RakNet::StartupResult result = peer->Startup(max_clients, &sd, 1);
+    switch (result) {
+        case RakNet::RAKNET_STARTED:
+            printf("Started successfully\n");
+            break;
+        case RakNet::SOCKET_PORT_ALREADY_IN_USE:
+            printf("Failed: The port is already in use.\n");
+            goto forceend;
+        default:
+            printf("Failed: %d\n", result);
+            goto forceend;
+    }
+   
 
     peer->SetMaximumIncomingConnections(max_clients);
 	double nextUpdate = 0.0;
-    EntityIDGenerator idGen;
+    
     while (this->is_running) {
         RakNet::RakString data = "MCCPP;MINECON;Test";
         RakNet::BitStream stream;
@@ -171,6 +190,7 @@ Server::Server(uint16_t port, uint32_t max_clients) {
         peer->DeallocatePacket(packet);
     }
 
+    forceend:
     RakNet::RakPeerInterface::DestroyInstance(peer);
 	delete this->world;
 }
