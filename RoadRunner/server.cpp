@@ -1,10 +1,12 @@
 #include <BitStream.h>
 #include <MessageIdentifiers.h>
 #include <PacketPriority.h>
-#include <sys/time.h>
 #include <network/packets/chat_packet.hpp>
 #include <server.hpp>
 #include "world/perlin.hpp"
+#include <chrono>
+#include <thread>
+
 using RoadRunner::Server;
 using RoadRunner::network::packets::ChatPacket;
 
@@ -20,10 +22,10 @@ void Server::post_to_chat(std::string message) {
         ++it;
     }
 }
-double getTimeMS(){
-	struct timeval tv;
-	gettimeofday(&tv, 0);
-	return tv.tv_sec * 1000 + tv.tv_usec / 1000;
+
+unsigned long long int getTimeMS() {
+    using namespace std::chrono;
+    return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 }
 Server::Server(uint16_t port, uint32_t max_clients) {
     this->entity_id = 1;
@@ -89,11 +91,12 @@ Server::Server(uint16_t port, uint32_t max_clients) {
         RakNet::BitStream stream;
         data.Serialize(&stream);
         peer->SetOfflinePingResponse((const char *)stream.GetData(), stream.GetNumberOfBytesUsed());
-	double timeMS = getTimeMS();
+	unsigned long long int timeMS = getTimeMS();
 	if(nextUpdate > timeMS){
-		float skip = (nextUpdate-timeMS)*1000;
+        unsigned long long int skip = (nextUpdate - timeMS);
 		//printf("skipping %f\n", skip/1000);
-		usleep((int)skip);
+		//usleep((int)skip);
+        std::this_thread::sleep_for(std::chrono::milliseconds(skip));
 	}
 	nextUpdate = timeMS+50;
         packet = peer->Receive();
