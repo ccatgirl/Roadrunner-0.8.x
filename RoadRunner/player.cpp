@@ -80,7 +80,6 @@ void RoadRunner::Player::broadcast_except_packet(T &packet) {
 }
 
 void RoadRunner::Player::handle_packet(uint8_t packet_id, RakNet::BitStream *stream) {
-	printf("pid %d\n", packet_id);
     if (packet_id == LoginPacket::packet_id) { //TODO switch
         LoginPacket login;
         login.deserialize_body(stream);
@@ -142,7 +141,7 @@ void RoadRunner::Player::handle_packet(uint8_t packet_id, RakNet::BitStream *str
 						++x;
 						break;
 				}
-				this->server->world->set_block(x, y, z, useitem_pk.block, useitem_pk.meta, 0); //TODO some flag to broadcast block placement(maybe 0b1?)
+				this->server->world->set_block(x, y, z, useitem_pk.block, useitem_pk.meta, 0b00000010); //TODO flag generator?
 			}
 		}
 	} else if(packet_id == RemoveBlockPacket::packet_id){
@@ -153,8 +152,7 @@ void RoadRunner::Player::handle_packet(uint8_t packet_id, RakNet::BitStream *str
 		int y = remove_block_pk.y;
 		int z = remove_block_pk.z;
 		
-		this->server->world->set_block(x, y, z, 0, 0, 0); //TODO some flag to broadcast block placement(maybe 0b1?)
-		
+		this->server->world->set_block(x, y, z, 0, 0, 0b00000010); //TODO flag generator?	
 	} else if (packet_id == ReadyPacket::packet_id) {
         ReadyPacket ready_packet;
         ready_packet.deserialize_body(stream);
@@ -276,7 +274,7 @@ void RoadRunner::Player::handle_packet(uint8_t packet_id, RakNet::BitStream *str
         ChunkDataPacket chunk_data;
         chunk_data.x = request_chunk.x;
         chunk_data.z = request_chunk.z;
-	auto chunk = this->server->world->chunks[(chunk_data.x << 4) | chunk_data.z]; //TODO World::getChunk, nullptr checks?
+        auto chunk = this->server->world->get_chunk(chunk_data.x, chunk_data.z);
         chunk_data.chunk = chunk;
         
         this->send_packet(chunk_data);

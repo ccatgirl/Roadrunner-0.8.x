@@ -2,13 +2,14 @@
 #include <MessageIdentifiers.h>
 #include <PacketPriority.h>
 #include <network/packets/chat_packet.hpp>
+#include <network/packets/update_block_packet.hpp>
 #include <server.hpp>
 #include "world/perlin.hpp"
 #include <chrono>
 #include <thread>
 
 using RoadRunner::Server;
-using RoadRunner::network::packets::ChatPacket;
+using RoadRunner::network::packets::ChatPacket;using RoadRunner::network::packets::UpdateBlockPacket;
 
 void Server::post_to_chat(std::string message) {
     ChatPacket msg;
@@ -23,11 +24,37 @@ void Server::post_to_chat(std::string message) {
     }
 }
 
+void Server::send_block_data(int32_t x, int32_t y, int32_t z, uint8_t blockid, uint8_t meta) {
+    UpdateBlockPacket pk;
+    pk.x = x;
+    pk.y = y & 0xff;
+    pk.z = z;
+    pk.block = blockid;
+    pk.meta = meta;
+
+    //TODO some broadcast packet method?
+    RakNet::BitStream send_stream;
+    send_stream.Write<uint8_t>(pk.packet_id);
+    pk.serialize_body(&send_stream);
+
+    std::map<const RakNet::RakNetGUID, RoadRunner::Player *>::iterator it = this->players.begin();
+    while (it != this->players.end()) {
+        this->peer->Send(&send_stream, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, it->first, false);
+        ++it;
+    }
+
+}
+
 unsigned long long int getTimeMS() {
     using namespace std::chrono;
     return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 }
+
+Server* Server::INSTANCE;
+
 Server::Server(uint16_t port, uint32_t max_clients) {
+    Server::INSTANCE = this;
+
     this->entity_id = 1;
     this->peer = RakNet::RakPeerInterface::GetInstance();
     this->is_running = true;

@@ -19,8 +19,8 @@ constexpr bool IS_CREATIVE = true;
 // Movement
 // The largest number of blocks the player can move at once before being pulled back
 constexpr float MAX_DIST = 5.0;
-// If the player is blocked from going past the world border
-#define WORLD_BORDER true
+// If the player is blocked from going past the world border. 
+#define WORLD_BORDER false
 
 // I will think later where to put this
 constexpr int32_t PROTOCOL = 14;

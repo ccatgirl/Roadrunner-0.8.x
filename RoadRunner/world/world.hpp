@@ -18,9 +18,11 @@ namespace RoadRunner {
 						if(chunks[i]) free(chunks[i]);
 					}
 				}
-				uint8_t get_block_id(uint32_t x, uint32_t y, uint32_t z);
-				uint8_t get_block_meta(uint32_t x, uint32_t y, uint32_t z);
-				void set_block(uint32_t x, uint32_t y, uint32_t z, uint8_t id, uint8_t meta, uint8_t flags);
+
+                Chunk *get_chunk(int32_t x, int32_t z);
+				uint8_t get_block_id(int32_t x, int32_t y, int32_t z);
+				uint8_t get_block_meta(int32_t x, int32_t y, int32_t z);
+				void set_block(int32_t x, int32_t y, int32_t z, uint8_t id, uint8_t meta, uint8_t flags);
 		};
 			
 		
