@@ -80,21 +80,21 @@ Server::Server(uint16_t port, uint32_t max_clients) {
 				int32_t start_point = y;
                 while (y >= 0) {
                     if (y < 1 && y >= 0) {
-                        chunk->set_block_id(x, y, z, 7);
+                        chunk->set_block_id(x, y, z, Block::bedrock->blockID);
                     } else if (y < start_point && y > start_point - 4) {
                         if (y > 60) {
-                            chunk->set_block_id(x, y, z, 3);
+                            chunk->set_block_id(x, y, z, Block::dirt->blockID);
                         } else {
                             chunk->set_block_id(x, y, z, 13);
                         }
                     } else if (y == start_point) {
                         if (y > 61) {
-                        	chunk->set_block_id(x, y, z, 2);
+                        	chunk->set_block_id(x, y, z, Block::grass->blockID);
                         } else {
 							chunk->set_block_id(x, y, z, 13);
                         }
                     } else {
-                        chunk->set_block_id(x, y, z, 1);
+                        chunk->set_block_id(x, y, z, Block::stone->blockID);
                     }
                     --y;
                 }

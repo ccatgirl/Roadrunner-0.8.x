@@ -1,9 +1,10 @@
 #include <world/chunk.hpp>
 #include <cstring>
+
 RoadRunner::world::BlankChunk RoadRunner::world::BlankChunk::blankChunk;
 
 RoadRunner::world::BlankChunk::BlankChunk(): Chunk(0, 0) {
-    memset(this->block_ids, 95, sizeof(this->block_ids)); //invis bedrock
+    memset(this->block_ids, 97, sizeof(this->block_ids)); //invis bedrock
     memset(this->block_metas, 0, sizeof(this->block_metas));
 }
 
