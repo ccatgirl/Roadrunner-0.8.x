@@ -1,6 +1,8 @@
 #include <block/block.hpp>
+#include <block/material/material.hpp>
 #include <cstdio>
 
+using RoadRunner::block::material::Material;
 using RoadRunner::block::Block;
 Block *Block::blocks[256];
 int Block::lightBlock[256];
@@ -20,13 +22,13 @@ Block
     *Block::calmLava,
     *Block::sand,
     *Block::gravel,
+    *Block::leaves,
+    *Block::sponge,
+    *Block::glass,
     *Block::goldOre,
     *Block::ironOre,
     *Block::coalOre,
     *Block::treeTrunk,
-    *Block::leaves,
-    *Block::sponge,
-    *Block::glass,
     *Block::lapisOre,
     *Block::lapisBlock,
     *Block::sandStone,
@@ -87,8 +89,11 @@ Block
     *Block::info_updateGame1,
     *Block::info_updateGame2;
 
-Block::Block(uint8_t blockid) { //TODO Material
+Block::Block(uint8_t blockid, Material* material) { //TODO Material
+
     this->blockID = blockid;
+    this->material = material;
+    //printf("Registering block %d %p\n", blockid, material);
     if (Block::blocks[blockid]) {
         printf("Block %d already exists!\n", blockid); //TODO throw exception maybe?
     }
@@ -105,14 +110,14 @@ void Block::initBlocks() {
     Block::stone = (new StoneBlock(1))->init()->setDestroyTime(1.5f)->setExplodeable(10.0f); //TODO add descriptionID?
     Block::grass = (new GrassBlock(2))->setDestroyTime(0.6f);
     Block::dirt = (new DirtBlock(3))->init()->setDestroyTime(0.5f);
-    Block::cobblestone = (new Block(4))->init()->setDestroyTime(2.0f)->setExplodeable(10.0f);
+    Block::cobblestone = (new Block(4, Material::stone))->init()->setDestroyTime(2.0f)->setExplodeable(10.0f);
     Block::wood = (new WoodBlock(5))->init()->setDestroyTime(2.0f)->setExplodeable(5.0f);
     Block::sapling = (new Sapling(6))->init()->setDestroyTime(0.0f);
-    Block::bedrock = (new Block(7))->init()->setDestroyTime(-1.0f)->setExplodeable(6000000.0f);
-    Block::water = (new LiquidBlock(8))->init()->setDestroyTime(100.0f)->setLightBlock(3);
-    Block::calmWater = (new LiquidBlockStatic(9))->init()->setDestroyTime(100.0f)->setLightBlock(3);
-    Block::lava = (new LiquidBlock(10))->init()->setDestroyTime(0.0f)->setLightEmission(1.0f)->setLightBlock(255);
-    Block::calmLava = (new LiquidBlockStatic(11))->init()->setDestroyTime(0.0f)->setLightEmission(1.0f)->setLightBlock(255);
+    Block::bedrock = (new Block(7, Material::stone))->init()->setDestroyTime(-1.0f)->setExplodeable(6000000.0f);
+    Block::water = (new LiquidBlock(8, Material::water))->init()->setDestroyTime(100.0f)->setLightBlock(3);
+    Block::calmWater = (new LiquidBlockStatic(9, Material::water))->init()->setDestroyTime(100.0f)->setLightBlock(3);
+    Block::lava = (new LiquidBlock(10, Material::lava))->init()->setDestroyTime(0.0f)->setLightEmission(1.0f)->setLightBlock(255);
+    Block::calmLava = (new LiquidBlockStatic(11, Material::lava))->init()->setDestroyTime(0.0f)->setLightEmission(1.0f)->setLightBlock(255);
     Block::sand = (new HeavyBlock(12))->init()->setDestroyTime(0.5f);
     Block::gravel = (new HeavyBlock(13))->init()->setDestroyTime(0.6f);
     Block::goldOre = (new OreBlock(14))->init()->setDestroyTime(3.0f)->setExplodeable(5.0f);
@@ -120,10 +125,10 @@ void Block::initBlocks() {
     Block::coalOre = (new OreBlock(16))->init()->setDestroyTime(3.0f)->setExplodeable(5.0f);
     Block::treeTrunk = (new TreeBlock(17))->init()->setDestroyTime(2.0f);
     Block::leaves = (new LeafBlock(18))->init()->setDestroyTime(0.2f)->setLightBlock(1);
-    Block::sponge = (new Block(19))->init()->setDestroyTime(0.6f);
+    Block::sponge = (new Block(19, Material::sponge))->init()->setDestroyTime(0.6f);
     Block::glass = (new GlassBlock(20))->init()->setDestroyTime(0.3f);
     Block::lapisOre = (new OreBlock(21))->init()->setDestroyTime(3.0f)->setExplodeable(5.0f);
-    Block::lapisBlock = (new Block(22))->init()->setDestroyTime(3.0f)->setExplodeable(5.0f);
+    Block::lapisBlock = (new Block(22, Material::stone))->init()->setDestroyTime(3.0f)->setExplodeable(5.0f);
     //TODO sandstone (24, destroyTime: 0.8f)
     //TODO bed (26)
     //TODO goldenRail (27)
@@ -139,7 +144,7 @@ void Block::initBlocks() {
     //TODO ironBlock (0x2A)
     //TODO stoneSlab (0x2A + 1)
     //TODO stoneSlabHalf (0x2C)
-    Block::redBrick = (new Block(45))->init()->setDestroyTime(2.0f)->setExplodeable(10.0f);
+    Block::redBrick = (new Block(45, Material::stone))->init()->setDestroyTime(2.0f)->setExplodeable(10.0f);
     //TODO tnt (0x2E)
     //TODO bookshelf (47)
     //TODO mossStone (48)
@@ -175,7 +180,7 @@ void Block::initBlocks() {
     //TODO lightGem(glowstone)
     //TODO litPumpkin
     //TODO cake
-    Block::invisible_bedrock = (new Block(95))->init()->setDestroyTime(-1.0f)->setExplodeable(6000000.0f);
+    Block::invisible_bedrock = (new Block(95, Material::stone))->init()->setDestroyTime(-1.0f)->setExplodeable(6000000.0f);
     //TODO trapdoor
     //TODO stoneBrickSmooth
     //TODO ironFence
@@ -207,8 +212,8 @@ void Block::initBlocks() {
     //TODO glowingObsidian
     //TODO netherReactor
 
-    Block::info_updateGame2 = new Block(248);
-    Block::info_updateGame2 = new Block(249);
+    Block::info_updateGame2 = new Block(248, Material::dirt);
+    Block::info_updateGame2 = new Block(249, Material::dirt);
     //TODO info_reserved6
     //TODO fire
 

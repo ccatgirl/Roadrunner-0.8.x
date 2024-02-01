@@ -9,9 +9,10 @@
 #include "block/block.hpp"
 #include <chrono>
 #include <thread>
-
+#include "block/material/material.hpp"
 
 using RoadRunner::block::Block;
+using RoadRunner::block::material::Material;
 using RoadRunner::Server;
 using RoadRunner::network::packets::ChatPacket;using RoadRunner::network::packets::UpdateBlockPacket;
 
@@ -58,6 +59,8 @@ Server* Server::INSTANCE;
 
 Server::Server(uint16_t port, uint32_t max_clients) {
     Server::INSTANCE = this;
+
+    Material::initMaterials();
 
     Block::initBlocks();
 

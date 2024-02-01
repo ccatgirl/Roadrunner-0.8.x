@@ -1,5 +1,8 @@
 #pragma once
 #include <cstdint>
+#include "material/material.hpp"
+
+using RoadRunner::block::material::Material;
 
 namespace RoadRunner {
     namespace block{
@@ -93,8 +96,9 @@ namespace RoadRunner {
             float blockHardness = 0; //TODO check
             float blockResistance = 0; //TODO check
             float slipperiness = 0.6;
+            material::Material* material;
 
-            Block(uint8_t id);
+            Block(uint8_t id, material::Material* material);
             Block* init();
             Block* setDestroyTime(float f){
                 this->blockHardness = f;
@@ -120,41 +124,41 @@ namespace RoadRunner {
 
         class StoneBlock : public Block{
         public:
-            StoneBlock(uint8_t id): Block(id){};
+            StoneBlock(uint8_t id): Block(id, Material::stone){};
         };
 
         class GrassBlock : public Block {
         public:
-            GrassBlock(uint8_t id): Block(id){};
+            GrassBlock(uint8_t id): Block(id, Material::dirt){};
         };
 
         class DirtBlock : public Block {
         public:
-            DirtBlock(uint8_t id): Block(id){};
+            DirtBlock(uint8_t id): Block(id, Material::dirt){};
         };
 
         class WoodBlock : public Block {
         public:
-            WoodBlock(uint8_t id): Block(id){};
+            WoodBlock(uint8_t id): Block(id, Material::wood){};
         };
 
         class Bush : public Block{
         public:
-            Bush(uint8_t id): Block(id){};
+            Bush(uint8_t id): Block(id, Material::plant){};
         };
 
         class LiquidBlock : public Block{
         public:
-            LiquidBlock(uint8_t id): Block(id){};
+            LiquidBlock(uint8_t id, Material* material): Block(id, material){};
         };
         class LiquidBlockStatic : public LiquidBlock{
         public:
-            LiquidBlockStatic(uint8_t id): LiquidBlock(id){};
+            LiquidBlockStatic(uint8_t id, Material* material): LiquidBlock(id, material){};
         };
 
         class HeavyBlock: public Block{
         public:
-            HeavyBlock(uint8_t id): Block(id){};
+            HeavyBlock(uint8_t id): Block(id, Material::sand){};
         };
 
         class Sapling : public Bush{
@@ -164,27 +168,27 @@ namespace RoadRunner {
 
         class OreBlock : public Block{
         public:
-            OreBlock(uint8_t id): Block(id){};
+            OreBlock(uint8_t id): Block(id, Material::stone){};
         };
 
         class RotatedPillarBlock : public Block{
         public:
-            RotatedPillarBlock(uint8_t id): Block(id){};
+            RotatedPillarBlock(uint8_t id, Material* material): Block(id, material){};
         };
 
         class TreeBlock : public RotatedPillarBlock{
         public:
-            TreeBlock(uint8_t id): RotatedPillarBlock(id){};
+            TreeBlock(uint8_t id): RotatedPillarBlock(id, Material::wood){};
         };
 
         class LeafBlock : public Block{
         public:
-            LeafBlock(uint8_t id): Block(id){};
+            LeafBlock(uint8_t id): Block(id, Material::leaves){};
         };
 
         class GlassBlock : public Block{
         public:
-            GlassBlock(uint8_t id): Block(id){};
+            GlassBlock(uint8_t id): Block(id, Material::glass){};
         };
     }
 }
