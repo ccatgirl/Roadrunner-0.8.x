@@ -10,12 +10,14 @@
 #include <chrono>
 #include <thread>
 #include "block/material/material.hpp"
+#include <utils/properties.hpp>
+
 
 using RoadRunner::block::Block;
 using RoadRunner::block::material::Material;
 using RoadRunner::Server;
 using RoadRunner::network::packets::ChatPacket;using RoadRunner::network::packets::UpdateBlockPacket;
-
+using namespace RoadRunner::utils;
 void Server::post_to_chat(std::string message) {
     ChatPacket msg;
     msg.message = message.c_str();
@@ -60,8 +62,20 @@ Server* Server::INSTANCE;
 Server::Server(uint16_t port, uint32_t max_clients) {
     Server::INSTANCE = this;
 
-    Material::initMaterials();
 
+    Property* properties[] = {
+        new ShortProperty("server-port", &port),
+        new UnsignedIntegerProperty("max-clients", &max_clients),
+
+    };
+    size_t sizeProperties = sizeof(properties) / sizeof(properties[0]);
+    Properties props("server.properties", sizeProperties, properties);
+    while(sizeProperties--){
+		delete properties[sizeProperties];
+	}
+
+
+    Material::initMaterials();
     Block::initBlocks();
 
     this->entity_id = 1;
