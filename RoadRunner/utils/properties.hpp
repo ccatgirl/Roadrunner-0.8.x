@@ -11,6 +11,23 @@ namespace RoadRunner{
 			virtual void writeValue(std::ostream& stream) = 0;
 		};
 
+		struct StringProperty : public Property{
+			std::string* value;
+
+			StringProperty(char* name, std::string* value){
+				this->name = name;
+				this->value = value;
+			}
+
+			void setValue(std::string& value){
+				*this->value = value;
+			}
+
+			void writeValue(std::ostream& stream){
+				stream << this->name << ":" << *this->value;
+			}
+		};
+
 		struct ShortProperty : public Property{
 			uint16_t* value;
 
@@ -100,7 +117,6 @@ namespace RoadRunner{
 						while(std::getline(std::getline(in, key, ':'), value)){
 							Property* prop = this->properties[key];
 							if(prop){
-								printf("%p\n", prop);
 								prop->setValue(value);
 							}
 						}

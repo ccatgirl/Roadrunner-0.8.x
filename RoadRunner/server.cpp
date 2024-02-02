@@ -11,7 +11,7 @@
 #include <thread>
 #include "block/material/material.hpp"
 #include <utils/properties.hpp>
-
+#include <config.hpp>
 
 using RoadRunner::block::Block;
 using RoadRunner::block::material::Material;
@@ -66,7 +66,8 @@ Server::Server(uint16_t port, uint32_t max_clients) {
     Property* properties[] = {
         new ShortProperty("server-port", &port),
         new UnsignedIntegerProperty("max-clients", &max_clients),
-
+        new IntegerProperty("world-seed", &SEED),
+        new BooleanProperty("is-creative", &IS_CREATIVE),
     };
     size_t sizeProperties = sizeof(properties) / sizeof(properties[0]);
     Properties props("server.properties", sizeProperties, properties);
@@ -81,7 +82,7 @@ Server::Server(uint16_t port, uint32_t max_clients) {
     this->entity_id = 1;
     this->peer = RakNet::RakPeerInterface::GetInstance();
     this->is_running = true;
-	this->world = new RoadRunner::world::World(0); //TODO seed and othet stuff
+	this->world = new RoadRunner::world::World(SEED);
 	
 	//TODO better gen, move out of here
     printf("Generating the world\n");
