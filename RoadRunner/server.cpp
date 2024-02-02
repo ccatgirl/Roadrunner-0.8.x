@@ -110,9 +110,8 @@ Server::Server(uint16_t port, uint32_t max_clients) {
 			}
 		}
 	}
-	
+	double nextUpdate = 0.0;
     EntityIDGenerator idGen;
-
     RakNet::Packet *packet;
 
     printf("Starting the server on port %d...\n", port);
@@ -133,7 +132,7 @@ Server::Server(uint16_t port, uint32_t max_clients) {
    
 
     peer->SetMaximumIncomingConnections(max_clients);
-	double nextUpdate = 0.0;
+	
     
     while (this->is_running) {
         RakNet::RakString data = "MCCPP;MINECON;Test";
