@@ -83,11 +83,44 @@ Block
     *Block::litPumpkin,
     *Block::cake,
     *Block::invisible_bedrock,
-
-
-
+    *Block::trapdoor,
+    *Block::stoneBrickSmooth,
+    *Block::ironFence,
+    *Block::thinGlass,
+    *Block::melon,
+    *Block::pumpkinStem,
+    *Block::melonStem,
+    *Block::fenceGate,
+    *Block::stairs_brick,
+    *Block::woodStairsDark,
+    *Block::woodStairsBirch,
+    *Block::woodStairsJungle,
+    *Block::netherBrick,
+    *Block::stairs_netherBricks,
+    *Block::activatorRail,
+    *Block::stairs_sandStone,
+    *Block::cobbleWall,
+    *Block::carrots,
+    *Block::potatoes,
+    *Block::quartzBlock,
+    *Block::stairs_quartz,
+    *Block::woodSlab,
+    *Block::woodSlabHalf,
+    *Block::hayBlock,
+    *Block::woolCarpet,
+    *Block::coalBlock,
+    *Block::beetroot,
+    *Block::stonecutterBench,
+    *Block::glowingObsidian,
+    *Block::netherReactor,
     *Block::info_updateGame1,
-    *Block::info_updateGame2;
+    *Block::info_updateGame2,
+    *Block::info_reserved6,
+    *Block::fire;
+
+void Block::onPlace(RoadRunner::world::World*, int32_t x, int32_t y, int32_t z){
+    
+}
 
 Block::Block(uint8_t blockid, Material* material) { //TODO Material
 
@@ -129,8 +162,8 @@ void Block::initBlocks() {
     Block::glass = (new GlassBlock(20))->init()->setDestroyTime(0.3f);
     Block::lapisOre = (new OreBlock(21))->init()->setDestroyTime(3.0f)->setExplodeable(5.0f);
     Block::lapisBlock = (new Block(22, Material::stone))->init()->setDestroyTime(3.0f)->setExplodeable(5.0f);
-    //TODO sandstone (24, destroyTime: 0.8f)
-    //TODO bed (26)
+    Block::sandStone = (new Block(24, Material::stone))->init()->setDestroyTime(0.8f); //in 0.8.1 it has its own class that extends MultiTextureTile, server doesnt really need it i think
+    Block::bed = (new BedBlock(26))->init()->setDestroyTime(0.2f);
     //TODO goldenRail (27)
     //TODO web (30)
     //TODO tallgrass (31)
@@ -147,12 +180,12 @@ void Block::initBlocks() {
     Block::redBrick = (new Block(45, Material::stone))->init()->setDestroyTime(2.0f)->setExplodeable(10.0f);
     //TODO tnt (0x2E)
     //TODO bookshelf (47)
-    //TODO mossStone (48)
-    //TODO obsidian (0x30 + 1)
+    Block::mossStone = (new Block(48, Material::stone))->init()->setDestroyTime(2.0f)->setExplodeable(10.0f);
+    Block::obsidian = (new StoneBlock(49))->init()->setDestroyTime(10.0f)->setExplodeable(2000.0f);
     //TODO torch (50)
     //TODO stairs_wood
     //TODO chest
-    //TODO diamondOre
+    Block::diamondOre = (new OreBlock(56))->init()->setDestroyTime(3.0f)->setExplodeable(5.0f);
     //TODO diamondBlock
     //TODO workBench
     //TODO crops
@@ -176,7 +209,7 @@ void Block::initBlocks() {
     //TODO reeds
     //TODO fence
     //TODO pumpkin
-    //TODO netherrack
+    Block::netherrack = (new Block(87, Material::stone))->init()->setDestroyTime(0.4);
     //TODO lightGem(glowstone)
     //TODO litPumpkin
     //TODO cake
@@ -193,7 +226,7 @@ void Block::initBlocks() {
     //TODO woodStairsDark
     //TODO woodStairsBirch
     //TODO woodStairsJungle
-    //TODO netherBrick
+    Block::netherBrick = (new Block(112, Material::stone))->init()->setDestroyTime(2.0f)->setExplodeable(10.0f);
     //TODO stairs_netherBricks
     //TODO activatorRail it is CakeTile(126) for some reason
     //TODO stairs_sandStone
@@ -211,11 +244,10 @@ void Block::initBlocks() {
     //TODO stonecutterBench
     //TODO glowingObsidian
     //TODO netherReactor
-
-    Block::info_updateGame2 = new Block(248, Material::dirt);
-    Block::info_updateGame2 = new Block(249, Material::dirt);
-    //TODO info_reserved6
-    //TODO fire
+    Block::info_updateGame2 = (new Block(248, Material::dirt))->init()->setDestroyTime(1.0f);
+    Block::info_updateGame2 = (new Block(249, Material::dirt))->init()->setDestroyTime(1.0f);
+    Block::info_reserved6 = (new Block(255, Material::dirt))->init();
+    Block::fire = (new FireBlock(51))->init()->setDestroyTime(0)->setLightEmission(1.0f);
 
     //ItemBlocks are initialized after
 }

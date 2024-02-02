@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 #include "material/material.hpp"
-
+#include <world/world.hpp>
 using RoadRunner::block::material::Material;
 
 namespace RoadRunner {
@@ -83,9 +83,40 @@ namespace RoadRunner {
                 *litPumpkin,
                 *cake,
                 *invisible_bedrock,
-
+                *trapdoor,
+                *stoneBrickSmooth,
+                *ironFence,
+                *thinGlass,
+                *melon,
+                *pumpkinStem,
+                *melonStem,
+                *fenceGate,
+                *stairs_brick,
+                *woodStairsDark,
+                *woodStairsBirch,
+                *woodStairsJungle,
+                *netherBrick,
+                *stairs_netherBricks,
+                *activatorRail,
+                *stairs_sandStone,
+                *cobbleWall,
+                *carrots,
+                *potatoes,
+                *quartzBlock,
+                *stairs_quartz,
+                *woodSlab,
+                *woodSlabHalf,
+                *hayBlock,
+                *woolCarpet,
+                *coalBlock,
+                *beetroot,
+                *stonecutterBench,
+                *glowingObsidian,
+                *netherReactor,
                 *info_updateGame1,
-                *info_updateGame2;
+                *info_updateGame2,
+                *info_reserved6,
+                *fire;
             static Block *blocks[256];
             static int lightBlock[256];
             static int lightEmission[256];
@@ -120,11 +151,17 @@ namespace RoadRunner {
                 Block::lightEmission[this->blockID] = (int)(f * 15);
                 return this;
             }
+            
+            void onPlace(RoadRunner::world::World* world, int32_t x, int32_t y, int32_t z);
+
         };
 
         class StoneBlock : public Block{
         public:
-            StoneBlock(uint8_t id): Block(id, Material::stone){};
+            char unknown;
+            StoneBlock(uint8_t id): Block(id, Material::stone){
+                this->unknown = 0;
+            };
         };
 
         class GrassBlock : public Block {
@@ -189,6 +226,18 @@ namespace RoadRunner {
         class GlassBlock : public Block{
         public:
             GlassBlock(uint8_t id): Block(id, Material::glass){};
+        };
+
+        class FireBlock : public Block{
+        public:
+            FireBlock(uint8_t id): Block(id, Material::fire){};
+        };
+
+        class BedBlock : public Block{
+        public:
+            BedBlock(uint8_t id): Block(id, Material::cloth){
+                
+            };
         };
     }
 }

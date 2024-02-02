@@ -24,7 +24,5 @@ namespace RoadRunner {
 				uint8_t get_block_meta(int32_t x, int32_t y, int32_t z);
 				void set_block(int32_t x, int32_t y, int32_t z, uint8_t id, uint8_t meta, uint8_t flags);
 		};
-			
-		
 	}
 }
