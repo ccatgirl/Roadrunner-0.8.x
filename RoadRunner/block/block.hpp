@@ -126,7 +126,7 @@ namespace RoadRunner {
             uint8_t blockID;
             float blockHardness = 0; //TODO check
             float blockResistance = 0; //TODO check
-            float slipperiness = 0.6;
+            float slipperiness = 0.6f;
             material::Material* material;
 
             Block(uint8_t id, material::Material* material);

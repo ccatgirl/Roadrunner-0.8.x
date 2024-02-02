@@ -5,8 +5,12 @@
 
 RoadRunner::world::World::World(unsigned int seed){
 	this->seed = seed;
+
+	this->biomeSource = new RoadRunner::world::BiomeSource(this);
+
 	for(int32_t i = 0; i < 256; ++i){
-		this->chunks[i] = new RoadRunner::world::Chunk((i & 0xf0) >> 4, i & 0xf);
+		//this->chunks[i] = new RoadRunner::world::Chunk((i & 0xf0) >> 4, i & 0xf);
+
 	}
 }
 

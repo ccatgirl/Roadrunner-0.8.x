@@ -12,12 +12,17 @@
 #include "block/material/material.hpp"
 #include <utils/properties.hpp>
 #include <config.hpp>
-
+#include <utils/mtrandom.hpp>
+#include <world/noise/perlin_noise.hpp>
+#include <world/biome/biome.hpp>
+#include <world/generator/level_source.hpp>
 using RoadRunner::block::Block;
 using RoadRunner::block::material::Material;
 using RoadRunner::Server;
 using RoadRunner::network::packets::ChatPacket;using RoadRunner::network::packets::UpdateBlockPacket;
+using RoadRunner::world::biome::Biome;
 using namespace RoadRunner::utils;
+
 void Server::post_to_chat(std::string message) {
     ChatPacket msg;
     msg.message = message.c_str();
@@ -79,18 +84,27 @@ Server::Server(uint16_t port, uint32_t max_clients) {
     Material::initMaterials();
     Block::initBlocks();
 
+    Biome::initBiomes();
+
     this->entity_id = 1;
     this->peer = RakNet::RakPeerInterface::GetInstance();
     this->is_running = true;
 	this->world = new RoadRunner::world::World(SEED);
 	
 	//TODO better gen, move out of here
+
+    RoadRunner::world::generator::RandomLevelSource* levelSource = new RoadRunner::world::generator::RandomLevelSource(this->world, SEED);
+
     printf("Generating the world\n");
 	for(int index = 0; index < 256; ++index){
-		RoadRunner::world::Perlin perlin;
-		int chunkX = this->world->chunks[index]->x; //TODO nullptr checks?
-		int chunkZ = this->world->chunks[index]->z;
-		RoadRunner::world::Chunk* chunk = this->world->chunks[index];
+
+        this->world->chunks[index] = levelSource->getChunk((index & 0xf0) >> 4, index & 0xf);
+
+		//RoadRunner::world::Perlin perlin;
+		//int chunkX = this->world->chunks[index]->x; //TODO nullptr checks?
+		//int chunkZ = this->world->chunks[index]->z;
+
+		/*RoadRunner::world::Chunk* chunk = this->world->chunks[index];
 		for (int32_t x = 0; x < 16; ++x) {
             for (int32_t z = 0; z < 16; ++z) {
 				int32_t y = (int32_t)perlin.perlin(((chunkZ << 4) + z), ((chunkX << 4) + x), 10.0 * (float)world->seed, 1, 1, 1, 0.2, 2) + 62;
@@ -123,7 +137,7 @@ Server::Server(uint16_t port, uint32_t max_clients) {
                 }
 				
 			}
-		}
+		}*/
 	}
 	double nextUpdate = 0.0;
     EntityIDGenerator idGen;

@@ -10,9 +10,9 @@
 // The seed of the world
 extern int SEED;
 // The spawn position of the player
-constexpr float SPAWN_X = 180.f;
-constexpr float SPAWN_Y = 72.f;
-constexpr float SPAWN_Z = 180.f;
+constexpr float SPAWN_X = 128.f;
+constexpr float SPAWN_Y = 128.f;
+constexpr float SPAWN_Z = 128.f;
 // Game mode
 extern bool IS_CREATIVE;
 
