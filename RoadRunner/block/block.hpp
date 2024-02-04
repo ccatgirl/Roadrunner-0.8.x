@@ -118,6 +118,7 @@ namespace RoadRunner {
                 *info_reserved6,
                 *fire;
             static Block *blocks[256];
+            static bool shouldTick[256];
             static int lightBlock[256];
             static int lightEmission[256];
             static void initBlocks();
@@ -139,6 +140,12 @@ namespace RoadRunner {
 
                 return this;
             };
+
+            Block* setTicking(bool ticking){
+                Block::shouldTick[this->blockID] = ticking;
+                return this;
+            }
+
             Block* setExplodeable(float f){
                 this->blockResistance = f * 3;
                 return this;
@@ -181,7 +188,10 @@ namespace RoadRunner {
 
         class Bush : public Block{
         public:
-            Bush(uint8_t id): Block(id, Material::plant){};
+            Bush(uint8_t id): Bush(id, Material::plant){};
+            Bush(uint8_t id, Material* mat): Block(id, mat){
+                this->setTicking(true);
+            };
         };
 
         class LiquidBlock : public Block{
@@ -238,6 +248,46 @@ namespace RoadRunner {
             BedBlock(uint8_t id): Block(id, Material::cloth){
                 
             };
+        };
+
+        class Mushroom : public Block{
+        public:
+            Mushroom(uint8_t id): Block(id, Material::plant){}
+        };
+
+        class MetalBlock : public Block{
+        public:
+            MetalBlock(uint8_t id): Block(id, Material::metal){}
+        };
+
+        class TntBlock : public Block{
+        public:
+            TntBlock(uint8_t id): Block(id, Material::explosive){}
+        };
+
+        class WebBlock : public Block{
+        public:
+            WebBlock(uint8_t id): Block(id, Material::web){}
+        };
+
+        class TallGrass : public Bush{
+        public:
+            TallGrass(uint8_t id): Bush(id, Material::replaceable_plant){}
+        };
+
+        class DeadBush: public Bush{
+        public:
+            DeadBush(uint8_t id): Bush(id, Material::replaceable_plant){}
+        };
+
+        class ClothBlock: public Block{
+        public:
+            ClothBlock(uint8_t id): Block(id, Material::cloth){}
+        };
+
+        class FlowerBlock: public Bush{
+        public:
+            FlowerBlock(uint8_t id): Bush(id){}
         };
     }
 }

@@ -141,7 +141,10 @@ void RoadRunner::Player::handle_packet(uint8_t packet_id, RakNet::BitStream *str
 						++x;
 						break;
 				}
-				this->server->world->set_block(x, y, z, useitem_pk.block, useitem_pk.meta, 0b00000010); //TODO flag generator?
+                if(!this->server->world->get_block_id(x, y, z)) this->server->world->set_block(x, y, z, useitem_pk.block, useitem_pk.meta, 0b00000010); //TODO flag generator?
+                else{
+                    //TODO check is block replaceable maybe?
+                }
 			}
 		}
 	} else if(packet_id == RemoveBlockPacket::packet_id){

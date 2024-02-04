@@ -7,7 +7,7 @@ using RoadRunner::block::Block;
 Block *Block::blocks[256];
 int Block::lightBlock[256];
 int Block::lightEmission[256];
-
+bool Block::shouldTick[256];
 Block 
     *Block::stone,
     *Block::grass,
@@ -165,20 +165,20 @@ void Block::initBlocks() {
     Block::sandStone = (new Block(24, Material::stone))->init()->setDestroyTime(0.8f); //in 0.8.1 it has its own class that extends MultiTextureTile, server doesnt really need it i think
     Block::bed = (new BedBlock(26))->init()->setDestroyTime(0.2f);
     //TODO goldenRail (27)
-    //TODO web (30)
-    //TODO tallgrass (31)
-    //TODO deadBush (32)
-    //TODO cloth(wool) (0x20 + 3)
-    //TODO flower(dandelion) 37
-    //TODO rose(blue rose) 38
-    //TODO mushroom1(brown) 39
-    //TODO mushroom2(red) 40
-    //TODO goldBlock (0x28 + 1)
-    //TODO ironBlock (0x2A)
-    //TODO stoneSlab (0x2A + 1)
+    Block::web = (new WebBlock(30))->init()->setLightBlock(1)->setDestroyTime(4.0f);
+    Block::tallgrass = (new TallGrass(31))->init()->setDestroyTime(0.0f);
+    Block::deadBush = (new DeadBush(32))->init()->setDestroyTime(0.0f);
+    Block::cloth = (new ClothBlock(35))->init()->setDestroyTime(0.8f);
+    Block::flower = (new FlowerBlock(37))->init()->setDestroyTime(0.0f);
+    Block::rose = (new FlowerBlock(38))->init()->setDestroyTime(0.0f);
+    Block::mushroom1 = (new Mushroom(39))->init()->setDestroyTime(0.0f);
+    Block::mushroom2 = (new Mushroom(40))->init()->setDestroyTime(0.0f);
+    Block::goldBlock = (new MetalBlock(41))->init()->setDestroyTime(3.0f)->setExplodeable(10.0f);
+    Block::ironBlock = (new MetalBlock(42))->init()->setDestroyTime(5.0f)->setExplodeable(10.0f);
+    //TODO stoneSlab (43)
     //TODO stoneSlabHalf (0x2C)
     Block::redBrick = (new Block(45, Material::stone))->init()->setDestroyTime(2.0f)->setExplodeable(10.0f);
-    //TODO tnt (0x2E)
+    Block::tnt = (new TntBlock(46))->init()->setDestroyTime(0.0f);
     //TODO bookshelf (47)
     Block::mossStone = (new Block(48, Material::stone))->init()->setDestroyTime(2.0f)->setExplodeable(10.0f);
     Block::obsidian = (new StoneBlock(49))->init()->setDestroyTime(10.0f)->setExplodeable(2000.0f);

@@ -24,7 +24,8 @@ namespace RoadRunner {
             int32_t z;
             uint8_t block_ids[32768];
             uint8_t block_metas[16384];
-            //TODO skylight, blocklight (both 16384)
+            uint8_t skylight[16384]; //not send to a client, but will be useful later
+            uint8_t blocklight[16384];
 
             Chunk(int32_t x, int32_t z);
 

@@ -16,6 +16,7 @@ RandomLevelSource::RandomLevelSource(RoadRunner::world::World* world, int32_t se
 	this->depthNoise = new PerlinNoise(this->rand, 16);
 	this->treeNoise = new PerlinNoise(this->rand, 8);
 }
+
 RoadRunner::world::Chunk* RandomLevelSource::getChunk(int32_t chunkX, int32_t chunkZ){
 	this->rand->setSeed((int)(341872712 * chunkX + 132899541 * chunkZ));
 	uint8_t* bArr = new uint8_t[32768];
@@ -32,6 +33,7 @@ RoadRunner::world::Chunk* RandomLevelSource::getChunk(int32_t chunkX, int32_t ch
 	//TODO c.generateHeightMap();
 	return c;
 }
+
 void RandomLevelSource::buildSurfaces(int32_t chunkX, int32_t chunkZ, uint8_t* blockIDS, Biome** biomes){
 	this->sandNoises = this->beachNoise->getRegion(this->sandNoises, chunkX * 16, chunkZ * 16, 0.0f, 16, 16, 1, 0.03125f, 0.03125f, 1);
 	this->gravelNoises = this->beachNoise->getRegion(this->gravelNoises, chunkX * 16, 109.01f, chunkZ * 16, 16, 1, 16, 0.03125f, 1, 0.03125f);

@@ -19,24 +19,24 @@ namespace RoadRunner{
 			PerlinNoise* rainfallNoise;
 			PerlinNoise* detailNoise;
 
-			float* temperatureNoises;
-			float* rainfallNoises;
-			float* detailNoises;
+			float* temperatureNoises = 0;
+			float* rainfallNoises = 0;
+			float* detailNoises = 0;
 
 			BiomeSource(RoadRunner::world::World* world);
 
 			Biome* getBiome(int32_t x, int32_t z){
-				return getBiomeBlock(x, z, 1, 1)[0]; //TODO might be unsafe
+				Biome** arr = getBiomeBlock(x, z, 1, 1);
+				Biome* ret = arr[0];
+				delete[] arr;
+				return ret;
 			}
+
 			//TODO public float[] getTemperatureBlock(int x, int z, int xSize, int zSize) { for postProcess
 			Biome** getBiomeBlock(int32_t x, int32_t z, int32_t xSize, int32_t zSize){
-				//if(this->temperatureNoises) delete[] this->temperatureNoises;
-				//if(this->rainfallNoises) delete[] this->rainfallNoises;
-				//if(this->detailNoises) delete[] this->detailNoises;
-
-				this->temperatureNoises = this->temperatureNoise->getRegion(0, x, z, xSize, zSize, 0.025f, 0.025f, 0.25f);
-				this->rainfallNoises = this->rainfallNoise->getRegion(0, x, z, xSize, zSize, 0.05f, 0.05f, 0.3333f);
-				this->detailNoises = this->detailNoise->getRegion(0, x, z, xSize, zSize, 0.25f, 0.25f, 0.588f);
+				this->temperatureNoises = this->temperatureNoise->getRegion(this->temperatureNoises, x, z, xSize, zSize, 0.025f, 0.025f, 0.25f);
+				this->rainfallNoises = this->rainfallNoise->getRegion(this->rainfallNoises, x, z, xSize, zSize, 0.05f, 0.05f, 0.3333f);
+				this->detailNoises = this->detailNoise->getRegion(this->detailNoises, x, z, xSize, zSize, 0.25f, 0.25f, 0.588f);
 
 				Biome** localBiomeArray = new Biome*[xSize * zSize];
 				int index = 0;
@@ -79,6 +79,9 @@ namespace RoadRunner{
 				delete this->detailNoise;
 
 				//TODO remove arrays?
+				if(this->temperatureNoises) delete[] this->temperatureNoises;
+				if(this->rainfallNoises) delete[] this->rainfallNoises;
+				if(this->detailNoises) delete[] this->detailNoises;
 			}
 		};	
 	}
