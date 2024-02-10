@@ -186,10 +186,10 @@ void Block::initBlocks() {
     //TODO stairs_wood
     //TODO chest
     Block::diamondOre = (new OreBlock(56))->init()->setDestroyTime(3.0f)->setExplodeable(5.0f);
-    //TODO diamondBlock
+    Block::diamondBlock = (new MetalBlock(57))->init()->setDestroyTime(5.0f)->setExplodeable(10.0f);
     //TODO workBench
-    //TODO crops
-    //TODO farmland
+    Block::crops = (new CropBlock(59))->init()->setDestroyTime(0.0f);
+    Block::farmland = (new FarmBlock(60))->init()->setDestroyTime(0.6f);
     //TODO furnace
     //TODO furnace_lit
     //TODO sign
@@ -205,8 +205,8 @@ void Block::initBlocks() {
     //TODO ice
     //TODO snow
     //TODO cactus
-    //TODO clay
-    //TODO reeds
+    Block::clay = (new ClayBlock(82))->init()->setDestroyTime(0.6f);
+    Block::reeds = (new ReedBlock(83))->init()->setDestroyTime(0.0f);
     //TODO fence
     //TODO pumpkin
     Block::netherrack = (new Block(87, Material::stone))->init()->setDestroyTime(0.4);

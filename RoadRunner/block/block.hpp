@@ -289,5 +289,28 @@ namespace RoadRunner {
         public:
             FlowerBlock(uint8_t id): Bush(id){}
         };
+
+        class CropBlock : public Bush{
+        public:
+            CropBlock(uint8_t id): Bush(id){}
+        };
+
+        class FarmBlock : public Block{
+        public:
+            FarmBlock(uint8_t id): Block(id, Material::dirt){}
+        };
+
+        class ClayBlock : public Block{
+        public:
+            ClayBlock(uint8_t id): Block(id, Material::clay){}
+        };
+
+        class ReedBlock : public Block{
+        public:
+            ReedBlock(uint8_t id): Block(id, Material::plant){
+                //Tile::setShape(v434, 0.125, 0.0, 0.125, 0.875, 1.0, 0.875); TODO shape
+                this->setTicking(true);
+            }
+        };
     }
 }

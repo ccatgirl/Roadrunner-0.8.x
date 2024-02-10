@@ -66,13 +66,15 @@ Server* Server::INSTANCE;
 
 Server::Server(uint16_t port, uint32_t max_clients) {
     Server::INSTANCE = this;
-
-
+    bool enableTPSFix = false;
+    unsigned long long int nextTPSMeasure = 0;
+    double tpsTotal = 0;
     Property* properties[] = {
         new ShortProperty("server-port", &port),
         new UnsignedIntegerProperty("max-clients", &max_clients),
         new IntegerProperty("world-seed", &SEED),
         new BooleanProperty("is-creative", &IS_CREATIVE),
+        new BooleanProperty("windows-tps-fix", &enableTPSFix)
     };
     size_t sizeProperties = sizeof(properties) / sizeof(properties[0]);
     Properties props("server.properties", sizeProperties, properties);
@@ -168,14 +170,34 @@ Server::Server(uint16_t port, uint32_t max_clients) {
         RakNet::BitStream stream;
         data.Serialize(&stream);
         peer->SetOfflinePingResponse((const char *)stream.GetData(), stream.GetNumberOfBytesUsed());
-	unsigned long long int timeMS = getTimeMS();
-	if(nextUpdate > timeMS){
-        unsigned long long int skip = (nextUpdate - timeMS);
-		//printf("skipping %f\n", skip/1000);
-		//usleep((int)skip);
-        std::this_thread::sleep_for(std::chrono::milliseconds(skip));
-	}
-	nextUpdate = timeMS+50;
+
+	    unsigned long long int timeMS = getTimeMS();
+	    if(nextUpdate > timeMS){
+            unsigned long long int skip = (nextUpdate - timeMS);
+		    //printf("TIME: %u(%u) skipping %ul\n", (int)timeMS/1000, timeMS, skip);
+		    //usleep((int)skip);
+            if(enableTPSFix){
+                if(skip >= 15){
+                    std::this_thread::sleep_for(std::chrono::milliseconds(15)); 
+                }
+                continue;
+            }else{
+                std::this_thread::sleep_for(std::chrono::milliseconds(skip));
+            }
+            
+	    }
+	    nextUpdate = timeMS+50;
+        if(nextTPSMeasure < timeMS){
+            
+            printf("Average TPS(5 sec): %f\n", tpsTotal/(double)((timeMS-(nextTPSMeasure-5000))/1000));
+            tpsTotal = 0;
+            nextTPSMeasure = timeMS+5000;
+        }
+
+        ++tpsTotal;
+
+        this->world->tick();
+
         packet = peer->Receive();
         if (!packet) continue;
 	
