@@ -6,19 +6,13 @@
 namespace RoadRunner {
     class Server;
 
-    class EntityIDGenerator {
-        std::vector<int32_t> free_ids = {};
-        int32_t count = 0;
-
-    public:
-        int32_t alloc();
-        void free(int32_t id);
-    };
-
     class Entity {
+
+    private:
+        static int entityCounter;
+
     public:
         RoadRunner::Server *server;
-        EntityIDGenerator *idGenerator;
 
         float x = 0;
         float y = 0;
@@ -27,13 +21,15 @@ namespace RoadRunner {
         float pitch = 0;
         int32_t entity_id = 0;
 
-        Entity(Server *server, EntityIDGenerator *idGenerator)
-            : server(server), idGenerator(idGenerator) {
-            entity_id = idGenerator->alloc();
-        }
+        float fallDistance = 0;
+
+        int health = 0;
+        int fire = 0;
+
+        Entity(Server *server);
 
         ~Entity() {
-            idGenerator->free(entity_id);
+            
         }
     };
 }

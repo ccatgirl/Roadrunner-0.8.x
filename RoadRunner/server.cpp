@@ -35,6 +35,13 @@ void Server::post_to_chat(std::string message) {
         ++it;
     }
 }
+void Server::addEntity(RoadRunner::Entity* entity){
+    this->entities.push_back(entity);
+}
+
+void Server::removeEntity(RoadRunner::Entity* entity){
+    this->entities[entity->entity_id] = 0;
+}
 
 void Server::send_block_data(int32_t x, int32_t y, int32_t z, uint8_t blockid, uint8_t meta) {
     UpdateBlockPacket pk;
@@ -72,7 +79,7 @@ Server::Server(uint16_t port, uint32_t max_clients) {
     Property* properties[] = {
         new ShortProperty("server-port", &port),
         new UnsignedIntegerProperty("max-clients", &max_clients),
-        new IntegerProperty("world-seed", &SEED),
+        new StringProperty("world-seed", &SEEDPROP),
         new BooleanProperty("is-creative", &IS_CREATIVE),
         new BooleanProperty("windows-tps-fix", &enableTPSFix)
     };
@@ -82,6 +89,19 @@ Server::Server(uint16_t port, uint32_t max_clients) {
 		delete properties[sizeProperties];
 	}
 
+    int attempt = atoi(SEEDPROP.c_str()); //std::stoi is way too safe
+    if(attempt){ //seed is numeric, use it(except 0)
+        SEED = attempt;
+    }else if(SEEDPROP[0] == '0' && SEEDPROP.length() == 1){ //seed is 0, use time since epoch in seconds as seed(vanilla)
+        std::time_t result = std::time(0);
+        SEED = result;
+    }else{
+        //TODO move to Utils::hashCode?
+        SEED = 0;
+        for(int j = 0; j < SEEDPROP.length(); ++j){
+            SEED = SEED * 31 + SEEDPROP[j];
+        }
+    }
 
     Material::initMaterials();
     Block::initBlocks();
@@ -97,52 +117,11 @@ Server::Server(uint16_t port, uint32_t max_clients) {
 
     RoadRunner::world::generator::RandomLevelSource* levelSource = new RoadRunner::world::generator::RandomLevelSource(this->world, SEED);
 
-    printf("Generating the world\n");
+    printf("Generating the world(%d)\n", SEED);
 	for(int index = 0; index < 256; ++index){
-
         this->world->chunks[index] = levelSource->getChunk((index & 0xf0) >> 4, index & 0xf);
-
-		//RoadRunner::world::Perlin perlin;
-		//int chunkX = this->world->chunks[index]->x; //TODO nullptr checks?
-		//int chunkZ = this->world->chunks[index]->z;
-
-		/*RoadRunner::world::Chunk* chunk = this->world->chunks[index];
-		for (int32_t x = 0; x < 16; ++x) {
-            for (int32_t z = 0; z < 16; ++z) {
-				int32_t y = (int32_t)perlin.perlin(((chunkZ << 4) + z), ((chunkX << 4) + x), 10.0 * (float)world->seed, 1, 1, 1, 0.2, 2) + 62;
-				
-				int32_t start_point = y;
-                while (y >= 0) {
-                    if (y < 1 && y >= 0) {
-                        chunk->set_block_id(x, y, z, Block::bedrock->blockID);
-                    } else if (y < start_point && y > start_point - 4) {
-                        if (y > 60) {
-                            chunk->set_block_id(x, y, z, Block::dirt->blockID);
-                        } else {
-                            chunk->set_block_id(x, y, z, 13);
-                        }
-                    } else if (y == start_point) {
-                        if (y > 61) {
-                        	chunk->set_block_id(x, y, z, Block::grass->blockID);
-                        } else {
-							chunk->set_block_id(x, y, z, 13);
-                        }
-                    } else {
-                        chunk->set_block_id(x, y, z, Block::stone->blockID);
-                    }
-                    --y;
-                }
-                for (int32_t i = 0; i < 63; ++i) {
-                    if (chunk->get_block_id(x, i, z) == 0) {
-                        chunk->set_block_id(x, i, z, 9);
-                    }
-                }
-				
-			}
-		}*/
 	}
 	double nextUpdate = 0.0;
-    EntityIDGenerator idGen;
     RakNet::Packet *packet;
 
     printf("Starting the server on port %d...\n", port);
@@ -196,51 +175,46 @@ Server::Server(uint16_t port, uint32_t max_clients) {
 
         ++tpsTotal;
 
+
+        //tick entities in world
         this->world->tick();
 
-        packet = peer->Receive();
-        if (!packet) continue;
-	
-        if (packet->bitSize != 0) {
-            RakNet::BitStream receive_stream(packet->data, BITS_TO_BYTES(packet->bitSize), false);
+        while(packet = peer->Receive()){
+            if (packet->bitSize != 0) {
+                RakNet::BitStream receive_stream(packet->data, BITS_TO_BYTES(packet->bitSize), false);
 
-            uint8_t packet_id;
-            receive_stream.Read<uint8_t>(packet_id);
+                uint8_t packet_id;
+                receive_stream.Read<uint8_t>(packet_id);
 
-            switch (packet_id) {
-            case ID_NEW_INCOMING_CONNECTION:
-                printf("A new connection is incoming.\n");
-                if (this->players.count(packet->guid) == 0) {
-                    RoadRunner::Player *player = new RoadRunner::Player(this, &idGen);
-                    player->guid = packet->guid;
-                    if (this->reuseable_entity_ids.size()) {
-                        player->entity_id = this->reuseable_entity_ids.back();
-                        this->reuseable_entity_ids.pop_back();
-                    } else {
-                        player->entity_id = this->entity_id++;
+                switch (packet_id) {
+                case ID_NEW_INCOMING_CONNECTION:
+                    printf("A new connection is incoming.\n");
+                    if (this->players.count(packet->guid) == 0) {
+                        RoadRunner::Player *player = new RoadRunner::Player(this);
+                        player->guid = packet->guid;
+                        this->players[packet->guid] = player;
                     }
-                    this->players[packet->guid] = player;
+                    break;
+                case ID_NO_FREE_INCOMING_CONNECTIONS:
+                    printf("The server is full.\n");
+                    break;
+                case ID_DISCONNECTION_NOTIFICATION:
+                case ID_CONNECTION_LOST:
+                    printf("A client lost the connection.\n");
+                    if (this->players.count(packet->guid) != 0) {
+                        delete this->players[packet->guid];
+                        this->players.erase(packet->guid);
+                    }
+                    break;
+                default:
+                    if (this->players.count(packet->guid) != 0) {
+                        this->players[packet->guid]->handle_packet(packet_id, &receive_stream);
+                    }
+                    break;
                 }
-                break;
-            case ID_NO_FREE_INCOMING_CONNECTIONS:
-                printf("The server is full.\n");
-                break;
-            case ID_DISCONNECTION_NOTIFICATION:
-            case ID_CONNECTION_LOST:
-                printf("A client lost the connection.\n");
-                if (this->players.count(packet->guid) != 0) {
-                    delete this->players[packet->guid];
-                    this->players.erase(packet->guid);
-                }
-                break;
-            default:
-                if (this->players.count(packet->guid) != 0) {
-                    this->players[packet->guid]->handle_packet(packet_id, &receive_stream);
-                }
-                break;
             }
+            peer->DeallocatePacket(packet);
         }
-        peer->DeallocatePacket(packet);
     }
 
     forceend:

@@ -55,9 +55,9 @@ void RoadRunner::Player::broadcast_packet(T &packet) {
     RakNet::BitStream send_stream;
     send_stream.Write<uint8_t>(packet.packet_id);
     packet.serialize_body(&send_stream);
-    std::map<const RakNet::RakNetGUID, RoadRunner::Player *>::iterator it = this->server->players.begin();
-    while (it != this->server->players.end()) {
-        this->server->peer->Send(&send_stream, IMMEDIATE_PRIORITY, RELIABLE_ORDERED, 0, it->first, false);
+    std::map<const RakNet::RakNetGUID, RoadRunner::Player *>::iterator it = Server::INSTANCE->players.begin();
+    while (it != Server::INSTANCE->players.end()) {
+        Server::INSTANCE->peer->Send(&send_stream, IMMEDIATE_PRIORITY, RELIABLE_ORDERED, 0, it->first, false);
         ++it;
     }
 }
@@ -201,12 +201,12 @@ void RoadRunner::Player::handle_packet(uint8_t packet_id, RakNet::BitStream *str
         printf("[CHAT]: %s\n", formatted.c_str());
         // Send
         msg.message = msg.message.C_String();
-        this->broadcast_packet(msg);
+        Player::broadcast_packet(msg);
     } else if (packet_id == AnimatePacket::packet_id) {
         AnimatePacket animate;
         animate.deserialize_body(stream);
         animate.entity_id = this->entity_id;
-        this->broadcast_packet(animate);
+        Player::broadcast_packet(animate);
     } else if (packet_id == PlayerEquipmentPacket::packet_id) {
         // TODO: Check validity of item
         PlayerEquipmentPacket player_equipment;
@@ -257,7 +257,7 @@ void RoadRunner::Player::handle_packet(uint8_t packet_id, RakNet::BitStream *str
         if (valid) {
             this->broadcast_except_packet(move_player);
         } else {
-            this->broadcast_packet(move_player);
+            Player::broadcast_packet(move_player);
         }
         // Update pos
         this->x = move_player.x;
@@ -289,7 +289,7 @@ RoadRunner::Player::~Player() {
     RemovePlayerPacket rm_player;
     rm_player.entity_id = this->entity_id;
     rm_player.client_guid = 0;
-    this->broadcast_packet(rm_player);
+    Player::broadcast_packet(rm_player);
     // Log/chat
     std::string msg = this->username + " has left the game";
     puts(msg.c_str());

@@ -51,7 +51,7 @@ void RoadRunner::world::World::tick(){
 	//tickPendingTiles
 	//tickTiles
 	
-	//entities next probably?
+	//send entity data
 }
 uint8_t RoadRunner::world::World::get_block_id(int32_t x, int32_t y, int32_t z) {
 	int chunkX = x / 16;

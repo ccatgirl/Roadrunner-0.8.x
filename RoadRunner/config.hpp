@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 
 // Meta
 #define MAX_CLIENTS 10
@@ -9,6 +10,7 @@
 // World
 // The seed of the world
 extern int SEED;
+extern std::string SEEDPROP;
 // The spawn position of the player
 constexpr float SPAWN_X = 128.f;
 constexpr float SPAWN_Y = 128.f;
