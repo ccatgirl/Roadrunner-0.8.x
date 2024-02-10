@@ -183,8 +183,8 @@ Server::Server(uint16_t port, uint32_t max_clients) {
                 continue;
             }else{
                 std::this_thread::sleep_for(std::chrono::milliseconds(skip));
+                continue;
             }
-            
 	    }
 	    nextUpdate = timeMS+50;
         if(nextTPSMeasure < timeMS){
