@@ -294,6 +294,9 @@ RoadRunner::Player::~Player() {
     std::string msg = this->username + " has left the game";
     puts(msg.c_str());
     this->server->post_to_chat(msg.c_str());
+
+    delete this->gamemode;
+
     // Call superclass deconstructor
     Entity::~Entity();
 }
