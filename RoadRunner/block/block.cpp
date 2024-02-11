@@ -209,7 +209,7 @@ void Block::initBlocks() {
     Block::reeds = (new ReedBlock(83))->init()->setDestroyTime(0.0f);
     //TODO fence
     //TODO pumpkin
-    Block::netherrack = (new Block(87, Material::stone))->init()->setDestroyTime(0.4);
+    Block::netherrack = (new Block(87, Material::stone))->init()->setDestroyTime(0.4f);
     //TODO lightGem(glowstone)
     //TODO litPumpkin
     //TODO cake

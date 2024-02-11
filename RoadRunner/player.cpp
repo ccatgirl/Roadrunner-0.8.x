@@ -154,8 +154,8 @@ void RoadRunner::Player::handle_packet(uint8_t packet_id, RakNet::BitStream *str
 		int x = remove_block_pk.x;
 		int y = remove_block_pk.y;
 		int z = remove_block_pk.z;
-		
-		this->server->world->set_block(x, y, z, 0, 0, 0b00000010); //TODO flag generator?	
+		this->gamemode->destroyBlock(x, y, z, 0);
+		//this->server->world->set_block(x, y, z, 0, 0, 0b00000010); //TODO flag generator?	
 	} else if (packet_id == ReadyPacket::packet_id) {
         ReadyPacket ready_packet;
         ready_packet.deserialize_body(stream);

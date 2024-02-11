@@ -2,6 +2,8 @@
 #include <cstdint>
 #include "material/material.hpp"
 #include <world/world.hpp>
+#include <player.hpp>
+
 using RoadRunner::block::material::Material;
 
 namespace RoadRunner {
@@ -160,6 +162,7 @@ namespace RoadRunner {
             }
             
             void onPlace(RoadRunner::world::World* world, int32_t x, int32_t y, int32_t z);
+            void playerWillDestroy(RoadRunner::world::World* world, int32_t x, int32_t y, int32_t z, int32_t meta, RoadRunner::Player* player){}; //used only by door
 
         };
 

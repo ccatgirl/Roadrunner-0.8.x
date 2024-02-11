@@ -36,11 +36,11 @@ void Server::post_to_chat(std::string message) {
     }
 }
 void Server::addEntity(RoadRunner::Entity* entity){
-    this->entities.push_back(entity);
+    this->entities[entity->entity_id] = entity;
 }
 
 void Server::removeEntity(RoadRunner::Entity* entity){
-    this->entities[entity->entity_id] = 0;
+    this->entities.erase(entity->entity_id);
 }
 
 void Server::send_block_data(int32_t x, int32_t y, int32_t z, uint8_t blockid, uint8_t meta) {
@@ -64,7 +64,7 @@ void Server::send_block_data(int32_t x, int32_t y, int32_t z, uint8_t blockid, u
 
 }
 
-unsigned long long int getTimeMS() {
+uint64_t getTimeMS() {
     using namespace std::chrono;
     return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 }
@@ -74,7 +74,7 @@ Server* Server::INSTANCE;
 Server::Server(uint16_t port, uint32_t max_clients) {
     Server::INSTANCE = this;
     bool enableTPSFix = false;
-    unsigned long long int nextTPSMeasure = 0;
+    uint64_t nextTPSMeasure = 0;
     double tpsTotal = 0;
     Property* properties[] = {
         new ShortProperty("server-port", &port),
@@ -152,7 +152,7 @@ Server::Server(uint16_t port, uint32_t max_clients) {
 
 	    unsigned long long int timeMS = getTimeMS();
 	    if(nextUpdate > timeMS){
-            unsigned long long int skip = (nextUpdate - timeMS);
+            uint64_t skip = (uint64_t) (nextUpdate - timeMS);
 		    //printf("TIME: %u(%u) skipping %ul\n", (int)timeMS/1000, timeMS, skip);
 		    //usleep((int)skip);
             if(enableTPSFix){
@@ -165,7 +165,7 @@ Server::Server(uint16_t port, uint32_t max_clients) {
                 continue;
             }
 	    }
-	    nextUpdate = timeMS+50;
+	    nextUpdate = (double)timeMS+50;
         if(nextTPSMeasure < timeMS){
             
             printf("Average TPS(5 sec): %f\n", tpsTotal/(double)((timeMS-(nextTPSMeasure-5000))/1000));

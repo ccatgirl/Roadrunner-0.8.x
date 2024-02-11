@@ -15,9 +15,8 @@ namespace RoadRunner {
         bool is_running;
         RakNet::RakPeerInterface *peer;
         std::map<RakNet::RakNetGUID, RoadRunner::Player *> players;
-        std::vector<RoadRunner::Entity*> entities;
+        std::map<int, RoadRunner::Entity*> entities;
         int32_t entity_id;
-        std::vector<int32_t> reuseable_entity_ids; //TODO 0.8.1 might have problems when readding previously removed entity
         RoadRunner::world::World* world;
 
         Server(uint16_t port, uint32_t max_clients);

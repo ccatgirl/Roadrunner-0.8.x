@@ -6,6 +6,7 @@
 #include <config.hpp>
 #include <entity.hpp>
 #include <server.hpp>
+#include <gamemode.hpp>
 
 namespace RoadRunner {
     class Server;
@@ -14,7 +15,7 @@ namespace RoadRunner {
     public:
         RakNet::RakNetGUID guid;
         std::string username = "???";
-
+        RoadRunner::GameMode* gamemode;
         template <typename T>
         void send_packet(T &packet);
         template <typename T>
@@ -24,7 +25,10 @@ namespace RoadRunner {
 
         void handle_packet(uint8_t packet_id, RakNet::BitStream *stream);
 
-        Player(Server *server): Entity(server) {}
+        Player(Server *server): Entity(server) {
+            if(IS_CREATIVE) this->gamemode = new CreativeMode(this);
+            else this->gamemode = new SurvivalMode(this);
+        }
 
         ~Player();
     };
