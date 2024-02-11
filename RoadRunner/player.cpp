@@ -90,17 +90,21 @@ void RoadRunner::Player::handle_packet(uint8_t packet_id, RakNet::BitStream *str
 
         // Continue the login sequence
         LoginStatusPacket login_status;
-        if (login.protocol_1 != PROTOCOL) {
-            if (login.protocol_1 < PROTOCOL) {
-                login_status.status = (int32_t)LoginStatusEnum::outdated_client;
-            } else if (login.protocol_1 > PROTOCOL) {
-                login_status.status = (int32_t)LoginStatusEnum::outdated_server;
-            }
-        } else {
+
+        if (login.protocol_1 < PROTOCOL) {
+            login_status.status = (int32_t)LoginStatusEnum::outdated_client;
+        } else if (login.protocol_1 > PROTOCOL) {
+            login_status.status = (int32_t)LoginStatusEnum::outdated_server;
+        }else {
             login_status.status = (int32_t)LoginStatusEnum::success;
         }
         this->send_packet(login_status);
 
+        if(login_status.status != (int32_t)LoginStatusEnum::success){
+            return;
+        }
+
+        printf("%s started a session(EID: %d)\n", this->username.c_str(), this->entity_id);
         StartGamePacket start_game;
         start_game.seed = SEED;
         start_game.generator = 0;
