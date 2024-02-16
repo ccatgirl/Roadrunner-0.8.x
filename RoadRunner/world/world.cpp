@@ -24,7 +24,7 @@ void RoadRunner::world::World::syncTime(){
     send_stream.Write<uint8_t>(pk.packet_id);
     pk.serialize_body(&send_stream);
 
-    std::map<const RakNet::RakNetGUID, RoadRunner::Player *>::iterator it = Server::INSTANCE->players.begin();
+    auto it = Server::INSTANCE->players.begin();
     while (it != Server::INSTANCE->players.end()) {
         Server::INSTANCE->peer->Send(&send_stream, LOW_PRIORITY, RELIABLE_ORDERED, 0, it->first, false);
         ++it;

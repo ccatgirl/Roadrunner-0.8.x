@@ -29,7 +29,7 @@ void Server::post_to_chat(std::string message) {
     RakNet::BitStream send_stream;
     send_stream.Write<uint8_t>(msg.packet_id);
     msg.serialize_body(&send_stream);
-    std::map<const RakNet::RakNetGUID, RoadRunner::Player *>::iterator it = this->players.begin();
+    auto it = this->players.begin();
     while (it != this->players.end()) {
         this->peer->Send(&send_stream, IMMEDIATE_PRIORITY, RELIABLE_ORDERED, 0, it->first, false);
         ++it;
@@ -56,7 +56,7 @@ void Server::send_block_data(int32_t x, int32_t y, int32_t z, uint8_t blockid, u
     send_stream.Write<uint8_t>(pk.packet_id);
     pk.serialize_body(&send_stream);
 
-    std::map<const RakNet::RakNetGUID, RoadRunner::Player *>::iterator it = this->players.begin();
+    auto it = this->players.begin();
     while (it != this->players.end()) {
         this->peer->Send(&send_stream, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, it->first, false);
         ++it;

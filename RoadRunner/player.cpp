@@ -55,11 +55,18 @@ void RoadRunner::Player::broadcast_packet(T &packet) {
     RakNet::BitStream send_stream;
     send_stream.Write<uint8_t>(packet.packet_id);
     packet.serialize_body(&send_stream);
-    std::map<const RakNet::RakNetGUID, RoadRunner::Player *>::iterator it = Server::INSTANCE->players.begin();
+    auto it = Server::INSTANCE->players.begin();
     while (it != Server::INSTANCE->players.end()) {
         Server::INSTANCE->peer->Send(&send_stream, IMMEDIATE_PRIORITY, RELIABLE_ORDERED, 0, it->first, false);
         ++it;
     }
+}
+
+float signbit(float f){
+	if(f > 0){
+		return 1;
+	}else if(f < 0) return -1;
+	return 0;
 }
 
 template <typename T>
@@ -68,7 +75,7 @@ void RoadRunner::Player::broadcast_except_packet(T &packet) {
     RakNet::BitStream send_stream;
     send_stream.Write<uint8_t>(packet.packet_id);
     packet.serialize_body(&send_stream);
-    std::map<const RakNet::RakNetGUID, RoadRunner::Player *>::iterator it = this->server->players.begin();
+    auto it = this->server->players.begin();
     while (it != this->server->players.end()) {
         if (it->first == this->guid) {
             ++it;
@@ -179,7 +186,7 @@ void RoadRunner::Player::handle_packet(uint8_t packet_id, RakNet::BitStream *str
         add_player.yaw = this->yaw;
         this->broadcast_except_packet(add_player);
         // Add the other players
-        std::map<const RakNet::RakNetGUID, RoadRunner::Player *>::iterator it = this->server->players.begin();
+        auto it = this->server->players.begin();
         while (it != this->server->players.end()) {
             if (it->first == this->guid) {
                 ++it;
@@ -243,17 +250,18 @@ void RoadRunner::Player::handle_packet(uint8_t packet_id, RakNet::BitStream *str
             valid = false;
         }
 #endif
+
         // Make sure it isn't a teleport
         // TODO: Check dy and give fall damage as needed
         int dx = abs(move_player.x - this->x);
-        if (dx > MAX_DIST) {
-            this->x += std::signbit(this->x - move_player.x) * MAX_DIST;
+        if (dx > MAX_DIST){
+            this->x += signbit(this->x - move_player.x) * MAX_DIST;
             move_player.x = this->x;
             valid = false;
         }
         int dz = abs(move_player.z - this->z);
         if (dz > MAX_DIST) {
-            this->z += std::signbit(this->z - move_player.z) * MAX_DIST;
+            this->z += signbit(this->z - move_player.z) * MAX_DIST;
             move_player.z = this->z;
             valid = false;
         }
