@@ -62,7 +62,7 @@ void RoadRunner::Player::broadcast_packet(T &packet) {
     }
 }
 
-float signbit(float f){
+float fsignbit(float f){
 	if(f > 0){
 		return 1;
 	}else if(f < 0) return -1;
@@ -255,13 +255,13 @@ void RoadRunner::Player::handle_packet(uint8_t packet_id, RakNet::BitStream *str
         // TODO: Check dy and give fall damage as needed
         int dx = abs(move_player.x - this->x);
         if (dx > MAX_DIST){
-            this->x += signbit(this->x - move_player.x) * MAX_DIST;
+            this->x += fsignbit(this->x - move_player.x) * MAX_DIST;
             move_player.x = this->x;
             valid = false;
         }
         int dz = abs(move_player.z - this->z);
         if (dz > MAX_DIST) {
-            this->z += signbit(this->z - move_player.z) * MAX_DIST;
+            this->z += fsignbit(this->z - move_player.z) * MAX_DIST;
             move_player.z = this->z;
             valid = false;
         }
