@@ -31,16 +31,18 @@ bool RoadRunner::nbt::tag::Compound::read(RakNet::BitStream *stream) {
                 if (tag != nullptr) {
                     tag->name = name_tag.value;
                     this->value.push_back(tag);
+                    tag->read(stream);
                     continue;
                 }
             }
         }
-        for (size_t i = 0; i < this->value.size(); ++i) {
-            if (this->value[i] != nullptr) {
-                delete this->value[i];
-            }
-        }
-        this->value.clear();
+        //for (size_t i = 0; i < this->value.size(); ++i) {
+        //    if (this->value[i] != nullptr) {
+       //         delete this->value[i];
+       //     }
+       // }
+        //this->value.clear();
+        break;
     }
     return true;
 }

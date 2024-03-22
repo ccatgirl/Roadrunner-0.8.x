@@ -13,7 +13,7 @@ bool RoadRunner::nbt::tag::String::read(RakNet::BitStream *stream) {
     }
     char *temp = new char[length + 1];
     temp[length] = '\0';
-    if (!stream->ReadAlignedBytes((unsigned char *)temp, length)) {
+    if (length != 0 && !stream->ReadAlignedBytes((unsigned char *)temp, length)) {
         delete temp;
         return false;
     };
