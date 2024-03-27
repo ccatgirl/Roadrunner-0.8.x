@@ -63,7 +63,7 @@ uint8_t RoadRunner::world::World::get_block_id(int32_t x, int32_t y, int32_t z) 
 
 RoadRunner::world::Chunk* RoadRunner::world::World::get_chunk(int32_t x, int32_t z) {
     int index = x << 4 | z;
-    if (index > 255 || index < 0) return &RoadRunner::world::BlankChunk::blankChunk;
+    if (index > 255 || index < 0) return RoadRunner::world::BlankChunk::blankChunk;
     return this->chunks[index];
 }
 

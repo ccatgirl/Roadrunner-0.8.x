@@ -73,6 +73,7 @@ Server* Server::INSTANCE;
 
 Server::Server(uint16_t port, uint32_t max_clients) {
     Server::INSTANCE = this;
+    RoadRunner::world::BlankChunk::blankChunk = new RoadRunner::world::BlankChunk();
     bool enableTPSFix = false;
     uint64_t nextTPSMeasure = 0;
     double tpsTotal = 0;
@@ -220,4 +221,5 @@ Server::Server(uint16_t port, uint32_t max_clients) {
     forceend:
     RakNet::RakPeerInterface::DestroyInstance(peer);
 	delete this->world;
+    delete RoadRunner::world::BlankChunk::blankChunk;
 }

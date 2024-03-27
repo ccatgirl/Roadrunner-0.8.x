@@ -161,9 +161,9 @@ namespace RoadRunner {
                 return this;
             }
             
-            void onPlace(RoadRunner::world::World* world, int32_t x, int32_t y, int32_t z);
+            virtual void onPlace(RoadRunner::world::World* world, int32_t x, int32_t y, int32_t z);
+            virtual void onRemove(RoadRunner::world::World* world, int32_t x, int32_t y, int32_t z);
             void playerWillDestroy(RoadRunner::world::World* world, int32_t x, int32_t y, int32_t z, int32_t meta, RoadRunner::Player* player){}; //used only by door
-
         };
 
         class StoneBlock : public Block{
@@ -172,6 +172,11 @@ namespace RoadRunner {
             StoneBlock(uint8_t id): Block(id, Material::stone){
                 this->unknown = 0;
             };
+        };
+
+        class TorchBlock : public Block{
+            public:
+                TorchBlock(uint8_t id) : Block(id, Material::decoration){}
         };
 
         class GrassBlock : public Block {

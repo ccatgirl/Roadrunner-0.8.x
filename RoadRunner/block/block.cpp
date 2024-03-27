@@ -4,6 +4,7 @@
 
 using RoadRunner::block::material::Material;
 using RoadRunner::block::Block;
+
 Block *Block::blocks[256];
 int Block::lightBlock[256];
 int Block::lightEmission[256];
@@ -119,9 +120,30 @@ Block
     *Block::fire;
 
 void Block::onPlace(RoadRunner::world::World*, int32_t x, int32_t y, int32_t z){
-    
+    /* TODO all those classes
+        BaseRailTile::onPlace(Level *,int,int,int)
+        EntityTile::onPlace(Level *,int,int,int)
+        FireTile::onPlace(Level *,int,int,int)
+        HeavyTile::onPlace(Level *,int,int,int)
+        LiquidTile::onPlace(Level *,int,int,int)
+        LiquidTileDynamic::onPlace(Level *,int,int,int)
+        PumpkinTile::onPlace(Level *,int,int,int)
+        StairTile::onPlace(Level *,int,int,int)
+        TorchTile::onPlace(Level *,int,int,int)
+    */
 }
 
+void Block::onRemove(RoadRunner::world::World* world, int32_t x, int32_t y, int32_t z){
+    /* TODO all those classes
+        BaseRailTile::onRemove(Level *,int,int,int)
+        ChestTile::onRemove(Level *,int,int,int)
+        EntityTile::onRemove(Level *,int,int,int)
+        FurnaceTile::onRemove(Level *,int,int,int)
+        LeafTile::onRemove(Level *,int,int,int)
+        StairTile::onRemove(Level *,int,int,int)
+        TreeTile::onRemove(Level *,int,int,int)
+    */
+}
 Block::Block(uint8_t blockid, Material* material) { //TODO Material
 
     this->blockID = blockid;
@@ -182,7 +204,7 @@ void Block::initBlocks() {
     //TODO bookshelf (47)
     Block::mossStone = (new Block(48, Material::stone))->init()->setDestroyTime(2.0f)->setExplodeable(10.0f);
     Block::obsidian = (new StoneBlock(49))->init()->setDestroyTime(10.0f)->setExplodeable(2000.0f);
-    //TODO torch (50)
+    Block::torch = (new TorchBlock(50))->init()->setDestroyTime(0.0f)->setLightEmission(0.9375f);
     //TODO stairs_wood
     //TODO chest
     Block::diamondOre = (new OreBlock(56))->init()->setDestroyTime(3.0f)->setExplodeable(5.0f);

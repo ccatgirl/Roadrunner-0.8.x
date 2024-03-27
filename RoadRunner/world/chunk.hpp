@@ -17,33 +17,34 @@
 
 namespace RoadRunner {
     namespace world {
+        class World;
         class Chunk {
-        public:
-            
-            int32_t x;
-            int32_t z;
-            uint8_t block_ids[32768];
-            uint8_t block_metas[16384];
-            uint8_t skylight[16384]; //not send to a client, but will be useful later
-            uint8_t blocklight[16384];
+            public:
+                int32_t x;
+                int32_t z;
+                World* world;
+                uint8_t block_ids[32768];
+                uint8_t block_metas[16384];
+                uint8_t skylight[16384]; //not send to a client, but will be useful later
+                uint8_t blocklight[16384];
 
-            Chunk(int32_t x, int32_t z);
+                Chunk(int32_t x, int32_t z);
 
-            uint8_t get_block_id(int32_t x, int32_t y, int32_t z);
+                uint8_t get_block_id(int32_t x, int32_t y, int32_t z);
 
-            void set_block_id(int32_t x, int32_t y, int32_t z, uint8_t block_id);
+                bool set_block_id(int32_t x, int32_t y, int32_t z, uint8_t block_id);
 
-            uint8_t get_block_meta(int32_t x, int32_t y, int32_t z);
+                uint8_t get_block_meta(int32_t x, int32_t y, int32_t z);
 
-            void set_block_meta(int32_t x, int32_t y, int32_t z, uint8_t block_meta);
+                bool set_block_meta(int32_t x, int32_t y, int32_t z, uint8_t block_meta);
         };
 
         class BlankChunk : public Chunk {
         public:
-            static BlankChunk blankChunk; 
+            static BlankChunk* blankChunk; 
             BlankChunk();
-            void set_block_id(int32_t x, int32_t y, int32_t z, uint8_t block_id);
-            void set_block_meta(int32_t x, int32_t y, int32_t z, uint8_t block_meta);
+            bool set_block_id(int32_t x, int32_t y, int32_t z, uint8_t block_id);
+            bool set_block_meta(int32_t x, int32_t y, int32_t z, uint8_t block_meta);
         };
     }
 }
