@@ -9,6 +9,9 @@ Block *Block::blocks[256];
 int Block::lightBlock[256];
 int Block::lightEmission[256];
 bool Block::shouldTick[256];
+bool Block::solid[256];
+bool Block::translucent[256];
+
 Block 
     *Block::stone,
     *Block::grass,
@@ -152,16 +155,32 @@ Block::Block(uint8_t blockid, Material* material) { //TODO Material
     if (Block::blocks[blockid]) {
         printf("Block %d already exists!\n", blockid); //TODO throw exception maybe?
     }
-    Block::blocks[blockid] = this;
+   
 }
 
 Block* Block::init(){
+    Block::blocks[this->blockID] = this;
+    this->setShape(this->minX, this->minY, this->minZ, this->maxX, this->maxY, this->maxZ);
+    bool solid = this->isSolidRender();
+
+    Block::solid[this->blockID] = solid;
     
+    Block::lightBlock[this->blockID] = solid ? 255 : 0;
+    Block::translucent[this->blockID] = this->material->blocksLight();
     return this;
 }
 
 void Block::initBlocks() {
 
+    for(int i = 0; i < 256; ++i){
+        Block::blocks[i] = 0;
+        Block::solid[i] = 0;
+        Block::translucent[i] = 0;
+        Block::lightEmission[i] = 0;
+        Block::lightBlock[i] = 0;
+        Block::shouldTick[i] = 0;
+    }
+    
     Block::stone = (new StoneBlock(1))->init()->setDestroyTime(1.5f)->setExplodeable(10.0f); //TODO add descriptionID?
     Block::grass = (new GrassBlock(2))->setDestroyTime(0.6f);
     Block::dirt = (new DirtBlock(3))->init()->setDestroyTime(0.5f);
@@ -201,7 +220,7 @@ void Block::initBlocks() {
     //TODO stoneSlabHalf (0x2C)
     Block::redBrick = (new Block(45, Material::stone))->init()->setDestroyTime(2.0f)->setExplodeable(10.0f);
     Block::tnt = (new TntBlock(46))->init()->setDestroyTime(0.0f);
-    //TODO bookshelf (47)
+    Block::bookshelf = (new BookshelfBlock(47))->init()->setDestroyTime(1.5f);
     Block::mossStone = (new Block(48, Material::stone))->init()->setDestroyTime(2.0f)->setExplodeable(10.0f);
     Block::obsidian = (new StoneBlock(49))->init()->setDestroyTime(10.0f)->setExplodeable(2000.0f);
     Block::torch = (new TorchBlock(50))->init()->setDestroyTime(0.0f)->setLightEmission(0.9375f);
@@ -221,8 +240,8 @@ void Block::initBlocks() {
     //TODO stairs_stone
     //TODO wallSign
     //TODO door_iron
-    //TODO redStoneOre
-    //TODO redStoneOre_lit
+    Block::redStoneOre = (new RedStoneOreBlock(73, 0))->init()->setDestroyTime(3.0f)->setExplodeable(5.0f);
+    Block::redStoneOre_lit = (new RedStoneOreBlock(74, 1))->init()->setDestroyTime(3.0f)->setLightEmission(0.625f)->setExplodeable(5.0f);
     //TODO topSnow
     //TODO ice
     //TODO snow
@@ -232,15 +251,15 @@ void Block::initBlocks() {
     //TODO fence
     //TODO pumpkin
     Block::netherrack = (new Block(87, Material::stone))->init()->setDestroyTime(0.4f);
-    //TODO lightGem(glowstone)
-    //TODO litPumpkin
-    //TODO cake
+    Block::lightGem = (new LightGemBlock(89, Material::glass))->init()->setDestroyTime(0.3f)->setLightEmission(1.0f);
+    //TODO litPumpkin  Material::vegetable, extends Tile, 91
+    //TODO cake 92
     Block::invisible_bedrock = (new Block(95, Material::stone))->init()->setDestroyTime(-1.0f)->setExplodeable(6000000.0f);
-    //TODO trapdoor
-    //TODO stoneBrickSmooth
-    //TODO ironFence
-    //TODO thinGlass
-    //TODO melon
+    //TODO trapdoor 96
+    Block::stoneBrickSmooth = (new Block(98, Material::stone))->init()->setDestroyTime(1.5f)->setExplodeable(10.0f); //this thing is actually MultiTextureBlock
+    //TODO ironFence ThinFenceTile 101
+    //TODO thinGlass ThinFenceTile 102
+    //TODO melon 103
     //TODO pumpkinStem
     //TODO melonStem
     //TODO fenceGate
@@ -260,8 +279,8 @@ void Block::initBlocks() {
     //TODO woodSlab
     //TODO woodSlabHalf
     //TODO hayBlock
-    //TODO woolCarpet
-    //TODO coalBlock
+    Block::woolCarpet = (new WoolCarpetBlock(171))->init()->setDestroyTime(0.1f)->setLightBlock(0.0f);
+    Block::coalBlock = (new MetalBlock(173))->init()->setDestroyTime(5.0f)->setExplodeable(10.0f);
     //TODO beetroot
     //TODO stonecutterBench
     //TODO glowingObsidian

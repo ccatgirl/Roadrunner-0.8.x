@@ -120,9 +120,13 @@ namespace RoadRunner {
                 *info_reserved6,
                 *fire;
             static Block *blocks[256];
-            static bool shouldTick[256];
             static int lightBlock[256];
             static int lightEmission[256];
+
+            static bool shouldTick[256];
+            static bool solid[256];
+            static bool translucent[256];
+
             static void initBlocks();
 
 
@@ -130,6 +134,9 @@ namespace RoadRunner {
             float blockHardness = 0; //TODO check
             float blockResistance = 0; //TODO check
             float slipperiness = 0.6f;
+
+            float minX = 0, minY = 0, minZ = 0, maxX = 0, maxY = 0, maxZ = 0;
+
             material::Material* material;
 
             Block(uint8_t id, material::Material* material);
@@ -142,6 +149,19 @@ namespace RoadRunner {
 
                 return this;
             };
+
+            bool isSolidRender(){
+                return true;
+            }
+
+            void setShape(float minX, float minY, float minZ, float maxX, float maxY, float maxZ){
+                this->minX = minX;
+                this->minY = minY;
+                this->minZ = minZ;
+                this->maxX = maxX;
+                this->maxY = maxY;
+                this->maxZ = maxZ;
+            }
 
             Block* setTicking(bool ticking){
                 Block::shouldTick[this->blockID] = ticking;
@@ -313,10 +333,46 @@ namespace RoadRunner {
             ClayBlock(uint8_t id): Block(id, Material::clay){}
         };
 
+        class WoolCarpetBlock : public Block{
+        public:
+            WoolCarpetBlock(uint8_t id): Block(id, Material::cloth){
+                this->setShape(0, 0, 0, 1, 0.0625f, 1);
+                //this->setTicking(true); mojang moment
+            }
+            
+        };
+
+        class LightGemBlock : public Block{
+        public:
+            LightGemBlock(uint8_t id, Material* material): Block(id, material){
+                //field_5C = 255
+            }
+        };
+        
+        class RedStoneOreBlock : public Block{
+        public:
+            bool emitsLight;
+
+            RedStoneOreBlock(uint8_t id, bool emitsLight) : Block(id, Material::stone){
+                
+                if(this->emitsLight) this->setTicking(true);
+
+                this->emitsLight = emitsLight;
+            }
+        };
+
+        class BookshelfBlock : public Block{
+        public:
+            BookshelfBlock(uint8_t id): Block(id, Material::wood){
+                
+            }
+        };
+
         class ReedBlock : public Block{
         public:
             ReedBlock(uint8_t id): Block(id, Material::plant){
                 //Tile::setShape(v434, 0.125, 0.0, 0.125, 0.875, 1.0, 0.875); TODO shape
+                this->setShape(0.125f, 0, 0.125f, 0.875f, 1.0f, 0.875f);
                 this->setTicking(true);
             }
         };
