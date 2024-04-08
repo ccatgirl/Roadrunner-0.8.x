@@ -70,8 +70,29 @@ uint64_t getTimeMS() {
 }
 
 Server* Server::INSTANCE;
+void handleSignal(
+#ifdef _WIN32
+    _In_ DWORD
+#else
+    int
+#endif
 
+signal
+){
+#ifdef _WIN32
+    if (signal == CTRL_C_EVENT)
+#endif
+        Server::INSTANCE->is_running = false;
+}
 Server::Server(uint16_t port, uint32_t max_clients) {
+
+    #ifdef _WIN32
+        SetConsoleCtrlHandler((PHANDLER_ROUTINE) &handleSignal, true);
+    #else
+        signal(SIGINT, &handleSignal);
+    #endif
+     
+
     Server::INSTANCE = this;
     RoadRunner::world::BlankChunk::blankChunk = new RoadRunner::world::BlankChunk();
     bool enableTPSFix = false;
@@ -117,11 +138,15 @@ Server::Server(uint16_t port, uint32_t max_clients) {
 	//TODO better gen, move out of here
 
     RoadRunner::world::generator::RandomLevelSource* levelSource = new RoadRunner::world::generator::RandomLevelSource(this->world, SEED);
-
-    printf("Generating the world(%d)\n", SEED);
-	for(int index = 0; index < 256; ++index){
-        this->world->chunks[index] = levelSource->getChunk((index & 0xf0) >> 4, index & 0xf);
-	}
+    if(!this->world->loadWorld()){
+        printf("Failed to load a world. Generating a new one(Seed: %d)\n", SEED);
+	    for(int index = 0; index < 256; ++index){
+            this->world->chunks[index] = levelSource->getChunk((index & 0xf0) >> 4, index & 0xf);
+	    }
+    }else{
+        printf("World loaded\n");
+    }
+    
 	double nextUpdate = 0.0;
     RakNet::Packet *packet;
 
@@ -220,6 +245,9 @@ Server::Server(uint16_t port, uint32_t max_clients) {
 
     forceend:
     RakNet::RakPeerInterface::DestroyInstance(peer);
+
+    this->world->saveWorld();
+
 	delete this->world;
     delete RoadRunner::world::BlankChunk::blankChunk;
 }

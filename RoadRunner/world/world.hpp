@@ -3,6 +3,7 @@
 #include "chunk.hpp"
 #include <stdint.h>
 #include <stdlib.h>
+#include <string>
 #include <world/biome_source.hpp>
 
 namespace RoadRunner {
@@ -15,7 +16,7 @@ namespace RoadRunner {
 				RoadRunner::world::BiomeSource* biomeSource;
 				long time = 0;
 				long prevTimeSent = 0;
-
+				std::string name = "world";
 
 				World(unsigned int seed);
 				~World(){
@@ -44,6 +45,8 @@ namespace RoadRunner {
 				}
 
 				void syncTime();
+				void saveWorld();
+				bool loadWorld();
 
 		};
 	}

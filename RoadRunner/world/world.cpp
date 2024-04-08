@@ -4,17 +4,19 @@
 #include <stdint.h>
 #include <network/packets/set_time_packet.hpp>
 
-RoadRunner::world::World::World(unsigned int seed){
+using namespace RoadRunner::world;
+
+World::World(unsigned int seed){
 	this->seed = seed;
 
-	this->biomeSource = new RoadRunner::world::BiomeSource(this);
+	this->biomeSource = new BiomeSource(this);
 
 	for(int32_t i = 0; i < 256; ++i){
 		//this->chunks[i] = new RoadRunner::world::Chunk((i & 0xf0) >> 4, i & 0xf);
 		this->chunks[i] = 0;
 	}
 }
-void RoadRunner::world::World::syncTime(){
+void World::syncTime(){
 	RoadRunner::network::packets::SetTimePacket pk;
 	pk.time = this->time;
 	pk.started = 1;
@@ -31,7 +33,7 @@ void RoadRunner::world::World::syncTime(){
     }
 
 }
-void RoadRunner::world::World::tick(){
+void World::tick(){
 	//Handle MobSpawner
 
 	//ChunkSource + 24
@@ -53,7 +55,7 @@ void RoadRunner::world::World::tick(){
 	
 	//send entity data
 }
-uint8_t RoadRunner::world::World::get_block_id(int32_t x, int32_t y, int32_t z) {
+uint8_t World::get_block_id(int32_t x, int32_t y, int32_t z) {
 	int chunkX = x / 16;
 	int chunkZ = z / 16;
 
@@ -61,18 +63,129 @@ uint8_t RoadRunner::world::World::get_block_id(int32_t x, int32_t y, int32_t z) 
 	return chunk ? chunk->get_block_id(x & 0xf, y, z & 0xf) : 0;
 }
 
-RoadRunner::world::Chunk* RoadRunner::world::World::get_chunk(int32_t x, int32_t z) {
+Chunk* World::get_chunk(int32_t x, int32_t z) {
     int index = x << 4 | z;
     if (index > 255 || index < 0) return RoadRunner::world::BlankChunk::blankChunk;
     return this->chunks[index];
 }
 
-uint8_t RoadRunner::world::World::get_block_meta(int32_t x, int32_t y, int32_t z) {
+uint8_t World::get_block_meta(int32_t x, int32_t y, int32_t z) {
 	int chunkX = x / 16;
 	int chunkZ = z / 16;
 
-    RoadRunner::world::Chunk *chunk = this->get_chunk(chunkX, chunkZ);
+    Chunk *chunk = this->get_chunk(chunkX, chunkZ);
 	return chunk ? chunk->get_block_meta(x & 0xf, y, z & 0xf) : 0;
+}
+#include <utils/multisystem.h>
+
+void World::saveWorld(){
+
+	createDirectory("worlds/");
+	createDirectory(("worlds/"+this->name+"/").c_str());
+
+	//TODO level.dat
+
+	printf("Saving chunks.dat...\n");
+	FILE* chunks = fopen(("worlds/"+this->name+"/chunks.dat").c_str(), "wb");
+	
+	//Write locTable, TODO figure out how it works
+	for(int x = 0; x < 32; ++x){
+		for(int z = 0; z < 32; ++z){
+			fwrite("\0\0\0\0", 4, 1, chunks);
+		}
+	}
+	//Write chunks
+	for(int chunkX = 0; chunkX < 16; ++chunkX){
+		for(int chunkZ = 0; chunkZ < 16; ++chunkZ){
+			fseek(chunks, 4096+(chunkX*21*4096)+(chunkZ*21*16*4096), SEEK_SET);
+			Chunk* c = this->get_chunk(chunkX, chunkZ);
+
+			for(int x = 0; x < 16; ++x){
+				for(int z = 0; z < 16; ++z){
+					int index = x << 11 | z << 7;
+					fwrite(c->block_ids + index, 1, 128, chunks); //id
+				}
+			}
+
+			for(int x = 0; x < 16; ++x){
+				for(int z = 0; z < 16; ++z){
+					int index = x << 11 | z << 7;
+					fwrite(c->block_metas + (index >> 1), 1, 64, chunks); //meta
+				}
+			}
+
+			for(int x = 0; x < 16; ++x){
+				for(int z = 0; z < 16; ++z){
+					int index = x << 11 | z << 7;
+					fwrite(c->skylight + (index >> 1), 1, 64, chunks); //skylight
+				}
+			}
+
+			for(int x = 0; x < 16; ++x){
+				for(int z = 0; z < 16; ++z){
+					int index = x << 11 | z << 7;
+					fwrite(c->blocklight + (index >> 1), 1, 64, chunks); //blocklight
+				}
+			}
+
+			for(int x = 0; x < 16; ++x){
+				for(int z = 0; z < 16; ++z){
+					fwrite("\xff", 1, 1, chunks); //update map
+				}
+			}
+		}
+	}
+
+	fclose(chunks);
+
+}
+bool World::loadWorld(){
+	if(!hasDirectory(("worlds/"+this->name+"/").c_str())){
+		return false;
+	}
+	FILE* chunks = fopen(("worlds/"+this->name+"/chunks.dat").c_str(), "rb");
+	if(!chunks) return false;
+	//TODO level.dat ??
+
+	
+	
+	//TODO loctable
+	for(int chunkX = 0; chunkX < 16; ++chunkX){
+		for(int chunkZ = 0; chunkZ < 16; ++chunkZ){
+			fseek(chunks, 4096+(chunkX*21*4096)+(chunkZ*21*16*4096), SEEK_SET);
+			Chunk* c = this->chunks[(chunkZ<<4)|chunkX] = new Chunk(chunkX, chunkZ);
+
+			for(int x = 0; x < 16; ++x){
+				for(int z = 0; z < 16; ++z){
+					int index = x << 11 | z << 7;
+					fread(c->block_ids + index, 1, 128, chunks);
+				}
+			}
+
+			for(int x = 0; x < 16; ++x){
+				for(int z = 0; z < 16; ++z){
+					int index = x << 11 | z << 7;
+					fread(c->block_metas + (index >> 1), 1, 64, chunks);
+				}
+			}
+
+			for(int x = 0; x < 16; ++x){
+				for(int z = 0; z < 16; ++z){
+					int index = x << 11 | z << 7;
+					fread(c->skylight + (index >> 1), 1, 64, chunks);
+				}
+			}
+
+			for(int x = 0; x < 16; ++x){
+				for(int z = 0; z < 16; ++z){
+					int index = x << 11 | z << 7;
+					fread(c->blocklight + (index >> 1), 1, 64, chunks);
+				}
+			}
+		}
+	}
+
+	return true;
 }
 
 void RoadRunner::world::World::set_block(int32_t x, int32_t y, int32_t z, uint8_t id, uint8_t meta, uint8_t flags) {
