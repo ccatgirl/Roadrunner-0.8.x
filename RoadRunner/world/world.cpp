@@ -107,7 +107,7 @@ void World::saveWorld(){
 
 			for(int x = 0; x < 16; ++x){
 				for(int z = 0; z < 16; ++z){
-					int index = z << 11 | x << 7;
+					int index = x << 11 | z << 7;
 					fwrite(c->block_ids + index, 1, 128, chunks); //id
 				}
 			}
@@ -158,7 +158,7 @@ bool World::loadWorld(){
 	for(int chunkX = 0; chunkX < 16; ++chunkX){
 		for(int chunkZ = 0; chunkZ < 16; ++chunkZ){
 			fseek(chunks, 4096+(chunkX*21*4096)+(chunkZ*21*16*4096), SEEK_SET);
-			Chunk* c = this->chunks[(chunkX<<4)|chunkZ] = new Chunk(chunkX, chunkZ);
+			Chunk* c = this->chunks[chunkX<<4|chunkZ] = new Chunk(chunkX, chunkZ);
 
 			
 			fread(&header, 4, 1, chunks);
