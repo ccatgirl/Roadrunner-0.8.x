@@ -94,15 +94,20 @@ void World::saveWorld(){
 			fwrite("\0\0\0\0", 4, 1, chunks);
 		}
 	}
+
+	int chunkHeader = 0x04410120;
+
 	//Write chunks
 	for(int chunkX = 0; chunkX < 16; ++chunkX){
 		for(int chunkZ = 0; chunkZ < 16; ++chunkZ){
 			fseek(chunks, 4096+(chunkX*21*4096)+(chunkZ*21*16*4096), SEEK_SET);
 			Chunk* c = this->get_chunk(chunkX, chunkZ);
 
+			fwrite(&chunkHeader, 4, 1, chunks);
+
 			for(int x = 0; x < 16; ++x){
 				for(int z = 0; z < 16; ++z){
-					int index = x << 11 | z << 7;
+					int index = z << 11 | x << 7;
 					fwrite(c->block_ids + index, 1, 128, chunks); //id
 				}
 			}
@@ -148,12 +153,17 @@ bool World::loadWorld(){
 	//TODO level.dat ??
 
 	
-	
+	int header;
 	//TODO loctable
 	for(int chunkX = 0; chunkX < 16; ++chunkX){
 		for(int chunkZ = 0; chunkZ < 16; ++chunkZ){
 			fseek(chunks, 4096+(chunkX*21*4096)+(chunkZ*21*16*4096), SEEK_SET);
-			Chunk* c = this->chunks[(chunkZ<<4)|chunkX] = new Chunk(chunkX, chunkZ);
+			Chunk* c = this->chunks[(chunkX<<4)|chunkZ] = new Chunk(chunkX, chunkZ);
+
+			
+			fread(&header, 4, 1, chunks);
+			
+			printf("%d\n", header);
 
 			for(int x = 0; x < 16; ++x){
 				for(int z = 0; z < 16; ++z){

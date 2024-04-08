@@ -1,15 +1,17 @@
 #include <sys/stat.h>
-#include <io.h>
+
 
 #ifdef _WIN32
+	#include <io.h>
 	#include <windows.h>
 	
 	void createDirectory(char* path){
 		CreateDirectory(path, NULL);
 	}
 #else
+	#include <sys/io.h>
 	void createDirectory(char* path){
-		mkdir(path, 777);
+		mkdir(path, 0777);
 	}
 #endif
 
@@ -18,7 +20,7 @@ inline void createDirectory(const char* path){
 }
 
 bool hasDirectory(char* path){
-	if(_access(path, 0) == 0){
+	if(access(path, 0) == 0){
 		struct stat status;
 		stat(path, &status);
 		return (status.st_mode & S_IFDIR) != 0;
