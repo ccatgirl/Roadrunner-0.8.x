@@ -16,6 +16,11 @@
 #include <world/noise/perlin_noise.hpp>
 #include <world/biome/biome.hpp>
 #include <world/generator/level_source.hpp>
+
+#ifndef _WIN32
+#include <signal.h>
+#endif
+
 using RoadRunner::block::Block;
 using RoadRunner::block::material::Material;
 using RoadRunner::Server;
