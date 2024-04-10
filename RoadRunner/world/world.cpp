@@ -3,8 +3,17 @@
 #include "world/chunk.hpp"
 #include <stdint.h>
 #include <network/packets/set_time_packet.hpp>
+#include <nbt/tag_utils.hpp>
+#include <nbt/tag/compound.hpp>
+#include <nbt/tag/string.hpp>
+#include <nbt/tag/int.hpp>
+#include <nbt/tag/long.hpp>
+#include <nbt/tag/byte.hpp>
+#include <config.hpp>
+#include <stdio.h>
 
 using namespace RoadRunner::world;
+using namespace RoadRunner::nbt;
 
 World::World(unsigned int seed){
 	this->seed = seed;
@@ -43,7 +52,9 @@ void World::tick(){
 	//else
 	{
 		int timeDiff = this->setTime(this->time + 1);
+		printf("%d\n", timeDiff);
 		if(timeDiff > 255){
+			printf("sync\n");
 			this->syncTime();
 			this->prevTimeSent = this->time;
 		}
@@ -84,6 +95,107 @@ void World::saveWorld(){
 	createDirectory(("worlds/"+this->name+"/").c_str());
 
 	//TODO level.dat
+	printf("Saving level.dat...\n");
+	FILE* level = fopen(("worlds/"+this->name+"/level.dat").c_str(), "wb");
+	if(level){
+		tag::Compound tag;
+		tag.name = "";
+		tag.unsafe = true;
+
+		tag::Int gameType;
+		gameType.name = "GameType";
+		gameType.value = IS_CREATIVE != 0;
+		tag.value.push_back(&gameType);
+
+		tag::Long lastPlayed;
+		lastPlayed.name = "LastPlayed";
+		lastPlayed.value = 0; //TODO
+		tag.value.push_back(&lastPlayed);
+
+		tag::String levelName;
+		levelName.name = "LevelName";
+		levelName.value = this->name;
+		tag.value.push_back(&levelName);
+
+		tag::Int platform;
+		platform.name = "Platform";
+		platform.value = 2; //static
+		tag.value.push_back(&platform);
+
+		//player data is also saved here in vanilla, but it will be moved
+
+		tag::Long randomSeed;
+		randomSeed.name = "RandomSeed";
+		randomSeed.value = this->seed;
+		tag.value.push_back(&randomSeed);
+
+		tag::Long sizeOnDisk;
+		sizeOnDisk.name = "SizeOnDisk";
+		sizeOnDisk.value = 0; //TODO
+		tag.value.push_back(&sizeOnDisk);
+
+		tag::Int spawnX;
+		spawnX.name = "SpawnX";
+		spawnX.value = 127; //TODO;
+		tag.value.push_back(&spawnX);
+
+		tag::Int spawnY;
+		spawnY.name = "SpawnY";
+		spawnY.value = 127; //TODO;
+		tag.value.push_back(&spawnY);
+
+		tag::Int spawnZ;
+		spawnZ.name = "SpawnZ";
+		spawnZ.value = 127; //TODO;
+		tag.value.push_back(&spawnZ);
+
+		tag::Int storageVersion;
+		storageVersion.name = "StorageVersion";
+		storageVersion.value = 3;
+		tag.value.push_back(&storageVersion);
+
+		tag::Long time;
+		time.name = "Time";
+		time.value = this->time;
+		tag.value.push_back(&time);
+
+		tag::Long dayCycleStopTime;
+		dayCycleStopTime.name = "dayCycleStopTime";
+		dayCycleStopTime.value = -1; //TODO
+		tag.value.push_back(&dayCycleStopTime);
+
+		tag::Byte spawnMobs;
+		spawnMobs.name = "SpawnMobs";
+		spawnMobs.value = 1; //TODO probably 0 in creative
+		tag.value.push_back(&spawnMobs);
+
+		print_tag(&tag);
+
+		RakNet::BitStream stream(4); //TODO better static amount of bytes
+		
+		tag::Compound root;
+		root.value.push_back(&tag);
+		root.unsafe = true;
+
+		root.write(&stream);
+		unsigned char* data = stream.GetData();
+		int length = stream.GetNumberOfBytesUsed();
+
+		unsigned char lengthLe[] = {
+			(length & 0xff), 
+			(length & 0xff00) >> 8, 
+			(length & 0xff0000) >> 16, 
+			(length & 0xff000000) >> 24
+		};
+
+		fwrite("\3\0\0\0", 4, 1, level); //type?
+		fwrite(lengthLe, 4, 1, level); //size of buffer
+		fwrite(data, 1, length, level);
+		fclose(level);
+	}else{
+		printf("NullPointerException\n");
+	}
+
 
 	printf("Saving chunks.dat...\n");
 	FILE* chunks = fopen(("worlds/"+this->name+"/chunks.dat").c_str(), "wb");
@@ -150,9 +262,35 @@ bool World::loadWorld(){
 	}
 	FILE* chunks = fopen(("worlds/"+this->name+"/chunks.dat").c_str(), "rb");
 	if(!chunks) return false;
-	//TODO level.dat ??
+	FILE* level = fopen(("worlds/"+this->name+"/level.dat").c_str(), "rb");
+	if(!level) return false;
 
-	
+	int type, rest;
+	fread(&type, 4, 1, level);
+	if(type != 3){
+		printf("Level.dat type is not 3, got %d\n", type);
+	}
+	fread(&rest, 4, 1, level);
+	unsigned char* buf = (unsigned char*) malloc(rest);
+	fread(buf, 1, rest, level);
+
+	RakNet::BitStream stream(buf, rest, false);
+	tag::Compound* root = (tag::Compound*) create_tag(RoadRunner::nbt::TagIdentifiers::COMPOUND);
+    root->read(&stream);
+	print_tag(root);
+	tag::Compound* real = (tag::Compound*) root->value[0];
+
+	tag::Long* time = (tag::Long*) real->find("Time");
+	if(time) this->time = time->value;
+
+	tag::Long* seed = (tag::Long*) real->find("RandomSeed");
+	if(seed) this->seed = seed->value;
+
+	delete root;
+	free(buf);
+
+
+
 	int header;
 	//TODO loctable
 	for(int chunkX = 0; chunkX < 16; ++chunkX){

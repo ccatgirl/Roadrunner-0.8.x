@@ -10,13 +10,16 @@ RoadRunner::nbt::tag::Compound::Compound() {
 }
 
 RoadRunner::nbt::tag::Compound::~Compound() {
-    for (size_t i = 0; i < this->value.size(); ++i) {
-        if (this->value[i] != nullptr) {
-            delete this->value[i];
+    if(!unsafe){
+        for (size_t i = 0; i < this->value.size(); ++i) {
+            if (this->value[i] != nullptr) {
+                delete this->value[i];
+            }
         }
+        this->value.clear();
     }
-    this->value.clear();
 }
+
 
 bool RoadRunner::nbt::tag::Compound::read(RakNet::BitStream *stream) {
     int8_t tag_id = 0;
