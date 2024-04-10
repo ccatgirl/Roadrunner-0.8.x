@@ -179,15 +179,8 @@ void World::saveWorld(){
 		unsigned char* data = stream.GetData();
 		int length = stream.GetNumberOfBytesUsed();
 
-		unsigned char lengthLe[] = {
-			(uint8_t) ((length & 0xff)), 
-			(uint8_t) ((length & 0xff00) >> 8), 
-			(uint8_t) ((length & 0xff0000) >> 16), 
-			(uint8_t) ((length & 0xff000000) >> 24)
-		};
-
 		fwrite("\3\0\0\0", 4, 1, level); //type?
-		fwrite(lengthLe, 4, 1, level); //size of buffer
+		fwrite(&length, 4, 1, level); //size of buffer
 		fwrite(data, 1, length, level);
 		fclose(level);
 	}else{
@@ -214,40 +207,10 @@ void World::saveWorld(){
 			Chunk* c = this->get_chunk(chunkX, chunkZ);
 
 			fwrite(&chunkHeader, 4, 1, chunks);
-
-			for(int x = 0; x < 16; ++x){
-				for(int z = 0; z < 16; ++z){
-					int index = x << 11 | z << 7;
-					fwrite(c->block_ids + index, 1, 128, chunks); //id
-				}
-			}
-
-			for(int x = 0; x < 16; ++x){
-				for(int z = 0; z < 16; ++z){
-					int index = x << 11 | z << 7;
-					fwrite(c->block_metas + (index >> 1), 1, 64, chunks); //meta
-				}
-			}
-
-			for(int x = 0; x < 16; ++x){
-				for(int z = 0; z < 16; ++z){
-					int index = x << 11 | z << 7;
-					fwrite(c->skylight + (index >> 1), 1, 64, chunks); //skylight
-				}
-			}
-
-			for(int x = 0; x < 16; ++x){
-				for(int z = 0; z < 16; ++z){
-					int index = x << 11 | z << 7;
-					fwrite(c->blocklight + (index >> 1), 1, 64, chunks); //blocklight
-				}
-			}
-
-			for(int x = 0; x < 16; ++x){
-				for(int z = 0; z < 16; ++z){
-					fwrite("\xff", 1, 1, chunks); //update map
-				}
-			}
+			fwrite(c->block_ids, 1, 128*16*16, chunks); //id
+			fwrite(c->block_metas, 1, 64*16*16, chunks); //meta
+			fwrite(c->skylight, 1, 64*16*16, chunks); //skylight
+			fwrite(c->blocklight, 1, 64*16*16, chunks); //blocklight
 		}
 	}
 
@@ -298,34 +261,11 @@ bool World::loadWorld(){
 
 			
 			fread(&header, 4, 1, chunks);
+			fread(c->block_ids, 1, 128*16*16, chunks);
+			fread(c->block_metas, 1, 64*16*16, chunks);
+			fread(c->skylight, 1, 64*16*16, chunks);
+			fread(c->blocklight, 1, 64*16*16, chunks);
 
-			for(int x = 0; x < 16; ++x){
-				for(int z = 0; z < 16; ++z){
-					int index = x << 11 | z << 7;
-					fread(c->block_ids + index, 1, 128, chunks);
-				}
-			}
-
-			for(int x = 0; x < 16; ++x){
-				for(int z = 0; z < 16; ++z){
-					int index = x << 11 | z << 7;
-					fread(c->block_metas + (index >> 1), 1, 64, chunks);
-				}
-			}
-
-			for(int x = 0; x < 16; ++x){
-				for(int z = 0; z < 16; ++z){
-					int index = x << 11 | z << 7;
-					fread(c->skylight + (index >> 1), 1, 64, chunks);
-				}
-			}
-
-			for(int x = 0; x < 16; ++x){
-				for(int z = 0; z < 16; ++z){
-					int index = x << 11 | z << 7;
-					fread(c->blocklight + (index >> 1), 1, 64, chunks);
-				}
-			}
 		}
 	}
 
