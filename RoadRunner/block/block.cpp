@@ -1,9 +1,12 @@
 #include <block/block.hpp>
 #include <block/material/material.hpp>
 #include <cstdio>
+#include <items/item.hpp>
+#include <items/blockitem.hpp>
 
 using RoadRunner::block::material::Material;
 using RoadRunner::block::Block;
+using namespace RoadRunner::items;
 
 Block *Block::blocks[256];
 int Block::lightBlock[256];
@@ -205,7 +208,7 @@ void Block::initBlocks() {
     Block::lapisBlock = (new Block(22, Material::stone))->init()->setDestroyTime(3.0f)->setExplodeable(5.0f);
     Block::sandStone = (new Block(24, Material::stone))->init()->setDestroyTime(0.8f); //in 0.8.1 it has its own class that extends MultiTextureTile, server doesnt really need it i think
     Block::bed = (new BedBlock(26))->init()->setDestroyTime(0.2f);
-    //TODO goldenRail (27)
+    Block::goldenRail = (new PoweredRailBlock(27))->init()->setDestroyTime(0.7f);
     Block::web = (new WebBlock(30))->init()->setLightBlock(1)->setDestroyTime(4.0f);
     Block::tallgrass = (new TallGrass(31))->init()->setDestroyTime(0.0f);
     Block::deadBush = (new DeadBush(32))->init()->setDestroyTime(0.0f);
@@ -236,7 +239,7 @@ void Block::initBlocks() {
     //TODO sign
     //TODO door_wood
     //TODO ladder
-    //TODO rail
+    Block::rail = (new RailBlock(66))->init()->setDestroyTime(0.7f);
     //TODO stairs_stone
     //TODO wallSign
     //TODO door_iron
@@ -245,7 +248,7 @@ void Block::initBlocks() {
     //TODO topSnow
     //TODO ice
     //TODO snow
-    //TODO cactus
+    Block::cactus = (new CactusBlock(81))->init()->setDestroyTime(0.4f);
     Block::clay = (new ClayBlock(82))->init()->setDestroyTime(0.6f);
     Block::reeds = (new ReedBlock(83))->init()->setDestroyTime(0.0f);
     //TODO fence
@@ -290,6 +293,23 @@ void Block::initBlocks() {
     Block::info_reserved6 = (new Block(255, Material::dirt))->init();
     Block::fire = (new FireBlock(51))->init()->setDestroyTime(0)->setLightEmission(1.0f);
 
-    //ItemBlocks are initialized after
+    //certain specific blocks that use custom item classes manually register them
+
+
+
+    int actualItemID = -256;
+    int blockID = 0;
+
+    
+    do{
+        if(Block::blocks[blockID]){
+            if(!Item::items[blockID]){
+                Item::items[blockID] = new BlockItem(actualItemID);
+            }
+        }
+        ++blockID;
+        ++actualItemID;
+    }while(blockID < 256);
+
 }
 

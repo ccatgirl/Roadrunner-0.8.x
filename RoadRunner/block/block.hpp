@@ -150,8 +150,18 @@ namespace RoadRunner {
                 return this;
             };
 
-            bool isSolidRender(){
+            virtual bool isSolidRender(){
                 return true;
+            }
+
+            virtual int getPlacementDataValue(
+                RoadRunner::world::World* world, 
+                int x, int y, int z, 
+                int face, float faceX, float faceY, float faceZ, 
+                Player* mob, //TODO Mob* mob
+                float meta
+            ){ 
+                return meta;
             }
 
             void setShape(float minX, float minY, float minZ, float maxX, float maxY, float maxZ){
@@ -181,6 +191,10 @@ namespace RoadRunner {
                 return this;
             }
             
+            bool use(RoadRunner::world::World* world, int32_t x, int32_t y, int32_t z, RoadRunner::Player* player){
+                return false;
+            };
+
             virtual void onPlace(RoadRunner::world::World* world, int32_t x, int32_t y, int32_t z);
             virtual void onRemove(RoadRunner::world::World* world, int32_t x, int32_t y, int32_t z);
             void playerWillDestroy(RoadRunner::world::World* world, int32_t x, int32_t y, int32_t z, int32_t meta, RoadRunner::Player* player){}; //used only by door
@@ -215,11 +229,15 @@ namespace RoadRunner {
         };
 
         class Bush : public Block{
-        public:
-            Bush(uint8_t id): Bush(id, Material::plant){};
-            Bush(uint8_t id, Material* mat): Block(id, mat){
-                this->setTicking(true);
-            };
+            public:
+                Bush(uint8_t id): Bush(id, Material::plant){};
+                Bush(uint8_t id, Material* mat): Block(id, mat){
+                    this->setTicking(true);
+                };
+
+                bool isSolidRender() override{
+                    return false;
+                }
         };
 
         class LiquidBlock : public Block{
@@ -269,13 +287,6 @@ namespace RoadRunner {
         class FireBlock : public Block{
         public:
             FireBlock(uint8_t id): Block(id, Material::fire){};
-        };
-
-        class BedBlock : public Block{
-        public:
-            BedBlock(uint8_t id): Block(id, Material::cloth){
-                
-            };
         };
 
         class Mushroom : public Block{
@@ -334,12 +345,16 @@ namespace RoadRunner {
         };
 
         class WoolCarpetBlock : public Block{
-        public:
-            WoolCarpetBlock(uint8_t id): Block(id, Material::cloth){
-                this->setShape(0, 0, 0, 1, 0.0625f, 1);
-                //this->setTicking(true); mojang moment
-            }
+            public:
+                WoolCarpetBlock(uint8_t id): Block(id, Material::cloth){
+                    this->setShape(0, 0, 0, 1, 0.0625f, 1);
+                    //this->setTicking(true); mojang moment
+                }
             
+
+                bool isSolidRender() override{
+                    return false;
+                }
         };
 
         class LightGemBlock : public Block{
@@ -368,6 +383,34 @@ namespace RoadRunner {
             }
         };
 
+        class BaseRailBlock : public Block{
+            public:
+                bool powered;
+
+                BaseRailBlock(uint8_t id, bool powered): Block(id, Material::decoration){
+                    this->powered = powered;
+                    this->setShape(0.0f, 0.0f, 0.0f, 1.0f, 0.125f, 1.0f);
+                }
+
+                bool isSolidRender() override{
+                    return false;
+                }
+        };
+
+        class PoweredRailBlock : public BaseRailBlock{
+            public:
+                PoweredRailBlock(uint8_t id) : BaseRailBlock(id, true){
+                    
+                }
+        };
+
+        class RailBlock : public BaseRailBlock{
+             public:
+                RailBlock(uint8_t id) : BaseRailBlock(id, false){
+                    
+                }
+        };
+
         class ReedBlock : public Block{
         public:
             ReedBlock(uint8_t id): Block(id, Material::plant){
@@ -375,6 +418,33 @@ namespace RoadRunner {
                 this->setShape(0.125f, 0, 0.125f, 0.875f, 1.0f, 0.875f);
                 this->setTicking(true);
             }
+        };
+
+        class CactusBlock : public Block{
+            public:
+                CactusBlock(uint8_t id): Block(id, Material::cactus){
+
+                    this->setTicking(true);
+                }
+
+                bool isSolidRender() override{
+                    return false;
+                }
+        };
+
+        class BedBlock : public Block{
+             public:
+                BedBlock(uint8_t id): Block(id, Material::cloth){
+                    this->_setShape();
+                }
+
+                void _setShape(){ //a bit useless?
+                    this->setShape(0.0f, 0.0f, 0.0f, 1.0f, 0.5625f, 1.0f);
+                }
+
+                bool isSolidRender() override{
+                    return false;
+                }
         };
     }
 }

@@ -11,7 +11,7 @@
 namespace RoadRunner {
     class Server;
 
-    class Player : public Entity {
+    class Player : public Entity { //TODO extends Mob
     public:
         RakNet::RakNetGUID guid;
         std::string username = "???";

@@ -9,6 +9,7 @@
 #include "block/block.hpp"
 #include <chrono>
 #include <thread>
+#include <items/item.hpp>
 #include "block/material/material.hpp"
 #include <utils/properties.hpp>
 #include <config.hpp>
@@ -131,6 +132,7 @@ Server::Server(uint16_t port, uint32_t max_clients) {
     }
 
     Material::initMaterials();
+    RoadRunner::items::Item::initItems();
     Block::initBlocks();
 
     Biome::initBiomes();

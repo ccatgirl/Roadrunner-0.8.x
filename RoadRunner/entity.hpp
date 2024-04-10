@@ -31,5 +31,13 @@ namespace RoadRunner {
         ~Entity() {
             
         }
+
+        void setPos(float x, float y, float z){
+            //TODO bb
+            this->x = x;
+            this->y = y;
+            this->z = z;
+        }
+
     };
 }

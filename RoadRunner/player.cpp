@@ -19,7 +19,7 @@
 #include <network/enums/login_status_enum.hpp>
 #include <player.hpp>
 #include <world/perlin.hpp>
-
+#include <block/block.hpp>
 using RoadRunner::network::packets::SendInventoryPacket;
 using RoadRunner::network::packets::UseItemPacket;
 using RoadRunner::network::packets::RemoveBlockPacket;
@@ -39,7 +39,8 @@ using RoadRunner::network::packets::StartGamePacket;
 using RoadRunner::network::enums::ReadyStatusEnum;
 using RoadRunner::network::enums::LoginStatusEnum;
 using RoadRunner::world::Perlin;
-
+using RoadRunner::inventory::ItemInstance;
+using RoadRunner::block::Block;
 template <typename T>
 void RoadRunner::Player::send_packet(T &packet) {
     // Send a packet to the player
@@ -124,40 +125,35 @@ void RoadRunner::Player::handle_packet(uint8_t packet_id, RakNet::BitStream *str
     }else if(packet_id == UseItemPacket::packet_id){
 		UseItemPacket useitem_pk;
 		useitem_pk.deserialize_body(stream);
-		
-		if(useitem_pk.face >= 0 && useitem_pk.face <= 5){
-			//TODO handle block placement better	
-			//TODO per-entity world?
-			if(useitem_pk.block < 256){
-				int x = useitem_pk.x;
-				int y = useitem_pk.y;
-				int z = useitem_pk.z;
-				switch(useitem_pk.face){ //TODO better way
-					case 0:
-						--y;
-						break;
-					case 1:
-						++y;
-						break;
-					case 2:
-						--z;
-						break;
-					case 3:
-						++z;
-						break;
-					case 4:
-						--x;
-						break;
-					case 5:
-						++x;
-						break;
-				}
-                if(!this->server->world->get_block_id(x, y, z)) this->server->world->set_block(x, y, z, useitem_pk.block, useitem_pk.meta, 0b00000010); //TODO flag generator?
-                else{
-                    //TODO check is block replaceable maybe?
+		printf("%d\n", useitem_pk.meta);
+        ItemInstance item(useitem_pk.block, 1, useitem_pk.meta); //TODO serverside inv
+
+        if(item.isValid){
+            if(useitem_pk.face == 255){
+                //TODO egg/snowballs
+            }else{
+                int x = useitem_pk.x;
+                int y = useitem_pk.y;
+                int z = useitem_pk.z;
+                auto world = this->server->world; //TODO multiworld
+
+                int blockID = world->get_block_id(x, y, z);
+                Block* block = Block::blocks[blockID]; 
+                
+                if(block != Block::invisible_bedrock && (!block || !block->use(world, x, y, z, this))){
+                    float savedX = this->x;
+                    float savedY = this->y;
+                    float savedZ = this->z;
+                    this->setPos(useitem_pk.pos_x, useitem_pk.pos_y, useitem_pk.pos_z);
+                    Vec3 vec(useitem_pk.fx + x, useitem_pk.fy + y, useitem_pk.fz + z);
+                    this->gamemode->useItemOn(this, world, &item, x, y, z, useitem_pk.face, &vec);
+
+                    this->setPos(savedX, savedY, savedZ);
                 }
-			}
-		}
+            }
+        }else{
+            printf("Unknown item: %d %d %d ICM\n", useitem_pk.block, item.count, item.meta);
+        }
 	} else if(packet_id == RemoveBlockPacket::packet_id){
 		RemoveBlockPacket remove_block_pk;
 		remove_block_pk.deserialize_body(stream);

@@ -162,8 +162,6 @@ bool World::loadWorld(){
 
 			
 			fread(&header, 4, 1, chunks);
-			
-			printf("%d\n", header);
 
 			for(int x = 0; x < 16; ++x){
 				for(int z = 0; z < 16; ++z){
@@ -198,7 +196,7 @@ bool World::loadWorld(){
 	return true;
 }
 
-void RoadRunner::world::World::set_block(int32_t x, int32_t y, int32_t z, uint8_t id, uint8_t meta, uint8_t flags) {
+void RoadRunner::world::World::set_block(int32_t x, int32_t y, int32_t z, uint8_t id, uint8_t meta, uint8_t flags) { //TODO return success/failure
 	int chunkX = x / 16;
 	int chunkZ = z / 16;
 	int index = chunkX << 4 | chunkZ;
