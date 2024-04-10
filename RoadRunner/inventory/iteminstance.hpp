@@ -25,13 +25,13 @@ namespace RoadRunner{
 				RoadRunner::block::Block* block = 0;
 				bool isValid = 0;
 
-				ItemInstance::ItemInstance(RoadRunner::items::Item* item) : ItemInstance::ItemInstance(item, 1, 0){}
-				ItemInstance::ItemInstance(RoadRunner::items::Item* item, int count) : ItemInstance::ItemInstance(item, count, 0){};
-				ItemInstance::ItemInstance(RoadRunner::items::Item* item, int count, int meta);
-				ItemInstance::ItemInstance(RoadRunner::block::Block* block) : ItemInstance::ItemInstance(block, 1, 0){};
-				ItemInstance::ItemInstance(RoadRunner::block::Block* block, int count) : ItemInstance::ItemInstance(block, count, 0){};
-				ItemInstance::ItemInstance(RoadRunner::block::Block* block, int count, int meta);
-				ItemInstance::ItemInstance(int id, int count, int meta);
+				ItemInstance(RoadRunner::items::Item* item) : ItemInstance::ItemInstance(item, 1, 0){}
+				ItemInstance(RoadRunner::items::Item* item, int count) : ItemInstance::ItemInstance(item, count, 0){};
+				ItemInstance(RoadRunner::items::Item* item, int count, int meta);
+				ItemInstance(RoadRunner::block::Block* block) : ItemInstance::ItemInstance(block, 1, 0){};
+				ItemInstance(RoadRunner::block::Block* block, int count) : ItemInstance::ItemInstance(block, count, 0){};
+				ItemInstance(RoadRunner::block::Block* block, int count, int meta);
+				ItemInstance(int id, int count, int meta);
 				void _setItem(int id);
 				void init(int id, int count, int meta){
 					this->meta = meta;

@@ -19,7 +19,7 @@ namespace RoadRunner {
                 
                 Tag* find(char* name){
                     for(Tag* tag : this->value){
-                        if(tag->name._Equal(name)){
+                        if(tag->name == name){
                             return tag;
                         }
                     }

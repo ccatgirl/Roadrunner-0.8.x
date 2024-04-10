@@ -52,9 +52,7 @@ void World::tick(){
 	//else
 	{
 		int timeDiff = this->setTime(this->time + 1);
-		printf("%d\n", timeDiff);
 		if(timeDiff > 255){
-			printf("sync\n");
 			this->syncTime();
 			this->prevTimeSent = this->time;
 		}
@@ -169,7 +167,7 @@ void World::saveWorld(){
 		spawnMobs.value = 1; //TODO probably 0 in creative
 		tag.value.push_back(&spawnMobs);
 
-		print_tag(&tag);
+		//print_tag(&tag);
 
 		RakNet::BitStream stream(4); //TODO better static amount of bytes
 		
@@ -182,10 +180,10 @@ void World::saveWorld(){
 		int length = stream.GetNumberOfBytesUsed();
 
 		unsigned char lengthLe[] = {
-			(length & 0xff), 
-			(length & 0xff00) >> 8, 
-			(length & 0xff0000) >> 16, 
-			(length & 0xff000000) >> 24
+			(uint8_t) ((length & 0xff)), 
+			(uint8_t) ((length & 0xff00) >> 8), 
+			(uint8_t) ((length & 0xff0000) >> 16), 
+			(uint8_t) ((length & 0xff000000) >> 24)
 		};
 
 		fwrite("\3\0\0\0", 4, 1, level); //type?
@@ -277,7 +275,7 @@ bool World::loadWorld(){
 	RakNet::BitStream stream(buf, rest, false);
 	tag::Compound* root = (tag::Compound*) create_tag(RoadRunner::nbt::TagIdentifiers::COMPOUND);
     root->read(&stream);
-	print_tag(root);
+	//print_tag(root);
 	tag::Compound* real = (tag::Compound*) root->value[0];
 
 	tag::Long* time = (tag::Long*) real->find("Time");
