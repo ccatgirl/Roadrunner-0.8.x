@@ -186,7 +186,7 @@ void Block::initBlocks() {
     }
     
     Block::stone = (new StoneBlock(1))->init()->setDestroyTime(1.5f)->setExplodeable(10.0f); //TODO add descriptionID?
-    Block::grass = (new GrassBlock(2))->setDestroyTime(0.6f);
+    Block::grass = (new GrassBlock(2))->init()->setDestroyTime(0.6f);
     Block::dirt = (new DirtBlock(3))->init()->setDestroyTime(0.5f);
     Block::cobblestone = (new Block(4, Material::stone))->init()->setDestroyTime(2.0f)->setExplodeable(10.0f);
     Block::wood = (new WoodBlock(5))->init()->setDestroyTime(2.0f)->setExplodeable(5.0f);

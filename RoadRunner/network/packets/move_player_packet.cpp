@@ -15,10 +15,10 @@ bool RoadRunner::network::packets::MovePlayerPacket::deserialize_body(RakNet::Bi
     if (!stream->Read<float>(this->z)) {
         return false;
     }
-    if (!stream->Read<float>(this->pitch)) {
+    if (!stream->Read<float>(this->yaw)) {
         return false;
     }
-    if (!stream->Read<float>(this->yaw)) {
+    if (!stream->Read<float>(this->pitch)) {
         return false;
     }
     if (!stream->Read<float>(this->head_yaw)) {
