@@ -125,7 +125,6 @@ void RoadRunner::Player::handle_packet(uint8_t packet_id, RakNet::BitStream *str
     }else if(packet_id == UseItemPacket::packet_id){
 		UseItemPacket useitem_pk;
 		useitem_pk.deserialize_body(stream);
-		printf("%d\n", useitem_pk.meta);
         ItemInstance item(useitem_pk.block, 1, useitem_pk.meta); //TODO serverside inv
 
         if(item.isValid){

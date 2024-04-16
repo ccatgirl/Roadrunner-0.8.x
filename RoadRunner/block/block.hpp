@@ -14,7 +14,7 @@ namespace RoadRunner {
                 *stone,
                 *grass,
                 *dirt,
-                *cobblestone,
+                *cobblestone, //stoneBrick
                 *wood,
                 *sapling,
                 *bedrock,
@@ -97,6 +97,7 @@ namespace RoadRunner {
                 *woodStairsDark,
                 *woodStairsBirch,
                 *woodStairsJungle,
+				*stairs_stoneBrickSmooth,
                 *netherBrick,
                 *stairs_netherBricks,
                 *activatorRail,
@@ -445,6 +446,44 @@ namespace RoadRunner {
                 bool isSolidRender() override{
                     return false;
                 }
+        };
+
+        class SlabBlock : public Block{
+        	public:
+        		bool isFull;
+
+        		SlabBlock(uint8_t id, Material* material, bool isFull): Block(id, material){
+        			this->isFull = isFull;
+        			//TODO call updateDefaultShape
+        			this->setLightBlock(255);
+        		}
+        };
+
+        class StoneSlabBlock : public SlabBlock{
+        	public:
+        		StoneSlabBlock(uint8_t id, bool isFull) : SlabBlock(id, Material::stone, isFull){
+
+        		}
+        };
+
+        class StairBlock : public Block{
+        	public:
+        		Block* blockBase;
+        		int blockMeta;
+
+        		StairBlock(uint8_t id, Block* block, int blockMeta) : Block(id, block->material){\
+        			this->blockBase = block;
+        			this->blockMeta = blockMeta;
+
+        			this->setDestroyTime(block->blockHardness);
+        			this->setExplodeable(block->blockResistance / 3.0f);
+        			this->setLightBlock(255);
+        			//TODO this->field_5C = block->field_5C;
+        		}
+
+        		~StairBlock(){
+        			this->blockBase = 0;
+        		}
         };
     }
 }

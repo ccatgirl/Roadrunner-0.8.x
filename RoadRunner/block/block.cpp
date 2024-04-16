@@ -102,6 +102,7 @@ Block
     *Block::woodStairsDark,
     *Block::woodStairsBirch,
     *Block::woodStairsJungle,
+	*Block::stairs_stoneBrickSmooth,
     *Block::netherBrick,
     *Block::stairs_netherBricks,
     *Block::activatorRail,
@@ -219,15 +220,15 @@ void Block::initBlocks() {
     Block::mushroom2 = (new Mushroom(40))->init()->setDestroyTime(0.0f);
     Block::goldBlock = (new MetalBlock(41))->init()->setDestroyTime(3.0f)->setExplodeable(10.0f);
     Block::ironBlock = (new MetalBlock(42))->init()->setDestroyTime(5.0f)->setExplodeable(10.0f);
-    //TODO stoneSlab (43)
-    //TODO stoneSlabHalf (0x2C)
+    Block::stoneSlab = (new StoneSlabBlock(43, true))->init()->setDestroyTime(2.0f)->setExplodeable(10.0f);
+    Block::stoneSlabHalf = (new StoneSlabBlock(44, false))->init()->setDestroyTime(2.0f)->setExplodeable(10.0f);
     Block::redBrick = (new Block(45, Material::stone))->init()->setDestroyTime(2.0f)->setExplodeable(10.0f);
     Block::tnt = (new TntBlock(46))->init()->setDestroyTime(0.0f);
     Block::bookshelf = (new BookshelfBlock(47))->init()->setDestroyTime(1.5f);
     Block::mossStone = (new Block(48, Material::stone))->init()->setDestroyTime(2.0f)->setExplodeable(10.0f);
     Block::obsidian = (new StoneBlock(49))->init()->setDestroyTime(10.0f)->setExplodeable(2000.0f);
     Block::torch = (new TorchBlock(50))->init()->setDestroyTime(0.0f)->setLightEmission(0.9375f);
-    //TODO stairs_wood
+    Block::stairs_wood = (new StairBlock(53, Block::wood, 0))->init();
     //TODO chest
     Block::diamondOre = (new OreBlock(56))->init()->setDestroyTime(3.0f)->setExplodeable(5.0f);
     Block::diamondBlock = (new MetalBlock(57))->init()->setDestroyTime(5.0f)->setExplodeable(10.0f);
@@ -240,7 +241,7 @@ void Block::initBlocks() {
     //TODO door_wood
     //TODO ladder
     Block::rail = (new RailBlock(66))->init()->setDestroyTime(0.7f);
-    //TODO stairs_stone
+    Block::stairs_stone = (new StairBlock(67, Block::cobblestone, 0))->init();
     //TODO wallSign
     //TODO door_iron
     Block::redStoneOre = (new RedStoneOreBlock(73, 0))->init()->setDestroyTime(3.0f)->setExplodeable(5.0f);
@@ -266,14 +267,15 @@ void Block::initBlocks() {
     //TODO pumpkinStem
     //TODO melonStem
     //TODO fenceGate
-    //TODO stairs_brick
-    //TODO woodStairsDark
-    //TODO woodStairsBirch
-    //TODO woodStairsJungle
+    Block::stairs_brick = (new StairBlock(108, Block::redBrick, 0))->init();
+    Block::woodStairsDark = (new StairBlock(134, Block::wood, 1))->init();
+    Block::woodStairsBirch = (new StairBlock(135, Block::wood, 2))->init();
+    Block::woodStairsJungle = (new StairBlock(136, Block::wood, 3))->init();
+    Block::stairs_stoneBrickSmooth = (new StairBlock(109, Block::stoneBrickSmooth, 0))->init();
     Block::netherBrick = (new Block(112, Material::stone))->init()->setDestroyTime(2.0f)->setExplodeable(10.0f);
-    //TODO stairs_netherBricks
+    Block::stairs_netherBricks = (new StairBlock(114, Block::netherBrick, 0))->init();
     //TODO activatorRail it is CakeTile(126) for some reason
-    //TODO stairs_sandStone
+    Block::stairs_sandStone = (new StairBlock(128, Block::sandStone, 0))->init();
     //TODO cobbleWall
     //TODO carrots
     //TODO potatoes

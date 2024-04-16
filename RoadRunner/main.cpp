@@ -18,6 +18,5 @@ int main(int argc, char** argv) {
         print_tag(tag12121212);
         return 0;
     }
-
     Server *server = new Server(19132, MAX_CLIENTS);
 }
