@@ -457,6 +457,27 @@ namespace RoadRunner {
 					//TODO call updateDefaultShape
 					this->setLightBlock(255);
 				}
+
+				virtual int getPlacementDataValue(
+					RoadRunner::world::World* world,
+					int x, int y, int z,
+					int face, float faceX, float faceY, float faceZ,
+					Player* mob, //TODO Mob* mob
+					float meta
+				){
+					if(!this->isFull && (face == 0 || (face != 1 && faceY > 0.5f))){
+						return (int)meta | 8;
+					}
+
+					return (int)meta;
+				}
+		};
+
+		class WoodSlabBlock : public SlabBlock{
+			public:
+				WoodSlabBlock(uint8_t id, bool isFull) : SlabBlock(id, Material::wood, isFull){
+
+				}
 		};
 
 		class StoneSlabBlock : public SlabBlock{
@@ -464,6 +485,14 @@ namespace RoadRunner {
 				StoneSlabBlock(uint8_t id, bool isFull) : SlabBlock(id, Material::stone, isFull){
 
 				}
+		};
+
+		class QuartzBlock : public Block{
+			public:
+				QuartzBlock(uint8_t id) : Block(id, Material::stone){
+
+				}
+
 		};
 
 		class StairBlock : public Block{

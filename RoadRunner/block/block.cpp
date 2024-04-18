@@ -279,10 +279,10 @@ void Block::initBlocks() {
     //TODO cobbleWall
     //TODO carrots
     //TODO potatoes
-    //TODO quartzBlock
-    //TODO stairs_quartz
-    //TODO woodSlab
-    //TODO woodSlabHalf
+    Block::quartzBlock = (new QuartzBlock(155))->init()->setDestroyTime(0.8f);
+    Block::stairs_quartz = (new StairBlock(156, Block::quartzBlock, 0))->init();
+    Block::woodSlab = (new WoodSlabBlock(157, true))->init()->setDestroyTime(2.0f)->setExplodeable(10.0f);
+    Block::woodSlabHalf = (new WoodSlabBlock(158, false))->init()->setDestroyTime(2.0f)->setExplodeable(10.0f);
     //TODO hayBlock
     Block::woolCarpet = (new WoolCarpetBlock(171))->init()->setDestroyTime(0.1f)->setLightBlock(0.0f);
     Block::coalBlock = (new MetalBlock(173))->init()->setDestroyTime(5.0f)->setExplodeable(10.0f);
@@ -296,6 +296,9 @@ void Block::initBlocks() {
     Block::fire = (new FireBlock(51))->init()->setDestroyTime(0)->setLightEmission(1.0f);
 
     //certain specific blocks that use custom item classes manually register them
+
+    Item::items[Block::stoneSlabHalf->blockID] = (new StoneSlabBlockItem(Block::stoneSlabHalf->blockID - 256))->setMaxDamage(0)->setStackedByData(1);
+    Item::items[Block::woodSlabHalf->blockID] = (new WoodSlabBlockItem(Block::woodSlabHalf->blockID - 256, Block::woodSlabHalf));
 
 
 
