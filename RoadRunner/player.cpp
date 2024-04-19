@@ -272,6 +272,7 @@ void RoadRunner::Player::handle_packet(uint8_t packet_id, RakNet::BitStream *str
         this->z = move_player.z;
         this->pitch = move_player.pitch;
         this->yaw = move_player.yaw;
+        this->headYaw = move_player.head_yaw;
     } else if (packet_id == SendInventoryPacket::packet_id) {
         SendInventoryPacket send_inventory;
         send_inventory.deserialize_body(stream);

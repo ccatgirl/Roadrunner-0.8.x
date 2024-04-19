@@ -19,6 +19,7 @@ namespace RoadRunner {
         float z = 0;
         float yaw = 0;
         float pitch = 0;
+        float headYaw = 0;
         int32_t entity_id = 0;
 
         float fallDistance = 0;
