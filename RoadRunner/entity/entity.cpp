@@ -1,7 +1,7 @@
-#include <entity.hpp>
+#include <entity/entity.hpp>
 #include <server.hpp>
 
-using RoadRunner::Entity;
+using RoadRunner::entity::Entity;
 int Entity::entityCounter = 0;
 Entity::Entity(RoadRunner::Server* server){
 	this->server = server;

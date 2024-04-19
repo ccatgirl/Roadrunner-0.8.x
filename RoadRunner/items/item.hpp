@@ -42,7 +42,7 @@ namespace RoadRunner {
 					return this;
 				}
 
-				virtual bool useOn(RoadRunner::inventory::ItemInstance* instance, RoadRunner::Player* player,  RoadRunner::world::World* world, int x, int y, int z, int face, float faceX, float faceY, float faceZ){
+				virtual bool useOn(RoadRunner::inventory::ItemInstance* instance, RoadRunner::entity::Player* player,  RoadRunner::world::World* world, int x, int y, int z, int face, float faceX, float faceY, float faceZ){
 					return 0;
 				}
 

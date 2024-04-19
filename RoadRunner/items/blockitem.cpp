@@ -7,7 +7,7 @@ using RoadRunner::block::Block;
 
 bool BlockItem::useOn(
 	RoadRunner::inventory::ItemInstance* instance, 
-	RoadRunner::Player* player,  
+	RoadRunner::entity::Player* player,  
 	RoadRunner::world::World* world, 
 	int x, int y, int z, 
 	int face, float faceX, float faceY, float faceZ
@@ -55,7 +55,7 @@ bool BlockItem::useOn(
 
 bool WoodSlabBlockItem::useOn(
 	RoadRunner::inventory::ItemInstance* instance,
-	RoadRunner::Player* player,
+	RoadRunner::entity::Player* player,
 	RoadRunner::world::World* world,
 	int x, int y, int z,
 	int face, float faceX, float faceY, float faceZ
@@ -94,7 +94,7 @@ bool WoodSlabBlockItem::useOn(
 
 bool StoneSlabBlockItem::useOn(
 	RoadRunner::inventory::ItemInstance* instance,
-	RoadRunner::Player* player,
+	RoadRunner::entity::Player* player,
 	RoadRunner::world::World* world,
 	int x, int y, int z,
 	int face, float faceX, float faceY, float faceZ

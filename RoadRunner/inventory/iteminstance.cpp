@@ -34,7 +34,7 @@ void ItemInstance::_setItem(int id){
 }
 
 bool ItemInstance::useOn(
-	RoadRunner::Player* player, 
+	RoadRunner::entity::Player* player, 
 	RoadRunner::world::World* world, 
 	int x, int y, int z, 
 	int face, float faceX, float faceY, float faceZ

@@ -17,7 +17,7 @@ namespace RoadRunner {
 				}
 				virtual ~BlockItem(){}
 
-				virtual bool useOn(RoadRunner::inventory::ItemInstance* instance, RoadRunner::Player* player,  RoadRunner::world::World* world, int x, int y, int z, int face, float faceX, float faceY, float faceZ) override;
+				virtual bool useOn(RoadRunner::inventory::ItemInstance* instance, RoadRunner::entity::Player* player,  RoadRunner::world::World* world, int x, int y, int z, int face, float faceX, float faceY, float faceZ) override;
 		};
 
 		class AuxDataBlockItem : public BlockItem{
@@ -77,7 +77,7 @@ namespace RoadRunner {
 
 				}
 
-				virtual bool useOn(RoadRunner::inventory::ItemInstance* instance, RoadRunner::Player* player,  RoadRunner::world::World* world, int x, int y, int z, int face, float faceX, float faceY, float faceZ) override;
+				virtual bool useOn(RoadRunner::inventory::ItemInstance* instance, RoadRunner::entity::Player* player,  RoadRunner::world::World* world, int x, int y, int z, int face, float faceX, float faceY, float faceZ) override;
 		};
 
 		class StoneSlabBlockItem : public BlockItem{
@@ -91,7 +91,7 @@ namespace RoadRunner {
 					return meta;
 				}
 
-				virtual bool useOn(RoadRunner::inventory::ItemInstance* instance, RoadRunner::Player* player,  RoadRunner::world::World* world, int x, int y, int z, int face, float faceX, float faceY, float faceZ) override;
+				virtual bool useOn(RoadRunner::inventory::ItemInstance* instance, RoadRunner::entity::Player* player,  RoadRunner::world::World* world, int x, int y, int z, int face, float faceX, float faceY, float faceZ) override;
 		};
 	}
 }

@@ -2,16 +2,16 @@
 #include <block/block.hpp>
 #include <world/world.hpp>
 #include <gamemode.hpp>
-#include <player.hpp>
+#include <entity/player.hpp>
 #include <inventory/iteminstance.hpp>
 using RoadRunner::block::Block;
 using RoadRunner::inventory::ItemInstance;
 using RoadRunner::world::World;
 using RoadRunner::utils::Vec3;
-RoadRunner::GameMode::GameMode(RoadRunner::Player* player){
+RoadRunner::GameMode::GameMode(RoadRunner::entity::Player* player){
 	this->player = player;
 }
-bool RoadRunner::GameMode::useItemOn(RoadRunner::Player* player, World* world, ItemInstance* item, int x, int y, int z, int face, Vec3* something){
+bool RoadRunner::GameMode::useItemOn(RoadRunner::entity::Player* player, World* world, ItemInstance* item, int x, int y, int z, int face, Vec3* something){
 	float faceX = something->x - x;
 	float faceY = something->y - y;
 	float faceZ = something->z - z;

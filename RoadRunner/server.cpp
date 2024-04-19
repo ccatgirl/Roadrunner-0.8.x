@@ -17,6 +17,7 @@
 #include <world/noise/perlin_noise.hpp>
 #include <world/biome/biome.hpp>
 #include <world/generator/level_source.hpp>
+#include <entity/entity.hpp>
 
 #ifndef _WIN32
 #include <signal.h>
@@ -41,11 +42,11 @@ void Server::post_to_chat(std::string message) {
         ++it;
     }
 }
-void Server::addEntity(RoadRunner::Entity* entity){
+void Server::addEntity(RoadRunner::entity::Entity* entity){
     this->entities[entity->entity_id] = entity;
 }
 
-void Server::removeEntity(RoadRunner::Entity* entity){
+void Server::removeEntity(RoadRunner::entity::Entity* entity){
     this->entities.erase(entity->entity_id);
 }
 
@@ -223,7 +224,7 @@ Server::Server(uint16_t port, uint32_t max_clients) {
                 case ID_NEW_INCOMING_CONNECTION:
                     printf("A new connection is incoming.\n");
                     if (this->players.count(packet->guid) == 0) {
-                        RoadRunner::Player *player = new RoadRunner::Player(this);
+                        RoadRunner::entity::Player *player = new RoadRunner::entity::Player(this);
                         player->guid = packet->guid;
                         this->players[packet->guid] = player;
                     }

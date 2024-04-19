@@ -12,7 +12,9 @@ namespace RoadRunner{
 		class World;
 	}
 
-	class Player;
+	namespace entity{
+		class Player;
+	}
 
 	namespace inventory{
 		class ItemInstance{
@@ -39,7 +41,7 @@ namespace RoadRunner{
 					this->_setItem(id);
 				}
 
-				bool useOn(RoadRunner::Player* player,  RoadRunner::world::World* world, int x, int y, int z, int face, float faceX, float faceY, float faceZ);
+				bool useOn(RoadRunner::entity::Player* player,  RoadRunner::world::World* world, int x, int y, int z, int face, float faceX, float faceY, float faceZ);
 
 				bool isItem();
 		};

@@ -2,9 +2,10 @@
 #include <cstdint>
 #include "material/material.hpp"
 #include <world/world.hpp>
-#include <player.hpp>
+#include <entity/player.hpp>
 
 using RoadRunner::block::material::Material;
+using RoadRunner::entity::Player;
 
 namespace RoadRunner {
 	namespace block{
@@ -192,13 +193,13 @@ namespace RoadRunner {
 				return this;
 			}
 
-			bool use(RoadRunner::world::World* world, int32_t x, int32_t y, int32_t z, RoadRunner::Player* player){
+			bool use(RoadRunner::world::World* world, int32_t x, int32_t y, int32_t z, RoadRunner::entity::Player* player){
 				return false;
 			};
 
 			virtual void onPlace(RoadRunner::world::World* world, int32_t x, int32_t y, int32_t z);
 			virtual void onRemove(RoadRunner::world::World* world, int32_t x, int32_t y, int32_t z);
-			void playerWillDestroy(RoadRunner::world::World* world, int32_t x, int32_t y, int32_t z, int32_t meta, RoadRunner::Player* player){}; //used only by door
+			void playerWillDestroy(RoadRunner::world::World* world, int32_t x, int32_t y, int32_t z, int32_t meta, RoadRunner::entity::Player* player){}; //used only by door
 		};
 
 		class StoneBlock : public Block{

@@ -17,7 +17,7 @@
 #include <network/packets/start_game_packet.hpp>
 #include <network/enums/ready_status_enum.hpp>
 #include <network/enums/login_status_enum.hpp>
-#include <player.hpp>
+#include <entity/player.hpp>
 #include <world/perlin.hpp>
 #include <block/block.hpp>
 using RoadRunner::network::packets::SendInventoryPacket;
@@ -42,7 +42,7 @@ using RoadRunner::world::Perlin;
 using RoadRunner::inventory::ItemInstance;
 using RoadRunner::block::Block;
 template <typename T>
-void RoadRunner::Player::send_packet(T &packet) {
+void RoadRunner::entity::Player::send_packet(T &packet) {
     // Send a packet to the player
     RakNet::BitStream send_stream;
     send_stream.Write<uint8_t>(packet.packet_id);
@@ -51,7 +51,7 @@ void RoadRunner::Player::send_packet(T &packet) {
 }
 
 template <typename T>
-void RoadRunner::Player::broadcast_packet(T &packet) {
+void RoadRunner::entity::Player::broadcast_packet(T &packet) {
     // Send a packet to all players
     RakNet::BitStream send_stream;
     send_stream.Write<uint8_t>(packet.packet_id);
@@ -71,7 +71,7 @@ float fsignbit(float f){
 }
 
 template <typename T>
-void RoadRunner::Player::broadcast_except_packet(T &packet) {
+void RoadRunner::entity::Player::broadcast_except_packet(T &packet) {
     // Send a packet to all players except the one sending it
     RakNet::BitStream send_stream;
     send_stream.Write<uint8_t>(packet.packet_id);
@@ -87,7 +87,7 @@ void RoadRunner::Player::broadcast_except_packet(T &packet) {
     }
 }
 
-void RoadRunner::Player::handle_packet(uint8_t packet_id, RakNet::BitStream *stream) {
+void RoadRunner::entity::Player::handle_packet(uint8_t packet_id, RakNet::BitStream *stream) {
     if (packet_id == LoginPacket::packet_id) { //TODO switch
         LoginPacket login;
         login.deserialize_body(stream);
@@ -292,7 +292,7 @@ void RoadRunner::Player::handle_packet(uint8_t packet_id, RakNet::BitStream *str
     }
 }
 
-RoadRunner::Player::~Player() {
+RoadRunner::entity::Player::~Player() {
     // Remove
     RemovePlayerPacket rm_player;
     rm_player.entity_id = this->entity_id;
