@@ -296,12 +296,19 @@ void Block::initBlocks() {
     Block::fire = (new FireBlock(51))->init()->setDestroyTime(0)->setLightEmission(1.0f);
 
     //certain specific blocks that use custom item classes manually register them
-
-    Item::items[Block::stoneSlabHalf->blockID] = (new StoneSlabBlockItem(Block::stoneSlabHalf->blockID - 256))->setMaxDamage(0)->setStackedByData(1);
+    Item::items[Block::cloth->blockID] = (new ClothBlockItem(Block::cloth->blockID - 256));
+    Item::items[Block::treeTrunk->blockID] = (new AuxDataBlockItem(Block::treeTrunk->blockID - 256, Block::treeTrunk));
+    Item::items[Block::stoneBrickSmooth->blockID] = (new AuxDataBlockItem(Block::stoneBrickSmooth->blockID - 256, Block::stoneBrickSmooth));
+    Item::items[Block::stoneSlabHalf->blockID] = (new StoneSlabBlockItem(Block::stoneSlabHalf->blockID - 256));
+    Item::items[Block::sapling->blockID] = (new SaplingBlockItem(Block::sapling->blockID - 256));
+    Item::items[Block::leaves->blockID] = (new LeafBlockItem(Block::leaves->blockID - 256));
+    Item::items[Block::sandStone->blockID] = (new AuxDataBlockItem(Block::sandStone->blockID - 256, Block::sandStone));
     Item::items[Block::woodSlabHalf->blockID] = (new WoodSlabBlockItem(Block::woodSlabHalf->blockID - 256, Block::woodSlabHalf));
-
-
-
+    Item::items[Block::wood->blockID] = (new AuxDataBlockItem(Block::wood->blockID - 256, Block::wood));
+    Item::items[Block::quartzBlock->blockID] = (new AuxDataBlockItem(Block::quartzBlock->blockID - 256, Block::quartzBlock));
+    //TODO cobbleWall item
+    Item::items[Block::tallgrass->blockID] = (new AuxDataBlockItem(Block::tallgrass->blockID - 256, Block::tallgrass));
+    Item::items[Block::woolCarpet->blockID] = (new AuxDataBlockItem(Block::woolCarpet->blockID - 256, Block::woolCarpet));
     int actualItemID = -256;
     int blockID = 0;
 
