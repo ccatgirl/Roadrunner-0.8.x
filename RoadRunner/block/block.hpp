@@ -161,7 +161,7 @@ namespace RoadRunner {
 				int x, int y, int z,
 				int face, float faceX, float faceY, float faceZ,
 				Player* mob, //TODO Mob* mob
-				float meta
+				int meta
 			){
 				return meta;
 			}
@@ -203,13 +203,21 @@ namespace RoadRunner {
 		};
 
 		class StoneBlock : public Block{
-		public:
-			char unknown;
-			StoneBlock(uint8_t id): Block(id, Material::stone){
-				this->unknown = 0;
-			};
+			public:
+				StoneBlock(uint8_t id): Block(id, Material::stone){
+				};
 		};
-
+		
+		class ObsidianBlock : public StoneBlock{
+			public:
+				bool glowing;
+				
+				ObsidianBlock(uint8_t id) : StoneBlock(id){
+					//field_5C = 255 TODO 5c
+					this->glowing = 0;
+				} 
+		};
+		
 		class TorchBlock : public Block{
 			public:
 				TorchBlock(uint8_t id) : Block(id, Material::decoration){}
@@ -267,15 +275,38 @@ namespace RoadRunner {
 		};
 
 		class RotatedPillarBlock : public Block{
-		public:
-			RotatedPillarBlock(uint8_t id, Material* material): Block(id, material){};
+			public:
+				RotatedPillarBlock(uint8_t id, Material* material): Block(id, material){};
+				static uint8_t rotationArray[4];
+				virtual int getPlacementDataValue(
+					RoadRunner::world::World* world,
+					int x, int y, int z,
+					int face, float faceX, float faceY, float faceZ,
+					Player* mob, //TODO Mob* mob
+					int meta
+				){
+					int v11;
+					if(face < 2){
+						v11 = 0;
+					}else{
+						v11 = RotatedPillarBlock::rotationArray[face - 2];
+					}
+					return ((int)meta & 3) | v11;
+				}
 		};
 
 		class TreeBlock : public RotatedPillarBlock{
-		public:
-			TreeBlock(uint8_t id): RotatedPillarBlock(id, Material::wood){};
+			public:
+				TreeBlock(uint8_t id): RotatedPillarBlock(id, Material::wood){};
 		};
-
+		
+		class HayBlock : public RotatedPillarBlock{
+			public:
+				HayBlock(uint8_t id): RotatedPillarBlock(id, Material::dirt){
+					
+				}
+		};
+		
 		class LeafBlock : public Block{
 		public:
 			LeafBlock(uint8_t id): Block(id, Material::leaves){};
@@ -464,7 +495,7 @@ namespace RoadRunner {
 					int x, int y, int z,
 					int face, float faceX, float faceY, float faceZ,
 					Player* mob, //TODO Mob* mob
-					float meta
+					int meta
 				){
 					if(!this->isFull && (face == 0 || (face != 1 && faceY > 0.5f))){
 						return (int)meta | 8;
@@ -516,7 +547,7 @@ namespace RoadRunner {
 					int x, int y, int z,
 					int face, float faceX, float faceY, float faceZ,
 					Player* mob, //TODO Mob* mob
-					float meta
+					int meta
 				){
 					int m = meta;
 					if(face == 0 || (face != 1 && faceY > 0.5f)){

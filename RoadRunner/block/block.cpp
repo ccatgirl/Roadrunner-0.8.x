@@ -6,6 +6,7 @@
 
 using RoadRunner::block::material::Material;
 using RoadRunner::block::Block;
+using RoadRunner::block::RotatedPillarBlock;
 using namespace RoadRunner::items;
 
 Block *Block::blocks[256];
@@ -14,6 +15,9 @@ int Block::lightEmission[256];
 bool Block::shouldTick[256];
 bool Block::solid[256];
 bool Block::translucent[256];
+
+uint8_t RotatedPillarBlock::rotationArray[4] = {8, 8, 4, 4};
+
 
 Block 
     *Block::stone,
@@ -184,7 +188,6 @@ void Block::initBlocks() {
         Block::lightBlock[i] = 0;
         Block::shouldTick[i] = 0;
     }
-    
     Block::stone = (new StoneBlock(1))->init()->setDestroyTime(1.5f)->setExplodeable(10.0f); //TODO add descriptionID?
     Block::grass = (new GrassBlock(2))->init()->setDestroyTime(0.6f);
     Block::dirt = (new DirtBlock(3))->init()->setDestroyTime(0.5f);
@@ -226,7 +229,7 @@ void Block::initBlocks() {
     Block::tnt = (new TntBlock(46))->init()->setDestroyTime(0.0f);
     Block::bookshelf = (new BookshelfBlock(47))->init()->setDestroyTime(1.5f);
     Block::mossStone = (new Block(48, Material::stone))->init()->setDestroyTime(2.0f)->setExplodeable(10.0f);
-    Block::obsidian = (new StoneBlock(49))->init()->setDestroyTime(10.0f)->setExplodeable(2000.0f);
+    Block::obsidian = (new ObsidianBlock(49))->init()->setDestroyTime(10.0f)->setExplodeable(2000.0f);
     Block::torch = (new TorchBlock(50))->init()->setDestroyTime(0.0f)->setLightEmission(0.9375f);
     Block::stairs_wood = (new StairBlock(53, Block::wood, 0))->init();
     //TODO chest
@@ -283,12 +286,12 @@ void Block::initBlocks() {
     Block::stairs_quartz = (new StairBlock(156, Block::quartzBlock, 0))->init();
     Block::woodSlab = (new WoodSlabBlock(157, true))->init()->setDestroyTime(2.0f)->setExplodeable(10.0f);
     Block::woodSlabHalf = (new WoodSlabBlock(158, false))->init()->setDestroyTime(2.0f)->setExplodeable(10.0f);
-    //TODO hayBlock
+    Block::hayBlock = (new HayBlock(170))->init()->setDestroyTime(0.5f);
     Block::woolCarpet = (new WoolCarpetBlock(171))->init()->setDestroyTime(0.1f)->setLightBlock(0.0f);
     Block::coalBlock = (new MetalBlock(173))->init()->setDestroyTime(5.0f)->setExplodeable(10.0f);
-    //TODO beetroot
-    //TODO stonecutterBench
-    //TODO glowingObsidian
+    //TODO beetroot BeetrootBlock extends CropBlock
+    //TODO stonecutterBench 245 StonecutterBlock
+    Block::glowingObsidian = (new ObsidianBlock(246))->init()->setDestroyTime(10.0f)->setLightEmission(0.875f)->setExplodeable(2000.0f);
     //TODO netherReactor
     Block::info_updateGame2 = (new Block(248, Material::dirt))->init()->setDestroyTime(1.0f);
     Block::info_updateGame2 = (new Block(249, Material::dirt))->init()->setDestroyTime(1.0f);
