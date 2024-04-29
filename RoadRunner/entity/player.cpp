@@ -114,7 +114,7 @@ void RoadRunner::entity::Player::handle_packet(uint8_t packet_id, RakNet::BitStr
 
         printf("%s started a session(EID: %d)\n", this->username.c_str(), this->entity_id);
         StartGamePacket start_game;
-        start_game.seed = SEED;
+        start_game.seed = Server::INSTANCE->world->seed;
         start_game.generator = 0;
         start_game.gamemode = IS_CREATIVE;
         start_game.entity_id = this->entity_id;
