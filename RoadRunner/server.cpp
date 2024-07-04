@@ -18,6 +18,7 @@
 #include <world/biome/biome.hpp>
 #include <world/generator/level_source.hpp>
 #include <entity/entity.hpp>
+#include <utils/multisystem.h>
 
 #ifndef _WIN32
 #include <signal.h>
