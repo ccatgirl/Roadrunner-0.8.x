@@ -1,33 +1,32 @@
+#pragma once
+
 #include <sys/stat.h>
 
 
 #ifdef _WIN32
 	#include <io.h>
 	#include <windows.h>
-	
-	void createDirectory(char* path){
-		CreateDirectory(path, NULL);
-	}
+	#include <limits.h>
+	#include <winnt.h>
+	void createDirectory(char* path);
+	extern unsigned long currentResolution;
+	unsigned long setHighestTimerResolution(unsigned long timer_res_us);
+	void usleep(__int64 usec);
+
 #else
 	#include <sys/io.h>
-	void createDirectory(char* path){
-		mkdir(path, 0777);
-	}
+	#include <unistd.h>
+	void createDirectory(char* path);
 #endif
 
 inline void createDirectory(const char* path){
 	createDirectory((char*) path);
 }
 
-bool hasDirectory(char* path){
-	if(access(path, 0) == 0){
-		struct stat status;
-		stat(path, &status);
-		return (status.st_mode & S_IFDIR) != 0;
-	}
-	return false;
-}
+bool hasDirectory(char* path);
 
 inline bool hasDirectory(const char* path){
 	return hasDirectory((char*) path);
 }
+
+void sleepmicro(unsigned long long int usec);

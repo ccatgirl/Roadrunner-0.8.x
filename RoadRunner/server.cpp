@@ -18,6 +18,7 @@
 #include <world/biome/biome.hpp>
 #include <world/generator/level_source.hpp>
 #include <entity/entity.hpp>
+#include <utils/multisystem.h>
 
 #ifndef _WIN32
 #include <signal.h>
@@ -102,7 +103,6 @@ Server::Server(uint16_t port, uint32_t max_clients) {
 
     Server::INSTANCE = this;
     RoadRunner::world::BlankChunk::blankChunk = new RoadRunner::world::BlankChunk();
-    bool enableTPSFix = false;
     uint64_t nextTPSMeasure = 0;
     double tpsTotal = 0;
     Property* properties[] = {
@@ -110,7 +110,6 @@ Server::Server(uint16_t port, uint32_t max_clients) {
         new UnsignedIntegerProperty("max-clients", &max_clients),
         new StringProperty("world-seed", &SEEDPROP),
         new BooleanProperty("is-creative", &IS_CREATIVE),
-        new BooleanProperty("windows-tps-fix", &enableTPSFix)
     };
     size_t sizeProperties = sizeof(properties) / sizeof(properties[0]);
     Properties props("server.properties", sizeProperties, properties);
@@ -187,18 +186,9 @@ Server::Server(uint16_t port, uint32_t max_clients) {
 	    unsigned long long int timeMS = getTimeMS();
 	    if(nextUpdate > timeMS){
             uint64_t skip = (uint64_t) (nextUpdate - timeMS);
-		    //printf("TIME: %u(%u) skipping %ul\n", (int)timeMS/1000, timeMS, skip);
-		    //usleep((int)skip);
-            if(enableTPSFix){
-                if(skip >= 15){
-                    std::this_thread::sleep_for(std::chrono::milliseconds(15)); 
-                }
-                continue;
-            }else{
-                std::this_thread::sleep_for(std::chrono::milliseconds(skip));
-                continue;
-            }
-	    }
+			usleep(skip*1000);
+                	continue;
+		}
 	    nextUpdate = (double)timeMS+50;
         if(nextTPSMeasure < timeMS){
             
