@@ -103,7 +103,6 @@ Server::Server(uint16_t port, uint32_t max_clients) {
 
     Server::INSTANCE = this;
     RoadRunner::world::BlankChunk::blankChunk = new RoadRunner::world::BlankChunk();
-    bool enableTPSFix = false;
     uint64_t nextTPSMeasure = 0;
     double tpsTotal = 0;
     Property* properties[] = {
@@ -111,7 +110,6 @@ Server::Server(uint16_t port, uint32_t max_clients) {
         new UnsignedIntegerProperty("max-clients", &max_clients),
         new StringProperty("world-seed", &SEEDPROP),
         new BooleanProperty("is-creative", &IS_CREATIVE),
-        new BooleanProperty("windows-tps-fix", &enableTPSFix)
     };
     size_t sizeProperties = sizeof(properties) / sizeof(properties[0]);
     Properties props("server.properties", sizeProperties, properties);
