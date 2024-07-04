@@ -76,51 +76,6 @@ uint64_t getTimeMS() {
     return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 }
 
-#include <Windows.h>
-#include <limits.h>
-#include <winnt.h>
-
-unsigned long currentResolution = 0;
-
-unsigned long setHighestTimerResolution(unsigned long timer_res_us)
-{
-	unsigned long timer_current_res = ULONG_MAX;
-	const HINSTANCE ntdll = LoadLibrary("NTDLL.dll");
-	if (ntdll != NULL)
-	{
-		typedef long(NTAPI* pNtSetTimerResolution)(unsigned long RequestedResolution, BOOLEAN Set, unsigned long* ActualResolution);
-
-		pNtSetTimerResolution NtSetTimerResolution = (pNtSetTimerResolution) GetProcAddress(ntdll, "NtSetTimerResolution");
-		if (NtSetTimerResolution != NULL)
-		{
-			// bounds are validated and set to the highest allowed resolution
-			NtSetTimerResolution(timer_res_us, TRUE, &timer_current_res);
-		}
-		// we can decrement the internal reference count by one
-		// and NTDLL.DLL still remains loaded in the process
-		FreeLibrary(ntdll);
-	}
-
-	return timer_current_res;
-}
-
-void usleep(__int64 usec)
-{
-	HANDLE timer;
-	LARGE_INTEGER period;
-
-	if (currentResolution == 0)
-		currentResolution = setHighestTimerResolution(1);
-
-	// negative values are for relative time
-	period.QuadPart = -(10*usec);
-
-	timer = CreateWaitableTimer(NULL, TRUE, NULL);
-	SetWaitableTimer(timer, &period, 0, NULL, NULL, 0);
-	WaitForSingleObject(timer, INFINITE);
-	CloseHandle(timer);
-}
-
 Server* Server::INSTANCE;
 void handleSignal(
 #ifdef _WIN32
@@ -232,19 +187,9 @@ Server::Server(uint16_t port, uint32_t max_clients) {
 	    unsigned long long int timeMS = getTimeMS();
 	    if(nextUpdate > timeMS){
             uint64_t skip = (uint64_t) (nextUpdate - timeMS);
-		    //printf("TIME: %u(%u) skipping %ul\n", (int)timeMS/1000, timeMS, skip);
-		    //usleep((int)skip);
-            if(enableTPSFix){
-                //if(skip >= 15){
-                //    std::this_thread::sleep_for(std::chrono::milliseconds(15)); 
-                //}
-				usleep(skip*1000);
-                continue;
-            }else{
-                std::this_thread::sleep_for(std::chrono::milliseconds(skip));
-                continue;
-            }
-	    }
+			usleep(skip*1000);
+                	continue;
+		}
 	    nextUpdate = (double)timeMS+50;
         if(nextTPSMeasure < timeMS){
             
