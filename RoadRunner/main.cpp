@@ -7,5 +7,6 @@
 using RoadRunner::Server;
 
 int main(int argc, char** argv) {
-    Server *server = new Server(19132, MAX_CLIENTS);
+	Server *server = new Server(19132, MAX_CLIENTS);
+	delete server;
 }

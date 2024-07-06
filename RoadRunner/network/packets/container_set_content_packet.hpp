@@ -9,20 +9,20 @@
 using RoadRunner::network::types::ItemType;
 
 namespace RoadRunner {
-    namespace network {
-        namespace packets {
-            class ContainerSetContentPacket {
-            public:
-                static const uint8_t packet_id;
+	namespace network {
+		namespace packets {
+			class ContainerSetContentPacket {
+			public:
+				static const uint8_t packet_id;
 
-                uint8_t window_id;
-                std::vector<ItemType> items;
-                std::vector<int32_t> hotbar_slots;
+				uint8_t window_id;
+				std::vector<ItemType> items;
+				std::vector<int32_t> hotbar_slots;
 
-                bool deserialize_body(RakNet::BitStream *stream);
+				bool deserialize_body(RakNet::BitStream *stream);
 
-                void serialize_body(RakNet::BitStream *stream);
-            };
-        }
-    }
+				void serialize_body(RakNet::BitStream *stream);
+			};
+		}
+	}
 }

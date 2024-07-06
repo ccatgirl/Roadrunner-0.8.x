@@ -5,21 +5,21 @@
 using RoadRunner::nbt::tag::Tag;
 
 namespace RoadRunner {
-    namespace nbt {
-        namespace tag {
-            class LongArray : public Tag {
-            public:
-                int64_t *value;
-                int32_t size;
+	namespace nbt {
+		namespace tag {
+			class LongArray : public Tag {
+			public:
+				int64_t *value;
+				int32_t size;
 
-                LongArray();
+				LongArray();
 
-                ~LongArray();
-                
-                bool read(RakNet::BitStream *stream);
+				~LongArray();
 
-                void write(RakNet::BitStream *stream);
-            };
-        }
-    }
+				bool read(RakNet::BitStream *stream);
+
+				void write(RakNet::BitStream *stream);
+			};
+		}
+	}
 }

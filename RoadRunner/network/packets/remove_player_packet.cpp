@@ -3,16 +3,16 @@
 const uint8_t RoadRunner::network::packets::RemovePlayerPacket::packet_id = 0x8a;
 
 bool RoadRunner::network::packets::RemovePlayerPacket::deserialize_body(RakNet::BitStream *stream) {
-    if (!stream->Read<int32_t>(this->entity_id)) {
-        return false;
-    }
-    if (!stream->Read<uint64_t>(this->client_guid)) {
-        return false;
-    }
-    return true;
+	if (!stream->Read<int32_t>(this->entity_id)) {
+		return false;
+	}
+	if (!stream->Read<uint64_t>(this->client_guid)) {
+		return false;
+	}
+	return true;
 }
 
 void RoadRunner::network::packets::RemovePlayerPacket::serialize_body(RakNet::BitStream *stream) {
-    stream->Write<int32_t>(this->entity_id);
-    stream->Write<uint64_t>(this->client_guid);
+	stream->Write<int32_t>(this->entity_id);
+	stream->Write<uint64_t>(this->client_guid);
 }

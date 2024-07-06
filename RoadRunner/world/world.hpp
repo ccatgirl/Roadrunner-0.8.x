@@ -26,7 +26,7 @@ namespace RoadRunner {
 					delete this->biomeSource;
 				}
 
-                Chunk *get_chunk(int32_t x, int32_t z);
+				Chunk *get_chunk(int32_t x, int32_t z);
 				uint8_t get_block_id(int32_t x, int32_t y, int32_t z);
 				uint8_t get_block_meta(int32_t x, int32_t y, int32_t z);
 				void set_block(int32_t x, int32_t y, int32_t z, uint8_t id, uint8_t meta, uint8_t flags);

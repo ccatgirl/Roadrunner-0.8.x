@@ -1,9 +1,12 @@
 project(roadrunner-core)
 
 file(GLOB_RECURSE SOURCE_FILES *.cpp)
-
+file(GLOB_RECURSE HEADER_FILES *.hpp) #thanks qtcreator
 include_directories(${RakNet_SOURCE_DIR}/Source) 
 
-add_executable(roadrunner-core block/block.cpp world/world.cpp world/generator/random_level_source.cpp world/biome/biome.cpp ${SOURCE_FILES} "world/biome_source.cpp" "gamemode.cpp" "utils/multisystem.h" "inventory/iteminstance.cpp" "items/blockitem.cpp")
+add_compile_options(-Wno-write-strings)
+
+add_executable(roadrunner-core ${SOURCE_FILES} ${HEADER_FILES})
 target_include_directories(roadrunner-core PUBLIC ".")
 target_link_libraries(roadrunner-core RakNetLibStatic)
+

@@ -7,5 +7,5 @@ bool RoadRunner::network::packets::RemoveEntityPacket::deserialize_body(RakNet::
 }
 
 void RoadRunner::network::packets::RemoveEntityPacket::serialize_body(RakNet::BitStream *stream) {
-    stream->Write<int32_t>(this->entity_id);
+	stream->Write<int32_t>(this->entity_id);
 }

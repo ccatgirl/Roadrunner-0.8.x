@@ -3,12 +3,12 @@
 const uint8_t RoadRunner::network::packets::HurtArmorPacket::packet_id = 0xa6;
 
 bool RoadRunner::network::packets::HurtArmorPacket::deserialize_body(RakNet::BitStream *stream) {
-    if (!stream->Read<int8_t>(this->health)) {
-        return false;
-    }
-    return true;
+	if (!stream->Read<int8_t>(this->health)) {
+		return false;
+	}
+	return true;
 }
 
 void RoadRunner::network::packets::HurtArmorPacket::serialize_body(RakNet::BitStream *stream) {
-    stream->Write<int8_t>(this->health);
+	stream->Write<int8_t>(this->health);
 }

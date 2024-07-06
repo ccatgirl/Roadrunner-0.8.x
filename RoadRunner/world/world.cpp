@@ -32,14 +32,14 @@ void World::syncTime(){
 
 	//TODO some broadcast packet method?
 	RakNet::BitStream send_stream;
-    send_stream.Write<uint8_t>(pk.packet_id);
-    pk.serialize_body(&send_stream);
+	send_stream.Write<uint8_t>(pk.packet_id);
+	pk.serialize_body(&send_stream);
 
-    auto it = Server::INSTANCE->players.begin();
-    while (it != Server::INSTANCE->players.end()) {
-        Server::INSTANCE->peer->Send(&send_stream, LOW_PRIORITY, RELIABLE_ORDERED, 0, it->first, false);
-        ++it;
-    }
+	auto it = Server::INSTANCE->players.begin();
+	while (it != Server::INSTANCE->players.end()) {
+		Server::INSTANCE->peer->Send(&send_stream, LOW_PRIORITY, RELIABLE_ORDERED, 0, it->first, false);
+		++it;
+	}
 
 }
 void World::tick(){
@@ -68,21 +68,21 @@ uint8_t World::get_block_id(int32_t x, int32_t y, int32_t z) {
 	int chunkX = x / 16;
 	int chunkZ = z / 16;
 
-    RoadRunner::world::Chunk *chunk = this->get_chunk(chunkX, chunkZ);
+	RoadRunner::world::Chunk *chunk = this->get_chunk(chunkX, chunkZ);
 	return chunk ? chunk->get_block_id(x & 0xf, y, z & 0xf) : 0;
 }
 
 Chunk* World::get_chunk(int32_t x, int32_t z) {
-    int index = x << 4 | z;
-    if (index > 255 || index < 0) return RoadRunner::world::BlankChunk::blankChunk;
-    return this->chunks[index];
+	int index = x << 4 | z;
+	if (index > 255 || index < 0) return RoadRunner::world::BlankChunk::blankChunk;
+	return this->chunks[index];
 }
 
 uint8_t World::get_block_meta(int32_t x, int32_t y, int32_t z) {
 	int chunkX = x / 16;
 	int chunkZ = z / 16;
 
-    Chunk *chunk = this->get_chunk(chunkX, chunkZ);
+	Chunk *chunk = this->get_chunk(chunkX, chunkZ);
 	return chunk ? chunk->get_block_meta(x & 0xf, y, z & 0xf) : 0;
 }
 #include <utils/multisystem.h>
@@ -237,7 +237,7 @@ bool World::loadWorld(){
 
 	RakNet::BitStream stream(buf, rest, false);
 	tag::Compound* root = (tag::Compound*) create_tag(RoadRunner::nbt::TagIdentifiers::COMPOUND);
-    root->read(&stream);
+	root->read(&stream);
 	//print_tag(root);
 	tag::Compound* real = (tag::Compound*) root->value[0];
 
@@ -276,16 +276,16 @@ void RoadRunner::world::World::set_block(int32_t x, int32_t y, int32_t z, uint8_
 	int chunkX = x / 16;
 	int chunkZ = z / 16;
 	int index = chunkX << 4 | chunkZ;
-    RoadRunner::world::Chunk *chunk = this->get_chunk(chunkX, chunkZ);
+	RoadRunner::world::Chunk *chunk = this->get_chunk(chunkX, chunkZ);
 	if(chunk){
 		chunk->set_block_id(x & 0xf, y, z & 0xf, id);
 		chunk->set_block_meta(x & 0xf, y, z & 0xf, meta);
 
 		if (flags & 0x1)
-            ; // TODO update
-        if (flags & 0x2) {
-            RoadRunner::Server::INSTANCE->send_block_data(x, y, z, id, meta);
-        }
+			; // TODO update
+		if (flags & 0x2) {
+			RoadRunner::Server::INSTANCE->send_block_data(x, y, z, id, meta);
+		}
 
 	}else{
 		//TODO should never happen, but maybe try to create a new chunk?

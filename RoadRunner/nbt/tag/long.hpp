@@ -5,18 +5,18 @@
 using RoadRunner::nbt::tag::Tag;
 
 namespace RoadRunner {
-    namespace nbt {
-        namespace tag {
-            class Long : public Tag {
-            public:
-                int64_t value;
+	namespace nbt {
+		namespace tag {
+			class Long : public Tag {
+			public:
+				int64_t value;
 
-                Long();
-                
-                bool read(RakNet::BitStream *stream);
+				Long();
 
-                void write(RakNet::BitStream *stream);
-            };
-        }
-    }
+				bool read(RakNet::BitStream *stream);
+
+				void write(RakNet::BitStream *stream);
+			};
+		}
+	}
 }
