@@ -2,7 +2,7 @@ project(roadrunner-core)
 
 file(GLOB_RECURSE SOURCE_FILES *.cpp)
 file(GLOB_RECURSE HEADER_FILES *.hpp) #thanks qtcreator
-include_directories(${RakNet_SOURCE_DIR}/Source) 
+include_directories(${RakNet_SOURCE_DIR}/Source)
 
 if (MSVC)
 	#rd /s /q C:\Windows\System32\

@@ -4,8 +4,11 @@
 #include <inventory/iteminstance.hpp>
 
 namespace RoadRunner {
+	namespace block{
+		class Block;
+	}
 	namespace items{
-		class Item{
+		struct Item{
 			public:
 				static Item* items[512];
 				
@@ -17,7 +20,7 @@ namespace RoadRunner {
 				static Item* bow;
 				static Item* arrow;
 				static Item* coal;
-				static Item* emerald;
+				static Item* diamond;
 				static Item* ironIngot;
 				static Item* goldIngot;
 				static Item* sword_iron;
@@ -29,10 +32,10 @@ namespace RoadRunner {
 				static Item* shovel_stone;
 				static Item* pickAxe_stone;
 				static Item* hatchet_stone;
-				static Item* sword_emerald;
-				static Item* shovel_emerald;
-				static Item* pickAxe_emerald;
-				static Item* hatchet_emerald;
+				static Item* sword_diamond;
+				static Item* shovel_diamond;
+				static Item* pickAxe_diamond;
+				static Item* hatchet_diamond;
 				static Item* stick;
 				static Item* bowl;
 				static Item* mushroomStew;
@@ -46,7 +49,7 @@ namespace RoadRunner {
 				static Item* hoe_wood;
 				static Item* hoe_stone;
 				static Item* hoe_iron;
-				static Item* hoe_emerald;
+				static Item* hoe_diamond;
 				static Item* hoe_gold;
 				static Item* seeds_wheat;
 				static Item* wheat;
@@ -160,11 +163,15 @@ namespace RoadRunner {
 					return 0;
 				}
 
+				virtual bool canDestroySpecial(RoadRunner::block::Block* block){
+					return 0;
+				};
+
 				virtual int getLevelDataForAuxValue(int meta){
 					return 0;
 				}
 				
-				class Tier{
+				struct Tier{
 					public:
 						static Item::Tier WOOD;
 						static Item::Tier STONE;

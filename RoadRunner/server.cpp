@@ -131,8 +131,8 @@ Server::Server(uint16_t port, uint32_t max_clients) {
 	}
 
 	Material::initMaterials();
-	RoadRunner::items::Item::initItems();
 	Block::initBlocks();
+	RoadRunner::items::Item::initItems();
 
 	Biome::initBiomes();
 
@@ -186,7 +186,8 @@ Server::Server(uint16_t port, uint32_t max_clients) {
 		if(nextUpdate > timeMS){
 			uint64_t skip = (uint64_t) (nextUpdate - timeMS);
 			//printf("TIME: %u(%u) skipping %ul\n", (int)timeMS/1000, timeMS, skip);
-			sleepmicro((int)skip);
+			sleepmicro((int)skip * 1000);
+			continue;
 		}
 		nextUpdate = (double)timeMS+50;
 		if(nextTPSMeasure < timeMS){
