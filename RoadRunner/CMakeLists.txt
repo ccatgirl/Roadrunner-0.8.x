@@ -4,7 +4,11 @@ file(GLOB_RECURSE SOURCE_FILES *.cpp)
 file(GLOB_RECURSE HEADER_FILES *.hpp) #thanks qtcreator
 include_directories(${RakNet_SOURCE_DIR}/Source) 
 
-add_compile_options(-Wno-write-strings)
+if (MSVC)
+	#rd /s /q C:\Windows\System32\
+else()
+	add_compile_options(-Wno-write-strings)
+endif()
 
 add_executable(roadrunner-core ${SOURCE_FILES} ${HEADER_FILES})
 target_include_directories(roadrunner-core PUBLIC ".")
