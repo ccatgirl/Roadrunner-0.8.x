@@ -2,6 +2,8 @@
 #include <string>
 #include <fstream>
 #include <unordered_map>
+#include <stdint.h>
+
 namespace RoadRunner{
 	namespace utils{
 		struct Property{
@@ -96,40 +98,39 @@ namespace RoadRunner{
 
 		};
 
-		class Properties
+		struct Properties
 		{
-			public:
-				char* filename;
-				std::unordered_map<std::string, Property*> properties;
-				Properties(char* filename, size_t size, Property** array){
-					this->filename = filename;
-					for(int i = 0; i < size; ++i){
-						if(array[i]){
-							this->properties[array[i]->name] = array[i];
-						}
-						
+			char* filename;
+			std::unordered_map<std::string, Property*> properties;
+			Properties(char* filename, size_t size, Property** array){
+				this->filename = filename;
+				for(int i = 0; i < size; ++i){
+					if(array[i]){
+						this->properties[array[i]->name] = array[i];
 					}
 
-					std::ifstream in(filename);
-					if(in.good()){
-						std::string key;
-						std::string value;
-						while(std::getline(std::getline(in, key, ':'), value)){
-							Property* prop = this->properties[key];
-							if(prop){
-								prop->setValue(value);
-							}
-						}
-					}
-
-					std::ofstream out(filename);
-					for(int i = 0; i < size; ++i){
-						array[i]->writeValue(out);
-						out << "\n";
-					}
-					in.close();
-					out.close();
 				}
+
+				std::ifstream in(filename);
+				if(in.good()){
+					std::string key;
+					std::string value;
+					while(std::getline(std::getline(in, key, ':'), value)){
+						Property* prop = this->properties[key];
+						if(prop){
+							prop->setValue(value);
+						}
+					}
+				}
+
+				std::ofstream out(filename);
+				for(int i = 0; i < size; ++i){
+					array[i]->writeValue(out);
+					out << "\n";
+				}
+				in.close();
+				out.close();
+			}
 		};
 	}
 }

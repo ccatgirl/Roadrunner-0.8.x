@@ -5,18 +5,18 @@
 using RoadRunner::nbt::tag::Tag;
 
 namespace RoadRunner {
-    namespace nbt {
-        namespace tag {
-            class Int : public Tag {
-            public:   
-                int32_t value;
+	namespace nbt {
+		namespace tag {
+			class Int : public Tag {
+			public:
+				int32_t value;
 
-                Int();
-                
-                bool read(RakNet::BitStream *stream);
+				Int();
 
-                void write(RakNet::BitStream *stream);
-            };
-        }
-    }
+				bool read(RakNet::BitStream *stream);
+
+				void write(RakNet::BitStream *stream);
+			};
+		}
+	}
 }

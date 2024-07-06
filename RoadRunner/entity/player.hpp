@@ -8,8 +8,8 @@
 #include <server.hpp>
 #include <gamemode.hpp>
 namespace RoadRunner {
-    class Server;
-    namespace entity{
+	class Server;
+	namespace entity{
 		class Player : public RoadRunner::entity::Entity { //TODO extends Mob
 			public:
 				RakNet::RakNetGUID guid;
@@ -31,5 +31,5 @@ namespace RoadRunner {
 		
 				~Player();
 		};
-    }
+	}
 }

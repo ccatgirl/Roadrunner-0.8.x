@@ -4,10 +4,9 @@
 #include <vector>
 
 namespace RoadRunner {
-    class Server;
-    namespace entity{
-		class Entity {
-	
+	class Server;
+	namespace entity{
+		struct Entity {
 			private:
 				static int entityCounter;
 		
@@ -39,7 +38,6 @@ namespace RoadRunner {
 					this->y = y;
 					this->z = z;
 				}
-	
 		};
-    }
+	}
 }

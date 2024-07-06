@@ -7,5 +7,5 @@ bool RoadRunner::network::packets::LoginStatusPacket::deserialize_body(RakNet::B
 }
 
 void RoadRunner::network::packets::LoginStatusPacket::serialize_body(RakNet::BitStream *stream) {
-    stream->Write<int32_t>(this->status);
+	stream->Write<int32_t>(this->status);
 }

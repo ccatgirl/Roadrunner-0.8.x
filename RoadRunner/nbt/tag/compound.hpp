@@ -6,31 +6,31 @@
 using RoadRunner::nbt::tag::Tag;
 
 namespace RoadRunner {
-    namespace nbt {
-        namespace tag {
-            class Compound : public Tag {
-            public:
-                std::vector<Tag *> value;
-                bool unsafe = false;
+	namespace nbt {
+		namespace tag {
+			class Compound : public Tag {
+			public:
+				std::vector<Tag *> value;
+				bool unsafe = false;
 
-                Compound();
+				Compound();
 
-                ~Compound();
-                
-                Tag* find(char* name){
-                    for(Tag* tag : this->value){
-                        if(tag->name == name){
-                            return tag;
-                        }
-                    }
+				~Compound();
 
-                    return 0;
-                }
+				Tag* find(char* name){
+					for(Tag* tag : this->value){
+						if(tag->name == name){
+							return tag;
+						}
+					}
 
-                bool read(RakNet::BitStream *stream);
+					return 0;
+				}
 
-                void write(RakNet::BitStream *stream);
-            };
-        }
-    }
+				bool read(RakNet::BitStream *stream);
+
+				void write(RakNet::BitStream *stream);
+			};
+		}
+	}
 }

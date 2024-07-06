@@ -7,5 +7,5 @@ bool RoadRunner::network::packets::ReadyPacket::deserialize_body(RakNet::BitStre
 }
 
 void RoadRunner::network::packets::ReadyPacket::serialize_body(RakNet::BitStream *stream) {
-    stream->Write<uint8_t>(this->status);
+	stream->Write<uint8_t>(this->status);
 }

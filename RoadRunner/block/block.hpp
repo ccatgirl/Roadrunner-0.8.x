@@ -6,11 +6,9 @@
 
 using RoadRunner::block::material::Material;
 using RoadRunner::entity::Player;
-
 namespace RoadRunner {
 	namespace block{
-		class Block {
-		public:
+		struct Block {
 			static Block
 				*stone,
 				*grass,
@@ -143,18 +141,9 @@ namespace RoadRunner {
 
 			Block(uint8_t id, material::Material* material);
 			Block* init();
-			Block* setDestroyTime(float f){
-				this->blockHardness = f;
-				if(this->blockResistance < (f * 5)){
-					this->blockResistance = f * 5;
-				}
+			Block* setDestroyTime(float f);
 
-				return this;
-			};
-
-			virtual bool isSolidRender(){
-				return true;
-			}
+			virtual bool isSolidRender();
 
 			virtual int getPlacementDataValue(
 				RoadRunner::world::World* world,
@@ -202,203 +191,170 @@ namespace RoadRunner {
 			void playerWillDestroy(RoadRunner::world::World* world, int32_t x, int32_t y, int32_t z, int32_t meta, RoadRunner::entity::Player* player){}; //used only by door
 		};
 
-		class StoneBlock : public Block{
-			public:
-				StoneBlock(uint8_t id): Block(id, Material::stone){
-				};
-		};
-		
-		class ObsidianBlock : public StoneBlock{
-			public:
-				bool glowing;
-				
-				ObsidianBlock(uint8_t id) : StoneBlock(id){
-					//field_5C = 255 TODO 5c
-					this->glowing = 0;
-				} 
-		};
-		
-		class TorchBlock : public Block{
-			public:
-				TorchBlock(uint8_t id) : Block(id, Material::decoration){}
+		struct StoneBlock : public Block{
+			StoneBlock(uint8_t id): Block(id, Material::stone){};
 		};
 
-		class GrassBlock : public Block {
-		public:
+		struct ObsidianBlock : public StoneBlock{
+			bool glowing;
+
+			ObsidianBlock(uint8_t id) : StoneBlock(id){
+				//field_5C = 255 TODO 5c
+				this->glowing = 0;
+			}
+		};
+
+		struct TorchBlock : public Block{
+			TorchBlock(uint8_t id) : Block(id, Material::decoration){}
+		};
+
+		struct GrassBlock : public Block {
 			GrassBlock(uint8_t id): Block(id, Material::dirt){};
 		};
 
-		class DirtBlock : public Block {
-		public:
+		struct DirtBlock : public Block {
 			DirtBlock(uint8_t id): Block(id, Material::dirt){};
 		};
 
-		class WoodBlock : public Block {
-		public:
+		struct WoodBlock : public Block {
 			WoodBlock(uint8_t id): Block(id, Material::wood){};
 		};
 
-		class Bush : public Block{
-			public:
-				Bush(uint8_t id): Bush(id, Material::plant){};
-				Bush(uint8_t id, Material* mat): Block(id, mat){
-					this->setTicking(true);
-				};
+		struct Bush : public Block{
+			Bush(uint8_t id): Bush(id, Material::plant){};
+			Bush(uint8_t id, Material* mat): Block(id, mat){
+				this->setTicking(true);
+			};
 
-				bool isSolidRender() override{
-					return false;
-				}
+			bool isSolidRender() override{
+				return false;
+			}
 		};
 
-		class LiquidBlock : public Block{
-		public:
+		struct LiquidBlock : public Block{
 			LiquidBlock(uint8_t id, Material* material): Block(id, material){};
 		};
-		class LiquidBlockStatic : public LiquidBlock{
-		public:
+		struct LiquidBlockStatic : public LiquidBlock{
 			LiquidBlockStatic(uint8_t id, Material* material): LiquidBlock(id, material){};
 		};
 
-		class HeavyBlock: public Block{
-		public:
+		struct HeavyBlock: public Block{
 			HeavyBlock(uint8_t id): Block(id, Material::sand){};
 		};
 
-		class Sapling : public Bush{
-		public:
+		struct Sapling : public Bush{
 			Sapling(uint8_t id): Bush(id){};
 		};
 
-		class OreBlock : public Block{
-		public:
+		struct OreBlock : public Block{
 			OreBlock(uint8_t id): Block(id, Material::stone){};
 		};
 
-		class RotatedPillarBlock : public Block{
-			public:
-				RotatedPillarBlock(uint8_t id, Material* material): Block(id, material){};
-				static uint8_t rotationArray[4];
-				virtual int getPlacementDataValue(
-					RoadRunner::world::World* world,
-					int x, int y, int z,
-					int face, float faceX, float faceY, float faceZ,
-					Player* mob, //TODO Mob* mob
-					int meta
+		struct RotatedPillarBlock : public Block{
+			RotatedPillarBlock(uint8_t id, Material* material): Block(id, material){};
+			static uint8_t rotationArray[4];
+			virtual int getPlacementDataValue(
+				RoadRunner::world::World* world,
+				int x, int y, int z,
+				int face, float faceX, float faceY, float faceZ,
+				Player* mob, //TODO Mob* mob
+				int meta
 				){
-					int v11;
-					if(face < 2){
-						v11 = 0;
-					}else{
-						v11 = RotatedPillarBlock::rotationArray[face - 2];
-					}
-					return ((int)meta & 3) | v11;
+				int v11;
+				if(face < 2){
+					v11 = 0;
+				}else{
+					v11 = RotatedPillarBlock::rotationArray[face - 2];
 				}
+				return ((int)meta & 3) | v11;
+			}
 		};
 
-		class TreeBlock : public RotatedPillarBlock{
-			public:
-				TreeBlock(uint8_t id): RotatedPillarBlock(id, Material::wood){};
+		struct TreeBlock : public RotatedPillarBlock{
+			TreeBlock(uint8_t id): RotatedPillarBlock(id, Material::wood){};
 		};
-		
-		class HayBlock : public RotatedPillarBlock{
-			public:
-				HayBlock(uint8_t id): RotatedPillarBlock(id, Material::dirt){
-					
-				}
+
+		struct HayBlock : public RotatedPillarBlock{
+			HayBlock(uint8_t id): RotatedPillarBlock(id, Material::dirt){
+
+			}
 		};
-		
-		class LeafBlock : public Block{
-		public:
+
+		struct LeafBlock : public Block{
 			LeafBlock(uint8_t id): Block(id, Material::leaves){};
 		};
 
-		class GlassBlock : public Block{
-		public:
+		struct GlassBlock : public Block{
 			GlassBlock(uint8_t id): Block(id, Material::glass){};
 		};
 
-		class FireBlock : public Block{
-		public:
+		struct FireBlock : public Block{
 			FireBlock(uint8_t id): Block(id, Material::fire){};
 		};
 
-		class Mushroom : public Block{
-		public:
+		struct Mushroom : public Block{
 			Mushroom(uint8_t id): Block(id, Material::plant){}
 		};
 
-		class MetalBlock : public Block{
-		public:
+		struct MetalBlock : public Block{
 			MetalBlock(uint8_t id): Block(id, Material::metal){}
 		};
 
-		class TntBlock : public Block{
-		public:
+		struct TntBlock : public Block{
 			TntBlock(uint8_t id): Block(id, Material::explosive){}
 		};
 
-		class WebBlock : public Block{
-		public:
+		struct WebBlock : public Block{
 			WebBlock(uint8_t id): Block(id, Material::web){}
 		};
 
-		class TallGrass : public Bush{
-		public:
+		struct TallGrass : public Bush{
 			TallGrass(uint8_t id): Bush(id, Material::replaceable_plant){}
 		};
 
-		class DeadBush: public Bush{
-		public:
+		struct DeadBush: public Bush{
 			DeadBush(uint8_t id): Bush(id, Material::replaceable_plant){}
 		};
 
-		class ClothBlock: public Block{
-		public:
+		struct ClothBlock: public Block{
 			ClothBlock(uint8_t id): Block(id, Material::cloth){}
 		};
 
-		class FlowerBlock: public Bush{
-		public:
+		struct FlowerBlock: public Bush{
 			FlowerBlock(uint8_t id): Bush(id){}
 		};
 
-		class CropBlock : public Bush{
-		public:
+		struct CropBlock : public Bush{
 			CropBlock(uint8_t id): Bush(id){}
 		};
 
-		class FarmBlock : public Block{
-		public:
+		struct FarmBlock : public Block{
 			FarmBlock(uint8_t id): Block(id, Material::dirt){}
 		};
 
-		class ClayBlock : public Block{
-		public:
+		struct ClayBlock : public Block{
 			ClayBlock(uint8_t id): Block(id, Material::clay){}
 		};
 
-		class WoolCarpetBlock : public Block{
-			public:
-				WoolCarpetBlock(uint8_t id): Block(id, Material::cloth){
-					this->setShape(0, 0, 0, 1, 0.0625f, 1);
-					//this->setTicking(true); mojang moment
-				}
+		struct WoolCarpetBlock : public Block{
+			WoolCarpetBlock(uint8_t id): Block(id, Material::cloth){
+				this->setShape(0, 0, 0, 1, 0.0625f, 1);
+				//this->setTicking(true); mojang moment
+			}
 
 
-				bool isSolidRender() override{
-					return false;
-				}
+			bool isSolidRender() override{
+				return false;
+			}
 		};
 
-		class LightGemBlock : public Block{
-		public:
+		struct LightGemBlock : public Block{
 			LightGemBlock(uint8_t id, Material* material): Block(id, material){
 				//field_5C = 255
 			}
 		};
 
-		class RedStoneOreBlock : public Block{
-		public:
+		struct RedStoneOreBlock : public Block{
 			bool emitsLight;
 
 			RedStoneOreBlock(uint8_t id, bool emitsLight) : Block(id, Material::stone){
@@ -409,43 +365,38 @@ namespace RoadRunner {
 			}
 		};
 
-		class BookshelfBlock : public Block{
-		public:
+		struct BookshelfBlock : public Block{
 			BookshelfBlock(uint8_t id): Block(id, Material::wood){
 
 			}
 		};
 
-		class BaseRailBlock : public Block{
-			public:
-				bool powered;
+		struct BaseRailBlock : public Block{
+			bool powered;
 
-				BaseRailBlock(uint8_t id, bool powered): Block(id, Material::decoration){
-					this->powered = powered;
-					this->setShape(0.0f, 0.0f, 0.0f, 1.0f, 0.125f, 1.0f);
-				}
+			BaseRailBlock(uint8_t id, bool powered): Block(id, Material::decoration){
+				this->powered = powered;
+				this->setShape(0.0f, 0.0f, 0.0f, 1.0f, 0.125f, 1.0f);
+			}
 
-				bool isSolidRender() override{
-					return false;
-				}
+			bool isSolidRender() override{
+				return false;
+			}
 		};
 
-		class PoweredRailBlock : public BaseRailBlock{
-			public:
-				PoweredRailBlock(uint8_t id) : BaseRailBlock(id, true){
+		struct PoweredRailBlock : public BaseRailBlock{
+			PoweredRailBlock(uint8_t id) : BaseRailBlock(id, true){
 
-				}
+			}
 		};
 
-		class RailBlock : public BaseRailBlock{
-			 public:
-				RailBlock(uint8_t id) : BaseRailBlock(id, false){
+		struct RailBlock : public BaseRailBlock{
+			RailBlock(uint8_t id) : BaseRailBlock(id, false){
 
-				}
+			}
 		};
 
-		class ReedBlock : public Block{
-		public:
+		struct ReedBlock : public Block{
 			ReedBlock(uint8_t id): Block(id, Material::plant){
 				//Tile::setShape(v434, 0.125, 0.0, 0.125, 0.875, 1.0, 0.875); TODO shape
 				this->setShape(0.125f, 0, 0.125f, 0.875f, 1.0f, 0.875f);
@@ -453,82 +404,68 @@ namespace RoadRunner {
 			}
 		};
 
-		class CactusBlock : public Block{
-			public:
-				CactusBlock(uint8_t id): Block(id, Material::cactus){
+		struct CactusBlock : public Block{
+			CactusBlock(uint8_t id): Block(id, Material::cactus){
+				this->setTicking(true);
+			}
 
-					this->setTicking(true);
-				}
-
-				bool isSolidRender() override{
-					return false;
-				}
+			bool isSolidRender() override{
+				return false;
+			}
 		};
 
-		class BedBlock : public Block{
-			 public:
-				BedBlock(uint8_t id): Block(id, Material::cloth){
-					this->_setShape();
-				}
+		struct BedBlock : public Block{
+			BedBlock(uint8_t id): Block(id, Material::cloth){
+				this->_setShape();
+			}
 
-				void _setShape(){ //a bit useless?
-					this->setShape(0.0f, 0.0f, 0.0f, 1.0f, 0.5625f, 1.0f);
-				}
+			void _setShape(){ //a bit useless?
+				this->setShape(0.0f, 0.0f, 0.0f, 1.0f, 0.5625f, 1.0f);
+			}
 
-				bool isSolidRender() override{
-					return false;
-				}
+			bool isSolidRender() override{
+				return false;
+			}
 		};
 
-		class SlabBlock : public Block{
-			public:
-				bool isFull;
+		struct SlabBlock : public Block{
+			bool isFull;
 
-				SlabBlock(uint8_t id, Material* material, bool isFull): Block(id, material){
-					this->isFull = isFull;
-					//TODO call updateDefaultShape
-					this->setLightBlock(255);
-				}
+			SlabBlock(uint8_t id, Material* material, bool isFull): Block(id, material){
+				this->isFull = isFull;
+				//TODO call updateDefaultShape
+				this->setLightBlock(255);
+			}
 
-				virtual int getPlacementDataValue(
-					RoadRunner::world::World* world,
-					int x, int y, int z,
-					int face, float faceX, float faceY, float faceZ,
-					Player* mob, //TODO Mob* mob
-					int meta
-				){
-					if(!this->isFull && (face == 0 || (face != 1 && faceY > 0.5f))){
+			virtual int getPlacementDataValue(
+				RoadRunner::world::World* world,
+				int x, int y, int z,
+				int face, float faceX, float faceY, float faceZ,
+				Player* mob, //TODO Mob* mob
+				int meta
+			){
+				if(!this->isFull && (face == 0 || (face != 1 && faceY > 0.5f))){
 						return (int)meta | 8;
-					}
-
-					return (int)meta;
 				}
+
+				return (int)meta;
+			}
 		};
 
-		class WoodSlabBlock : public SlabBlock{
-			public:
-				WoodSlabBlock(uint8_t id, bool isFull) : SlabBlock(id, Material::wood, isFull){
-
-				}
+		struct WoodSlabBlock : public SlabBlock{
+			WoodSlabBlock(uint8_t id, bool isFull) : SlabBlock(id, Material::wood, isFull){}
 		};
 
-		class StoneSlabBlock : public SlabBlock{
-			public:
-				StoneSlabBlock(uint8_t id, bool isFull) : SlabBlock(id, Material::stone, isFull){
-
-				}
+		struct StoneSlabBlock : public SlabBlock{
+			StoneSlabBlock(uint8_t id, bool isFull) : SlabBlock(id, Material::stone, isFull){}
 		};
 
-		class QuartzBlock : public Block{
-			public:
-				QuartzBlock(uint8_t id) : Block(id, Material::stone){
-
-				}
+		struct QuartzBlock : public Block{
+			QuartzBlock(uint8_t id) : Block(id, Material::stone){}
 
 		};
 
-		class StairBlock : public Block{
-			public:
+		struct StairBlock : public Block{
 				Block* blockBase;
 				int blockMeta;
 

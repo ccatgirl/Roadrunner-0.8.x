@@ -3,12 +3,12 @@
 const uint8_t RoadRunner::network::packets::ContainerClosePacket::packet_id = 0xb1;
 
 bool RoadRunner::network::packets::ContainerClosePacket::deserialize_body(RakNet::BitStream *stream) {
-    if (!stream->Read<uint8_t>(this->window_id)) {
-        return false;
-    }
-    return true;
+	if (!stream->Read<uint8_t>(this->window_id)) {
+		return false;
+	}
+	return true;
 }
 
 void RoadRunner::network::packets::ContainerClosePacket::serialize_body(RakNet::BitStream *stream) {
-    stream->Write<uint8_t>(this->window_id);
+	stream->Write<uint8_t>(this->window_id);
 }

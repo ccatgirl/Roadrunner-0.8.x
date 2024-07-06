@@ -7,5 +7,5 @@ bool RoadRunner::network::packets::AdventureSettingsPacket::deserialize_body(Rak
 }
 
 void RoadRunner::network::packets::AdventureSettingsPacket::serialize_body(RakNet::BitStream *stream) {
-    stream->Write<uint32_t>(this->flags);
+	stream->Write<uint32_t>(this->flags);
 }

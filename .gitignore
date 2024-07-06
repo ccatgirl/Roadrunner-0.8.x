@@ -1,2 +1,5 @@
 build/
 .vscode/
+server.properties
+worlds/*
+CMakeLists.txt.user
