@@ -25,6 +25,7 @@ World::World(unsigned int seed){
 		this->chunks[i] = 0;
 	}
 }
+
 void World::syncTime(){
 	RoadRunner::network::packets::SetTimePacket pk;
 	pk.time = this->time;

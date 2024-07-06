@@ -75,10 +75,6 @@ inline bool hasDirectory(const char* path){
 }
 
 void sleepmicro(unsigned long long int usec){
-	#ifdef _WIN32 //suicde
-		usleep(usec);
-	#else //live forever
-		usleep(usec);
-	#endif
+	usleep(usec);
 }
 
