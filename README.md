@@ -1,5 +1,5 @@
 # Roadrunner
-MCPI-0.1.1/MCPE-0.6.1 server software to power event and minigame servers.
+Experimental MCPE 0.8.1 server software.
 
 ## TODO / Goals
 - [ ] It works as a server.
@@ -10,3 +10,6 @@ MCPI-0.1.1/MCPE-0.6.1 server software to power event and minigame servers.
   - [ ] Ratelimiting.
 - [ ] Support for more than one world.
 - [ ] rcon support?
+
+  
+- [ ] ~~@realfreehij make roadrunner golang edition~~
