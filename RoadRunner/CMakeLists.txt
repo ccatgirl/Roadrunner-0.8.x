@@ -10,7 +10,11 @@ else()
 	add_compile_options(-Wno-write-strings)
 endif()
 
-add_executable(roadrunner-core ${SOURCE_FILES} ${HEADER_FILES})
+add_executable(roadrunner-core ${SOURCE_FILES} ${HEADER_FILES}
+	entity/mob.hpp
+	block/stairblock.cpp
+	entity/mob.cpp
+	block/torchblock.cpp)
 target_include_directories(roadrunner-core PUBLIC ".")
 target_link_libraries(roadrunner-core RakNetLibStatic)
 

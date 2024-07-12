@@ -156,7 +156,9 @@ void Block::onPlace(RoadRunner::world::World*, int32_t x, int32_t y, int32_t z){
 		TorchTile::onPlace(Level *,int,int,int)
 	*/
 }
-
+bool Block::isCubeShaped(){
+	return 1;
+}
 void Block::onRemove(RoadRunner::world::World* world, int32_t x, int32_t y, int32_t z){
 	/* TODO all those classes
 		BaseRailTile::onRemove(Level *,int,int,int)
@@ -191,6 +193,16 @@ Block* Block::init(){
 	return this;
 }
 
+bool Block::mayPlace(World* world, int x, int y, int z){
+	//TODO override for other blocks
+	int id = world->get_block_id(x, y, z);
+	if(id == 0) return 1;
+	Material* mat = Block::blocks[id]->material;
+	return mat->isReplaceable();
+}
+bool Block::mayPlace(World* world, int x, int y, int z, int side){
+	return this->mayPlace(world, x, y, z);
+}
 void Block::initBlocks() {
 
 	for(int i = 0; i < 256; ++i){

@@ -44,10 +44,12 @@ namespace RoadRunner {
 					return 153600 - this->prevTimeSent + v3;
 				}
 
+				bool isSolidBlockingTile(int x, int y, int z);
+
 				void syncTime();
 				void saveWorld();
 				bool loadWorld();
-
+				bool mayPlace(int blockID, int x, int y, int z, bool wat, uint8_t side);
 		};
 	}
 }

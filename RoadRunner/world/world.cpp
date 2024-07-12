@@ -11,9 +11,11 @@
 #include <nbt/tag/byte.hpp>
 #include <config.hpp>
 #include <stdio.h>
+#include <block/block.hpp>
 
 using namespace RoadRunner::world;
 using namespace RoadRunner::nbt;
+using namespace RoadRunner::block;
 
 World::World(unsigned int seed){
 	this->seed = seed;
@@ -43,6 +45,37 @@ void World::syncTime(){
 	}
 
 }
+bool World::mayPlace(int blockID, int x, int y, int z, bool wat, uint8_t side){
+	int idAtXYZ = this->get_block_id(x, y, z);
+	Block* block = Block::blocks[blockID];
+	Block* blockXYZ = Block::blocks[idAtXYZ];
+
+	//TODO AABB checks, BLock::replaceable
+	/*
+	v14 = blocc->vtable->_ZN4Tile7getAABBEP5Leveliii(blocc, this, x, y, z);
+	if ( (a6 || !v14 || Level::isUnobstructed(this, v14)) && (!blockXYZ || blockXYZ->base.replaceable) && blockID > 0 )
+	{
+		return blocc->vtable->_ZN4Tile8mayPlaceEP5Leveliiih(blocc, this, x, y, z, side);
+	}
+	else
+	{
+		return 0;
+	}*/
+
+	if((blockXYZ == 0 || /*block->replaceable*/ false) && blockID > 0){
+		return block->mayPlace(this, x, y, z, side);
+	}
+	return 0;
+}
+bool World::isSolidBlockingTile(int x, int y, int z){
+	Block* block = Block::blocks[this->get_block_id(x, y, z)];
+
+	if(block && block->material->isSolidBlocking()){
+		return block->isCubeShaped();
+	}
+	return 0;
+}
+
 void World::tick(){
 	//Handle MobSpawner
 

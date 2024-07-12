@@ -39,7 +39,7 @@ bool BlockItem::useOn(
 		}
 	}
 
-	if(instance->count == 0 || /*TODO !world->mayPlace*/false){
+	if(instance->count == 0 || !world->mayPlace(this->blockID, x, y, z, 0, face)){
 		return 0;
 	}
 

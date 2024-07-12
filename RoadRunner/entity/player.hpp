@@ -7,10 +7,14 @@
 #include <entity/entity.hpp>
 #include <server.hpp>
 #include <gamemode.hpp>
+#include <entity/mob.hpp>
+
+using namespace RoadRunner::entity;
+
 namespace RoadRunner {
 	class Server;
 	namespace entity{
-		class Player : public RoadRunner::entity::Entity { //TODO extends Mob
+		class Player : public Mob { //TODO extends Mob
 			public:
 				RakNet::RakNetGUID guid;
 				std::string username = "???";
@@ -24,7 +28,7 @@ namespace RoadRunner {
 		
 				void handle_packet(uint8_t packet_id, RakNet::BitStream *stream);
 		
-				Player(Server *server): Entity(server) {
+				Player(Server *server): Mob(server) {
 					if(IS_CREATIVE) this->gamemode = new CreativeMode(this);
 					else this->gamemode = new SurvivalMode(this);
 				}

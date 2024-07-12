@@ -6,7 +6,12 @@
 
 using RoadRunner::block::material::Material;
 using RoadRunner::entity::Player;
+using namespace RoadRunner::world;
+using namespace RoadRunner::entity;
 namespace RoadRunner {
+	namespace entity{
+		struct Mob;
+	}
 	namespace block{
 		struct Block {
 			static Block
@@ -146,14 +151,19 @@ namespace RoadRunner {
 			virtual bool isSolidRender();
 
 			virtual int getPlacementDataValue(
-				RoadRunner::world::World* world,
+				World* world,
 				int x, int y, int z,
 				int face, float faceX, float faceY, float faceZ,
-				Player* mob, //TODO Mob* mob
+				Mob* mob,
 				int meta
 			){
 				return meta;
 			}
+
+			virtual bool mayPlace(World* world, int x, int y, int z);
+			virtual bool mayPlace(World* world, int x, int y, int z, int side);
+
+			virtual bool isCubeShaped();
 
 			void setShape(float minX, float minY, float minZ, float maxX, float maxY, float maxZ){
 				this->minX = minX;
@@ -182,13 +192,13 @@ namespace RoadRunner {
 				return this;
 			}
 
-			bool use(RoadRunner::world::World* world, int32_t x, int32_t y, int32_t z, RoadRunner::entity::Player* player){
+			bool use(World* world, int32_t x, int32_t y, int32_t z, RoadRunner::entity::Player* player){
 				return false;
 			};
 
-			virtual void onPlace(RoadRunner::world::World* world, int32_t x, int32_t y, int32_t z);
-			virtual void onRemove(RoadRunner::world::World* world, int32_t x, int32_t y, int32_t z);
-			void playerWillDestroy(RoadRunner::world::World* world, int32_t x, int32_t y, int32_t z, int32_t meta, RoadRunner::entity::Player* player){}; //used only by door
+			virtual void onPlace(World* world, int32_t x, int32_t y, int32_t z);
+			virtual void onRemove(World* world, int32_t x, int32_t y, int32_t z);
+			void playerWillDestroy(World* world, int32_t x, int32_t y, int32_t z, int32_t meta, RoadRunner::entity::Player* player){}; //used only by door
 		};
 
 		struct StoneBlock : public Block{
@@ -206,6 +216,25 @@ namespace RoadRunner {
 
 		struct TorchBlock : public Block{
 			TorchBlock(uint8_t id) : Block(id, Material::decoration){}
+
+			virtual bool isCubeShaped(){
+				return 0;
+			}
+
+			bool isConnection(World* world, int x, int y, int z);
+			bool mayPlace(World* world, int x, int y, int z);
+			bool checkCanSurvive(World* world, int x, int y, int z);
+
+			virtual int getPlacementDataValue(
+				World* world,
+				int x, int y, int z,
+				int face, float faceX, float faceY, float faceZ,
+				Mob* mob,
+				int meta
+			);
+
+			virtual void onPlace(World* world, int32_t x, int32_t y, int32_t z);
+			//TODO more
 		};
 
 		struct GrassBlock : public Block {
@@ -225,14 +254,20 @@ namespace RoadRunner {
 			Bush(uint8_t id, Material* mat): Block(id, mat){
 				this->setTicking(true);
 			};
-
-			bool isSolidRender() override{
+			virtual bool isCubeShaped(){
+				return false;
+			}
+			virtual bool isSolidRender(){
 				return false;
 			}
 		};
 
 		struct LiquidBlock : public Block{
 			LiquidBlock(uint8_t id, Material* material): Block(id, material){};
+
+			virtual bool isCubeShaped(){
+				return false;
+			}
 		};
 		struct LiquidBlockStatic : public LiquidBlock{
 			LiquidBlockStatic(uint8_t id, Material* material): LiquidBlock(id, material){};
@@ -254,10 +289,10 @@ namespace RoadRunner {
 			RotatedPillarBlock(uint8_t id, Material* material): Block(id, material){};
 			static uint8_t rotationArray[4];
 			virtual int getPlacementDataValue(
-				RoadRunner::world::World* world,
+				World* world,
 				int x, int y, int z,
 				int face, float faceX, float faceY, float faceZ,
-				Player* mob, //TODO Mob* mob
+				Mob* mob,
 				int meta
 				){
 				int v11;
@@ -290,6 +325,10 @@ namespace RoadRunner {
 
 		struct FireBlock : public Block{
 			FireBlock(uint8_t id): Block(id, Material::fire){};
+
+			virtual bool isCubeShaped(){
+				return false;
+			}
 		};
 
 		struct Mushroom : public Block{
@@ -306,6 +345,10 @@ namespace RoadRunner {
 
 		struct WebBlock : public Block{
 			WebBlock(uint8_t id): Block(id, Material::web){}
+
+			virtual bool isCubeShaped(){
+				return 0;
+			}
 		};
 
 		struct TallGrass : public Bush{
@@ -330,6 +373,11 @@ namespace RoadRunner {
 
 		struct FarmBlock : public Block{
 			FarmBlock(uint8_t id): Block(id, Material::dirt){}
+
+			virtual bool isCubeShaped(){
+				return false;
+			}
+
 		};
 
 		struct ClayBlock : public Block{
@@ -342,10 +390,15 @@ namespace RoadRunner {
 				//this->setTicking(true); mojang moment
 			}
 
+			virtual bool isCubeShaped(){
+				return 0;
+			}
 
-			bool isSolidRender() override{
+			virtual bool isSolidRender(){
 				return false;
 			}
+
+
 		};
 
 		struct LightGemBlock : public Block{
@@ -379,7 +432,11 @@ namespace RoadRunner {
 				this->setShape(0.0f, 0.0f, 0.0f, 1.0f, 0.125f, 1.0f);
 			}
 
-			bool isSolidRender() override{
+			virtual bool isCubeShaped(){
+				return false;
+			}
+
+			virtual bool isSolidRender(){
 				return false;
 			}
 		};
@@ -398,9 +455,12 @@ namespace RoadRunner {
 
 		struct ReedBlock : public Block{
 			ReedBlock(uint8_t id): Block(id, Material::plant){
-				//Tile::setShape(v434, 0.125, 0.0, 0.125, 0.875, 1.0, 0.875); TODO shape
 				this->setShape(0.125f, 0, 0.125f, 0.875f, 1.0f, 0.875f);
 				this->setTicking(true);
+			}
+
+			virtual bool isCubeShaped(){
+				return false;
 			}
 		};
 
@@ -408,8 +468,10 @@ namespace RoadRunner {
 			CactusBlock(uint8_t id): Block(id, Material::cactus){
 				this->setTicking(true);
 			}
-
-			bool isSolidRender() override{
+			virtual bool isCubeShaped(){
+				return false;
+			}
+			virtual bool isSolidRender(){
 				return false;
 			}
 		};
@@ -423,7 +485,7 @@ namespace RoadRunner {
 				this->setShape(0.0f, 0.0f, 0.0f, 1.0f, 0.5625f, 1.0f);
 			}
 
-			bool isSolidRender() override{
+			virtual bool isSolidRender(){
 				return false;
 			}
 		};
@@ -438,10 +500,10 @@ namespace RoadRunner {
 			}
 
 			virtual int getPlacementDataValue(
-				RoadRunner::world::World* world,
+				World* world,
 				int x, int y, int z,
 				int face, float faceX, float faceY, float faceZ,
-				Player* mob, //TODO Mob* mob
+				Mob* mob,
 				int meta
 			){
 				if(!this->isFull && (face == 0 || (face != 1 && faceY > 0.5f))){
@@ -449,6 +511,10 @@ namespace RoadRunner {
 				}
 
 				return (int)meta;
+			}
+
+			virtual bool isCubeShaped(){
+				return this->isFull;
 			}
 		};
 
@@ -479,36 +545,17 @@ namespace RoadRunner {
 					//TODO this->field_5C = block->field_5C;
 				}
 
-				virtual int getPlacementDataValue(
-					RoadRunner::world::World* world,
+				virtual bool isCubeShaped(){
+					return 0;
+				}
+
+				int getPlacementDataValue(
+					World* world,
 					int x, int y, int z,
 					int face, float faceX, float faceY, float faceZ,
-					Player* mob, //TODO Mob* mob
+					Mob* mob,
 					int meta
-				){
-					int m = meta;
-					if(face == 0 || (face != 1 && faceY > 0.5f)){
-						m |= 4;
-					}
-					m &= 4;
-
-					float fdir = ((mob->yaw * 4) / 360) + 0.5f;
-					int direction = (int)fdir;
-					if(fdir < (float)direction){
-						--direction;
-					}
-
-					switch(direction & 3){
-						case 0:
-							return m | 2;
-						case 1:
-							return m | 1;
-						case 2:
-							return m | 3;
-						default:
-							return m;
-					}
-				}
+				);
 
 
 				~StairBlock(){
