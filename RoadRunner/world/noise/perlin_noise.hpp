@@ -53,7 +53,7 @@ namespace RoadRunner{
 							delete noises[i];
 						}
 
-						delete noises;
+						delete[] noises;
 					}
 			};
 		}

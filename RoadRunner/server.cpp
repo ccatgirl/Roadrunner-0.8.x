@@ -214,7 +214,7 @@ Server::Server(uint16_t port, uint32_t max_clients) {
 				case ID_NEW_INCOMING_CONNECTION:
 					printf("A new connection is incoming.\n");
 					if (this->players.count(packet->guid) == 0) {
-						RoadRunner::entity::Player *player = new RoadRunner::entity::Player(this);
+						RoadRunner::entity::Player *player = new RoadRunner::entity::Player(this); //TODO not freed
 						player->guid = packet->guid;
 						this->players[packet->guid] = player;
 					}
@@ -245,7 +245,7 @@ Server::Server(uint16_t port, uint32_t max_clients) {
 	RakNet::RakPeerInterface::DestroyInstance(peer);
 
 	this->world->saveWorld();
-
+	delete levelSource;
 	delete this->world;
 	delete RoadRunner::world::BlankChunk::blankChunk;
 }

@@ -31,6 +31,9 @@ RoadRunner::world::Chunk* RandomLevelSource::getChunk(int32_t chunkX, int32_t ch
 	}
 
 	//TODO c.generateHeightMap();
+
+	delete[] bArr;
+	delete[] this->biomes;
 	return c;
 }
 
@@ -259,5 +262,13 @@ RandomLevelSource::~RandomLevelSource(){
 	delete this->depthNoise;
 	delete this->treeNoise;
 
-	//TODO remove arrays?
+	if(this->biomeNoise) delete[] this->biomeNoises;
+	if(this->depthNoises) delete[] this->depthNoises;
+	if(this->interpolationNoises) delete[] this->interpolationNoises;
+	if(this->upperInterpolationNoises) delete[] this->upperInterpolationNoises;
+	if(this->lowerInterpolationNoises) delete[] this->lowerInterpolationNoises;
+	if(this->sandNoises) delete[] this->sandNoises;
+	if(this->gravelNoises) delete[] this->gravelNoises;
+	if(this->surfaceDepthNoises) delete[] this->surfaceDepthNoises;
+	if(this->heights) delete[] this->heights;
 }

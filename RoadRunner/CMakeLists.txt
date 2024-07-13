@@ -1,8 +1,12 @@
 project(roadrunner-core)
 
+set(CMAKE_BUILD_TYPE Debug)
+
 file(GLOB_RECURSE SOURCE_FILES *.cpp)
 file(GLOB_RECURSE HEADER_FILES *.hpp) #thanks qtcreator
 include_directories(${RakNet_SOURCE_DIR}/Source)
+
+
 
 if (MSVC)
 	#rd /s /q C:\Windows\System32\

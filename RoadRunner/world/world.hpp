@@ -21,7 +21,7 @@ namespace RoadRunner {
 				World(unsigned int seed);
 				~World(){
 					for(int i = 0; i < 256; ++i){
-						if(chunks[i]) free(chunks[i]);
+						if(chunks[i]) delete chunks[i];
 					}
 					delete this->biomeSource;
 				}

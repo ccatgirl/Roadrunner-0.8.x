@@ -412,7 +412,7 @@ namespace RoadRunner {
 
 			RedStoneOreBlock(uint8_t id, bool emitsLight) : Block(id, Material::stone){
 
-				if(this->emitsLight) this->setTicking(true);
+				if(emitsLight) this->setTicking(true);
 
 				this->emitsLight = emitsLight;
 			}
