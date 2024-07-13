@@ -18,11 +18,13 @@
 #include <world/generator/level_source.hpp>
 #include <entity/entity.hpp>
 #include <utils/multisystem.h>
+#include <network/packets/message_packet.hpp>
 
 #ifndef _WIN32
 #include <signal.h>
 #endif
 
+using namespace RoadRunner::network::packets;
 using RoadRunner::block::Block;
 using RoadRunner::block::material::Material;
 using RoadRunner::Server;
@@ -242,8 +244,8 @@ Server::Server(uint16_t port, uint32_t max_clients) {
 	}
 
 	forceend:
+	peer->Shutdown(500, 0, LOW_PRIORITY);
 	RakNet::RakPeerInterface::DestroyInstance(peer);
-
 	this->world->saveWorld();
 	delete levelSource;
 	delete this->world;

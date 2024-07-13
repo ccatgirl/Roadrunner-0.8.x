@@ -200,6 +200,14 @@ bool Block::mayPlace(World* world, int x, int y, int z){
 	Material* mat = Block::blocks[id]->material;
 	return mat->isReplaceable();
 }
+void Block::neighborChanged(World* world, int x, int y, int z, int nX, int nY, int nZ, int oldid){
+	//TODO tile entities
+	/*
+	 * tile = level->getTileEntity(x, y, z);
+	 * if(tile) tile->onNeighborChanged(nX, nY, nZ);
+	 */
+}
+
 bool Block::mayPlace(World* world, int x, int y, int z, int side){
 	return this->mayPlace(world, x, y, z);
 }

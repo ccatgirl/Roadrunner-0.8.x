@@ -306,17 +306,44 @@ bool World::loadWorld(){
 	return true;
 }
 
+void World::neighborChanged(int x , int y, int z, int neighborX, int neighborY, int neighborZ, int oldid){
+	Block* block = Block::blocks[this->get_block_id(x, y, z)];
+
+	if(block){
+		block->neighborChanged(this, x, y, z, neighborX, neighborY, neighborZ, oldid);
+	}
+}
+void World::updateNeighborsAt(int x, int y, int z, int oldid){
+	this->neighborChanged(x - 1, y, z, x, y, z, oldid);
+	this->neighborChanged(x + 1, y, z, x, y, z, oldid);
+	this->neighborChanged(x, y - 1, z, x, y, z, oldid);
+	this->neighborChanged(x, y + 1, z, x, y, z, oldid);
+	this->neighborChanged(x, y, z - 1, x, y, z, oldid);
+	this->neighborChanged(x, y, z + 1, x, y, z, oldid);
+
+}
+
+void World::tileUpdated(int x, int y, int z, int oldid){
+	this->updateNeighborsAt(x, y, z, oldid);
+}
+
 void RoadRunner::world::World::set_block(int32_t x, int32_t y, int32_t z, uint8_t id, uint8_t meta, uint8_t flags) { //TODO return success/failure
 	int chunkX = x / 16;
 	int chunkZ = z / 16;
 	int index = chunkX << 4 | chunkZ;
+	int oldid = 0;
+
 	RoadRunner::world::Chunk *chunk = this->get_chunk(chunkX, chunkZ);
 	if(chunk){
+
+		if(flags & 1) oldid = chunk->get_block_id(x & 0xf, y, z & 0xf);
+
 		chunk->set_block_id(x & 0xf, y, z & 0xf, id);
 		chunk->set_block_meta(x & 0xf, y, z & 0xf, meta);
 
-		if (flags & 0x1)
-			; // TODO update
+		if (flags & 0x1){
+			this->tileUpdated(x, y, z, oldid);
+		}
 		if (flags & 0x2) {
 			RoadRunner::Server::INSTANCE->send_block_data(x, y, z, id, meta);
 		}

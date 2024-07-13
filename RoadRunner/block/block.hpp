@@ -163,6 +163,8 @@ namespace RoadRunner {
 			virtual bool mayPlace(World* world, int x, int y, int z);
 			virtual bool mayPlace(World* world, int x, int y, int z, int side);
 
+			virtual void neighborChanged(World* world, int x, int y, int z, int nX, int nY, int nZ, int oldid);
+
 			virtual bool isCubeShaped();
 
 			void setShape(float minX, float minY, float minZ, float maxX, float maxY, float maxZ){
@@ -224,7 +226,7 @@ namespace RoadRunner {
 			bool isConnection(World* world, int x, int y, int z);
 			bool mayPlace(World* world, int x, int y, int z);
 			bool checkCanSurvive(World* world, int x, int y, int z);
-
+			virtual void neighborChanged(World* world, int x, int y, int z, int nX, int nY, int nZ, int oldid);
 			virtual int getPlacementDataValue(
 				World* world,
 				int x, int y, int z,
@@ -238,19 +240,19 @@ namespace RoadRunner {
 		};
 
 		struct GrassBlock : public Block {
-			GrassBlock(uint8_t id): Block(id, Material::dirt){};
+			GrassBlock(uint8_t id): Block(id, Material::dirt){}
 		};
 
 		struct DirtBlock : public Block {
-			DirtBlock(uint8_t id): Block(id, Material::dirt){};
+			DirtBlock(uint8_t id): Block(id, Material::dirt){}
 		};
 
 		struct WoodBlock : public Block {
-			WoodBlock(uint8_t id): Block(id, Material::wood){};
+			WoodBlock(uint8_t id): Block(id, Material::wood){}
 		};
 
 		struct Bush : public Block{
-			Bush(uint8_t id): Bush(id, Material::plant){};
+			Bush(uint8_t id): Bush(id, Material::plant){}
 			Bush(uint8_t id, Material* mat): Block(id, mat){
 				this->setTicking(true);
 			};
@@ -260,21 +262,28 @@ namespace RoadRunner {
 			virtual bool isSolidRender(){
 				return false;
 			}
+			virtual void neighborChanged(World* world, int x, int y, int z, int nX, int nY, int nZ, int oldid);
 		};
 
 		struct LiquidBlock : public Block{
-			LiquidBlock(uint8_t id, Material* material): Block(id, material){};
+			LiquidBlock(uint8_t id, Material* material): Block(id, material){}
 
 			virtual bool isCubeShaped(){
 				return false;
 			}
+
+			virtual void neighborChanged(World* world, int x, int y, int z, int nX, int nY, int nZ, int oldid);
 		};
 		struct LiquidBlockStatic : public LiquidBlock{
 			LiquidBlockStatic(uint8_t id, Material* material): LiquidBlock(id, material){};
+
+			virtual void neighborChanged(World* world, int x, int y, int z, int nX, int nY, int nZ, int oldid);
 		};
 
 		struct HeavyBlock: public Block{
 			HeavyBlock(uint8_t id): Block(id, Material::sand){};
+
+			virtual void neighborChanged(World* world, int x, int y, int z, int nX, int nY, int nZ, int oldid);
 		};
 
 		struct Sapling : public Bush{
@@ -329,6 +338,8 @@ namespace RoadRunner {
 			virtual bool isCubeShaped(){
 				return false;
 			}
+
+			virtual void neighborChanged(World* world, int x, int y, int z, int nX, int nY, int nZ, int oldid);
 		};
 
 		struct Mushroom : public Block{
@@ -341,6 +352,8 @@ namespace RoadRunner {
 
 		struct TntBlock : public Block{
 			TntBlock(uint8_t id): Block(id, Material::explosive){}
+
+			virtual void neighborChanged(World* world, int x, int y, int z, int nX, int nY, int nZ, int oldid);
 		};
 
 		struct WebBlock : public Block{
@@ -378,6 +391,7 @@ namespace RoadRunner {
 				return false;
 			}
 
+			virtual void neighborChanged(World* world, int x, int y, int z, int nX, int nY, int nZ, int oldid);
 		};
 
 		struct ClayBlock : public Block{
@@ -389,6 +403,8 @@ namespace RoadRunner {
 				this->setShape(0, 0, 0, 1, 0.0625f, 1);
 				//this->setTicking(true); mojang moment
 			}
+
+			virtual void neighborChanged(World* world, int x, int y, int z, int nX, int nY, int nZ, int oldid);
 
 			virtual bool isCubeShaped(){
 				return 0;
@@ -431,7 +447,7 @@ namespace RoadRunner {
 				this->powered = powered;
 				this->setShape(0.0f, 0.0f, 0.0f, 1.0f, 0.125f, 1.0f);
 			}
-
+			virtual void neighborChanged(World* world, int x, int y, int z, int nX, int nY, int nZ, int oldid);
 			virtual bool isCubeShaped(){
 				return false;
 			}
@@ -462,6 +478,8 @@ namespace RoadRunner {
 			virtual bool isCubeShaped(){
 				return false;
 			}
+
+			virtual void neighborChanged(World* world, int x, int y, int z, int nX, int nY, int nZ, int oldid);
 		};
 
 		struct CactusBlock : public Block{
@@ -474,6 +492,7 @@ namespace RoadRunner {
 			virtual bool isSolidRender(){
 				return false;
 			}
+			virtual void neighborChanged(World* world, int x, int y, int z, int nX, int nY, int nZ, int oldid);
 		};
 
 		struct BedBlock : public Block{
@@ -484,7 +503,7 @@ namespace RoadRunner {
 			void _setShape(){ //a bit useless?
 				this->setShape(0.0f, 0.0f, 0.0f, 1.0f, 0.5625f, 1.0f);
 			}
-
+			virtual void neighborChanged(World* world, int x, int y, int z, int nX, int nY, int nZ, int oldid);
 			virtual bool isSolidRender(){
 				return false;
 			}

@@ -39,6 +39,31 @@ bool TorchBlock::checkCanSurvive(World* world, int x, int y, int z){
 	}
 	return 0;
 }
+void TorchBlock::neighborChanged(World* world, int x, int y, int z, int nX, int nY, int nZ, int oldid){
+	//TODO: static liquid: neighborChanged
+	bool cansurvive = this->checkCanSurvive(world, x, y, z);
+	bool v14 = 0;
+	if(cansurvive){
+		int data = world->get_block_meta(x, y, z);
+
+		if(world->isSolidBlockingTile(x - 1, y, z)) v14 = 0;
+		else v14 = data == 1;
+
+		if(!world->isSolidBlockingTile(x + 1, y, z) && data == 2) v14 = 1;
+		if(!world->isSolidBlockingTile(x, y, z - 1) && data == 3) v14 = 1;
+		if(!world->isSolidBlockingTile(x, y, z + 1) && data == 4) v14 = 1;
+
+		if(!this->isConnection(world, x, y-1, z) && data == 5 || v14){
+			/* TODO spawn drop
+			 * ZN4Tile14spawnResourcesEP5Leveliiii = this->super.vtable->_ZN4Tile14spawnResourcesEP5Leveliiii;
+			v16 = world->vtable->_ZN5Level7getDataEiii(world, x, y, z);
+			ZN4Tile14spawnResourcesEP5Leveliiii(&this->super, world, x, y, z, v16);*/
+
+			world->set_block(x, y, z, 0, 0, 3);
+		}
+	}
+}
+
 bool TorchBlock::mayPlace(World* world, int x, int y, int z){
 	if(world->isSolidBlockingTile(x - 1, y, z)) return 1;
 	if(world->isSolidBlockingTile(x + 1, y, z)) return 1;

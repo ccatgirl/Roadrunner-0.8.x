@@ -17,6 +17,7 @@
 #include <network/packets/start_game_packet.hpp>
 #include <network/enums/ready_status_enum.hpp>
 #include <network/enums/login_status_enum.hpp>
+
 #include <entity/player.hpp>
 #include <block/block.hpp>
 using RoadRunner::network::packets::SendInventoryPacket;

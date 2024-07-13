@@ -45,7 +45,9 @@ namespace RoadRunner {
 				}
 
 				bool isSolidBlockingTile(int x, int y, int z);
-
+				void neighborChanged(int x , int y, int z, int neighborX, int neighborY, int neighborZ, int oldid);
+				void updateNeighborsAt(int x, int y, int z, int oldid);
+				void tileUpdated(int x, int y, int z, int oldid);
 				void syncTime();
 				void saveWorld();
 				bool loadWorld();
