@@ -31,6 +31,9 @@ add_executable(roadrunner-core ${SOURCE_FILES} ${HEADER_FILES}
 	block/reedblock.cpp
 	block/cactusblock.cpp
 	block/bedblock.cpp
+	block/workbenchblock.cpp
+	utils/aabb.hpp
+	utils/aabb.cpp
 
 
 )

@@ -551,35 +551,40 @@ namespace RoadRunner {
 		};
 
 		struct StairBlock : public Block{
-				Block* blockBase;
-				int blockMeta;
+			Block* blockBase;
+			int blockMeta;
 
-				StairBlock(uint8_t id, Block* block, int blockMeta) : Block(id, block->material){\
-					this->blockBase = block;
-					this->blockMeta = blockMeta;
+			StairBlock(uint8_t id, Block* block, int blockMeta) : Block(id, block->material){\
+				this->blockBase = block;
+				this->blockMeta = blockMeta;
 
-					this->setDestroyTime(block->blockHardness);
-					this->setExplodeable(block->blockResistance / 3.0f);
-					this->setLightBlock(255);
-					//TODO this->field_5C = block->field_5C;
-				}
+				this->setDestroyTime(block->blockHardness);
+				this->setExplodeable(block->blockResistance / 3.0f);
+				this->setLightBlock(255);
+				//TODO this->field_5C = block->field_5C;
+			}
 
-				virtual bool isCubeShaped(){
-					return 0;
-				}
+			virtual bool isCubeShaped(){
+				return 0;
+			}
 
-				int getPlacementDataValue(
-					World* world,
-					int x, int y, int z,
-					int face, float faceX, float faceY, float faceZ,
-					Mob* mob,
-					int meta
-				);
+			int getPlacementDataValue(
+				World* world,
+				int x, int y, int z,
+				int face, float faceX, float faceY, float faceZ,
+				Mob* mob,
+				int meta
+			);
 
 
-				~StairBlock(){
-					this->blockBase = 0;
-				}
+			~StairBlock(){
+				this->blockBase = 0;
+			}
+		};
+
+		struct WorkbenchBlock : public Block{
+			WorkbenchBlock(uint8_t id);
+			bool use(World* world, int32_t x, int32_t y, int32_t z, RoadRunner::entity::Player* player);
 		};
 	}
 }

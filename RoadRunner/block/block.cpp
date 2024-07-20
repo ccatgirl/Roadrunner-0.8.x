@@ -268,7 +268,7 @@ void Block::initBlocks() {
 	//TODO chest
 	Block::diamondOre = (new OreBlock(56))->init()->setDestroyTime(3.0f)->setExplodeable(5.0f);
 	Block::diamondBlock = (new MetalBlock(57))->init()->setDestroyTime(5.0f)->setExplodeable(10.0f);
-	//TODO workBench
+	Block::workBench = (new WorkbenchBlock(58))->init()->setDestroyTime(2.5f);
 	Block::crops = (new CropBlock(59))->init()->setDestroyTime(0.0f);
 	Block::farmland = (new FarmBlock(60))->init()->setDestroyTime(0.6f);
 	//TODO furnace
